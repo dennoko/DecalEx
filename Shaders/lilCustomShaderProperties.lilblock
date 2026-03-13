@@ -1,0 +1,41 @@
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal MatCap
+        //----------------------------------------------------------------------------------------------------------------------
+        [lilToggle]     _DecalMatCap_Enable         ("Enable MatCap",             Int)             = 0
+        [lilHDR]        _DecalMatCap_Color          ("Color",                     Color)           = (1,1,1,1)
+                        _DecalMatCap_MainColorPower ("Main Color Strength",       Range(0,1))      = 0.0
+                        _DecalMatCap_Tex            ("MatCap Texture",            2D)              = "white" {}
+        [lilEnum]       _DecalMatCap_Blend          ("Blend Mode|Add|Screen|Multiply|Overlay|Soft Light|Replace|Subtract|Lighten|Darken", Int) = 1
+                        _DecalMatCap_Mask           ("Mask",                      2D)              = "white" {}
+                        _DecalMatCap_MaskOffsetX    ("Mask Offset X",             Range(-2,2))     = 0.5
+                        _DecalMatCap_MaskOffsetY    ("Mask Offset Y",             Range(-2,2))     = 0.5
+                        _DecalMatCap_MaskScaleX     ("Mask Scale X",              Range(0.001,4))  = 1.0
+                        _DecalMatCap_MaskScaleY     ("Mask Scale Y",              Range(0.001,4))  = 1.0
+                        _DecalMatCap_MaskAngle      ("Mask Angle",                Range(-180,180)) = 0.0
+        [lilToggle]     _DecalMatCap_UseMask        ("Use Mask",                  Int)             = 1
+                        _DecalMatCap_BumpScale      ("Normal Strength",           Range(0,3))      = 1.0
+        [lilToggle]     _DecalMatCap_UseReflection  ("Use Reflection",            Int)             = 0
+        [lilToggle]     _DecalMatCap_DisableBackface("Disable on Backface",       Int)             = 0
+                        _DecalMatCap_EnableLighting ("Enable Lighting",           Range(0,1))      = 1.0
+                        _DecalMatCap_ShadowStrength ("Shadow Strength",           Range(0,1))      = 0.0
+                        _DecalMatCap_Blur           ("Blur",                      Range(0,1))      = 0.0
+                        _DecalMatCap_Alpha          ("Opacity",                   Range(0,1))      = 1.0
+                        _DecalMatCap_RimPower       ("Rim Power",                 Range(-3,3))     = 0.0
+        [lilToggle]     _DecalMatCap_ZRollCancel    ("Z-Roll Cancellation",       Int)             = 0
+                        _DecalMatCap_EmissionAdd    ("Emission Addition",         Range(0,1))      = 0.0
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Emission
+        //----------------------------------------------------------------------------------------------------------------------
+        [lilToggle]     _DecalEmission_Enable     ("Enable Emission",         Int)             = 0
+        [lilHDR]        _DecalEmission_Color      ("Color",                   Color)           = (1,1,1,1)
+                        _DecalEmission_Tex        ("Emission Texture",        2D)              = "black" {}
+                        _DecalEmission_Strength   ("Strength",                Range(0,1))      = 1.0
+                        _DecalEmission_Mask       ("Mask",                    2D)              = "white" {}
+                        _DecalEmission_MaskOffsetX ("Mask Offset X",          Range(-2,2))     = 0.5
+                        _DecalEmission_MaskOffsetY ("Mask Offset Y",          Range(-2,2))     = 0.5
+                        _DecalEmission_MaskScaleX  ("Mask Scale X",           Range(0.001,4))  = 1.0
+                        _DecalEmission_MaskScaleY  ("Mask Scale Y",           Range(0.001,4))  = 1.0
+                        _DecalEmission_MaskAngle  ("Mask Angle",              Range(-180,180)) = 0.0
+        [lilToggle]     _DecalEmission_UseMask    ("Use Mask",                Int)             = 1

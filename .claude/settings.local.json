@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find c:UsersdennokoAppDataLocalVRChatCreatorCompanionVRChatProjectslilToon_Extension_v2Packagesjp.lilxyzw.liltoon -type f \\\\\\(-name *.lilblock -o -name *.shader \\\\\\))"
+    ]
+  }
+}
