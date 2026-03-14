@@ -47,6 +47,76 @@ namespace lilToon
         private MaterialProperty _DecalEmission_MaskAngle;
         private MaterialProperty _DecalEmission_UseMask;
 
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Slot 1 properties
+        private static bool isShowDecalSlot1;
+        private MaterialProperty _DecalSlot1_Enable;
+        private MaterialProperty _DecalSlot1_DisableBackface;
+        private MaterialProperty _DecalSlot1_OffsetX;
+        private MaterialProperty _DecalSlot1_OffsetY;
+        private MaterialProperty _DecalSlot1_ScaleX;
+        private MaterialProperty _DecalSlot1_ScaleY;
+        private MaterialProperty _DecalSlot1_Angle;
+        private MaterialProperty _DecalSlot1_Tex;
+        private MaterialProperty _DecalSlot1_Color;
+        private MaterialProperty _DecalSlot1_Blend;
+        private MaterialProperty _DecalSlot1_Alpha;
+        private MaterialProperty _DecalSlot1_UseMask;
+        private MaterialProperty _DecalSlot1_Mask;
+        private MaterialProperty _DecalSlot1_MatCap_Enable;
+        private MaterialProperty _DecalSlot1_MatCap_Tex;
+        private MaterialProperty _DecalSlot1_MatCap_Color;
+        private MaterialProperty _DecalSlot1_MatCap_Blend;
+        private MaterialProperty _DecalSlot1_MatCap_Alpha;
+        private MaterialProperty _DecalSlot1_MatCap_MainColorPower;
+        private MaterialProperty _DecalSlot1_MatCap_BumpScale;
+        private MaterialProperty _DecalSlot1_MatCap_UseReflection;
+        private MaterialProperty _DecalSlot1_MatCap_ZRollCancel;
+        private MaterialProperty _DecalSlot1_MatCap_EnableLighting;
+        private MaterialProperty _DecalSlot1_MatCap_ShadowStrength;
+        private MaterialProperty _DecalSlot1_MatCap_Blur;
+        private MaterialProperty _DecalSlot1_MatCap_RimPower;
+        private MaterialProperty _DecalSlot1_MatCap_EmissionAdd;
+        private MaterialProperty _DecalSlot1_Emission_Enable;
+        private MaterialProperty _DecalSlot1_Emission_Tex;
+        private MaterialProperty _DecalSlot1_Emission_Color;
+        private MaterialProperty _DecalSlot1_Emission_Strength;
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Slot 2 properties
+        private static bool isShowDecalSlot2;
+        private MaterialProperty _DecalSlot2_Enable;
+        private MaterialProperty _DecalSlot2_DisableBackface;
+        private MaterialProperty _DecalSlot2_OffsetX;
+        private MaterialProperty _DecalSlot2_OffsetY;
+        private MaterialProperty _DecalSlot2_ScaleX;
+        private MaterialProperty _DecalSlot2_ScaleY;
+        private MaterialProperty _DecalSlot2_Angle;
+        private MaterialProperty _DecalSlot2_Tex;
+        private MaterialProperty _DecalSlot2_Color;
+        private MaterialProperty _DecalSlot2_Blend;
+        private MaterialProperty _DecalSlot2_Alpha;
+        private MaterialProperty _DecalSlot2_UseMask;
+        private MaterialProperty _DecalSlot2_Mask;
+        private MaterialProperty _DecalSlot2_MatCap_Enable;
+        private MaterialProperty _DecalSlot2_MatCap_Tex;
+        private MaterialProperty _DecalSlot2_MatCap_Color;
+        private MaterialProperty _DecalSlot2_MatCap_Blend;
+        private MaterialProperty _DecalSlot2_MatCap_Alpha;
+        private MaterialProperty _DecalSlot2_MatCap_MainColorPower;
+        private MaterialProperty _DecalSlot2_MatCap_BumpScale;
+        private MaterialProperty _DecalSlot2_MatCap_UseReflection;
+        private MaterialProperty _DecalSlot2_MatCap_ZRollCancel;
+        private MaterialProperty _DecalSlot2_MatCap_EnableLighting;
+        private MaterialProperty _DecalSlot2_MatCap_ShadowStrength;
+        private MaterialProperty _DecalSlot2_MatCap_Blur;
+        private MaterialProperty _DecalSlot2_MatCap_RimPower;
+        private MaterialProperty _DecalSlot2_MatCap_EmissionAdd;
+        private MaterialProperty _DecalSlot2_Emission_Enable;
+        private MaterialProperty _DecalSlot2_Emission_Tex;
+        private MaterialProperty _DecalSlot2_Emission_Color;
+        private MaterialProperty _DecalSlot2_Emission_Strength;
+
         private const string shaderName = "dennoko_decalex";
 
         protected override void LoadCustomProperties(MaterialProperty[] props, Material material)
@@ -89,6 +159,70 @@ namespace lilToon
             _DecalEmission_MaskScaleY  = FindProperty("_DecalEmission_MaskScaleY", props);
             _DecalEmission_MaskAngle   = FindProperty("_DecalEmission_MaskAngle", props);
             _DecalEmission_UseMask     = FindProperty("_DecalEmission_UseMask", props);
+
+            _DecalSlot1_Enable               = FindProperty("_DecalSlot1_Enable", props);
+            _DecalSlot1_DisableBackface       = FindProperty("_DecalSlot1_DisableBackface", props);
+            _DecalSlot1_OffsetX              = FindProperty("_DecalSlot1_OffsetX", props);
+            _DecalSlot1_OffsetY              = FindProperty("_DecalSlot1_OffsetY", props);
+            _DecalSlot1_ScaleX               = FindProperty("_DecalSlot1_ScaleX", props);
+            _DecalSlot1_ScaleY               = FindProperty("_DecalSlot1_ScaleY", props);
+            _DecalSlot1_Angle                = FindProperty("_DecalSlot1_Angle", props);
+            _DecalSlot1_Tex                  = FindProperty("_DecalSlot1_Tex", props);
+            _DecalSlot1_Color                = FindProperty("_DecalSlot1_Color", props);
+            _DecalSlot1_Blend                = FindProperty("_DecalSlot1_Blend", props);
+            _DecalSlot1_Alpha                = FindProperty("_DecalSlot1_Alpha", props);
+            _DecalSlot1_UseMask              = FindProperty("_DecalSlot1_UseMask", props);
+            _DecalSlot1_Mask                 = FindProperty("_DecalSlot1_Mask", props);
+            _DecalSlot1_MatCap_Enable        = FindProperty("_DecalSlot1_MatCap_Enable", props);
+            _DecalSlot1_MatCap_Tex           = FindProperty("_DecalSlot1_MatCap_Tex", props);
+            _DecalSlot1_MatCap_Color         = FindProperty("_DecalSlot1_MatCap_Color", props);
+            _DecalSlot1_MatCap_Blend         = FindProperty("_DecalSlot1_MatCap_Blend", props);
+            _DecalSlot1_MatCap_Alpha         = FindProperty("_DecalSlot1_MatCap_Alpha", props);
+            _DecalSlot1_MatCap_MainColorPower = FindProperty("_DecalSlot1_MatCap_MainColorPower", props);
+            _DecalSlot1_MatCap_BumpScale     = FindProperty("_DecalSlot1_MatCap_BumpScale", props);
+            _DecalSlot1_MatCap_UseReflection = FindProperty("_DecalSlot1_MatCap_UseReflection", props);
+            _DecalSlot1_MatCap_ZRollCancel   = FindProperty("_DecalSlot1_MatCap_ZRollCancel", props);
+            _DecalSlot1_MatCap_EnableLighting = FindProperty("_DecalSlot1_MatCap_EnableLighting", props);
+            _DecalSlot1_MatCap_ShadowStrength = FindProperty("_DecalSlot1_MatCap_ShadowStrength", props);
+            _DecalSlot1_MatCap_Blur          = FindProperty("_DecalSlot1_MatCap_Blur", props);
+            _DecalSlot1_MatCap_RimPower      = FindProperty("_DecalSlot1_MatCap_RimPower", props);
+            _DecalSlot1_MatCap_EmissionAdd   = FindProperty("_DecalSlot1_MatCap_EmissionAdd", props);
+            _DecalSlot1_Emission_Enable      = FindProperty("_DecalSlot1_Emission_Enable", props);
+            _DecalSlot1_Emission_Tex         = FindProperty("_DecalSlot1_Emission_Tex", props);
+            _DecalSlot1_Emission_Color       = FindProperty("_DecalSlot1_Emission_Color", props);
+            _DecalSlot1_Emission_Strength    = FindProperty("_DecalSlot1_Emission_Strength", props);
+
+            _DecalSlot2_Enable               = FindProperty("_DecalSlot2_Enable", props);
+            _DecalSlot2_DisableBackface       = FindProperty("_DecalSlot2_DisableBackface", props);
+            _DecalSlot2_OffsetX              = FindProperty("_DecalSlot2_OffsetX", props);
+            _DecalSlot2_OffsetY              = FindProperty("_DecalSlot2_OffsetY", props);
+            _DecalSlot2_ScaleX               = FindProperty("_DecalSlot2_ScaleX", props);
+            _DecalSlot2_ScaleY               = FindProperty("_DecalSlot2_ScaleY", props);
+            _DecalSlot2_Angle                = FindProperty("_DecalSlot2_Angle", props);
+            _DecalSlot2_Tex                  = FindProperty("_DecalSlot2_Tex", props);
+            _DecalSlot2_Color                = FindProperty("_DecalSlot2_Color", props);
+            _DecalSlot2_Blend                = FindProperty("_DecalSlot2_Blend", props);
+            _DecalSlot2_Alpha                = FindProperty("_DecalSlot2_Alpha", props);
+            _DecalSlot2_UseMask              = FindProperty("_DecalSlot2_UseMask", props);
+            _DecalSlot2_Mask                 = FindProperty("_DecalSlot2_Mask", props);
+            _DecalSlot2_MatCap_Enable        = FindProperty("_DecalSlot2_MatCap_Enable", props);
+            _DecalSlot2_MatCap_Tex           = FindProperty("_DecalSlot2_MatCap_Tex", props);
+            _DecalSlot2_MatCap_Color         = FindProperty("_DecalSlot2_MatCap_Color", props);
+            _DecalSlot2_MatCap_Blend         = FindProperty("_DecalSlot2_MatCap_Blend", props);
+            _DecalSlot2_MatCap_Alpha         = FindProperty("_DecalSlot2_MatCap_Alpha", props);
+            _DecalSlot2_MatCap_MainColorPower = FindProperty("_DecalSlot2_MatCap_MainColorPower", props);
+            _DecalSlot2_MatCap_BumpScale     = FindProperty("_DecalSlot2_MatCap_BumpScale", props);
+            _DecalSlot2_MatCap_UseReflection = FindProperty("_DecalSlot2_MatCap_UseReflection", props);
+            _DecalSlot2_MatCap_ZRollCancel   = FindProperty("_DecalSlot2_MatCap_ZRollCancel", props);
+            _DecalSlot2_MatCap_EnableLighting = FindProperty("_DecalSlot2_MatCap_EnableLighting", props);
+            _DecalSlot2_MatCap_ShadowStrength = FindProperty("_DecalSlot2_MatCap_ShadowStrength", props);
+            _DecalSlot2_MatCap_Blur          = FindProperty("_DecalSlot2_MatCap_Blur", props);
+            _DecalSlot2_MatCap_RimPower      = FindProperty("_DecalSlot2_MatCap_RimPower", props);
+            _DecalSlot2_MatCap_EmissionAdd   = FindProperty("_DecalSlot2_MatCap_EmissionAdd", props);
+            _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props);
+            _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
+            _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
+            _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -111,6 +245,32 @@ namespace lilToon
                 _DecalEmission_MaskOffsetX, _DecalEmission_MaskOffsetY,
                 _DecalEmission_MaskScaleX, _DecalEmission_MaskScaleY, _DecalEmission_MaskAngle,
                 _DecalEmission_UseMask);
+
+            DrawDecalSlot("Decal Slot 1", ref isShowDecalSlot1,
+                _DecalSlot1_Enable, _DecalSlot1_DisableBackface,
+                _DecalSlot1_OffsetX, _DecalSlot1_OffsetY, _DecalSlot1_ScaleX, _DecalSlot1_ScaleY, _DecalSlot1_Angle,
+                _DecalSlot1_Tex, _DecalSlot1_Color, _DecalSlot1_Blend, _DecalSlot1_Alpha,
+                _DecalSlot1_UseMask, _DecalSlot1_Mask,
+                _DecalSlot1_MatCap_Enable, _DecalSlot1_MatCap_Tex, _DecalSlot1_MatCap_Color, _DecalSlot1_MatCap_Blend,
+                _DecalSlot1_MatCap_Alpha, _DecalSlot1_MatCap_MainColorPower, _DecalSlot1_MatCap_BumpScale,
+                _DecalSlot1_MatCap_UseReflection, _DecalSlot1_MatCap_ZRollCancel,
+                _DecalSlot1_MatCap_EnableLighting, _DecalSlot1_MatCap_ShadowStrength, _DecalSlot1_MatCap_Blur,
+                _DecalSlot1_MatCap_RimPower, _DecalSlot1_MatCap_EmissionAdd,
+                _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_Color,
+                _DecalSlot1_Emission_Strength);
+
+            DrawDecalSlot("Decal Slot 2", ref isShowDecalSlot2,
+                _DecalSlot2_Enable, _DecalSlot2_DisableBackface,
+                _DecalSlot2_OffsetX, _DecalSlot2_OffsetY, _DecalSlot2_ScaleX, _DecalSlot2_ScaleY, _DecalSlot2_Angle,
+                _DecalSlot2_Tex, _DecalSlot2_Color, _DecalSlot2_Blend, _DecalSlot2_Alpha,
+                _DecalSlot2_UseMask, _DecalSlot2_Mask,
+                _DecalSlot2_MatCap_Enable, _DecalSlot2_MatCap_Tex, _DecalSlot2_MatCap_Color, _DecalSlot2_MatCap_Blend,
+                _DecalSlot2_MatCap_Alpha, _DecalSlot2_MatCap_MainColorPower, _DecalSlot2_MatCap_BumpScale,
+                _DecalSlot2_MatCap_UseReflection, _DecalSlot2_MatCap_ZRollCancel,
+                _DecalSlot2_MatCap_EnableLighting, _DecalSlot2_MatCap_ShadowStrength, _DecalSlot2_MatCap_Blur,
+                _DecalSlot2_MatCap_RimPower, _DecalSlot2_MatCap_EmissionAdd,
+                _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_Color,
+                _DecalSlot2_Emission_Strength);
 
             EditorGUILayout.EndVertical();
         }
@@ -210,6 +370,92 @@ namespace lilToon
                 m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Mask Scale X",  "マスクのUV X幅。1.0でUV全幅"));
                 m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Mask Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
                 m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Mask Angle",    "マスクの回転角度（度）"));
+
+                EditorGUILayout.EndVertical();
+            }
+            EditorGUILayout.EndVertical();
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Slot (combined decal with shared UV transform)
+
+        private void DrawDecalSlot(string title, ref bool isShow,
+            MaterialProperty enable, MaterialProperty disableBackface,
+            MaterialProperty offsetX, MaterialProperty offsetY,
+            MaterialProperty scaleX, MaterialProperty scaleY, MaterialProperty angle,
+            MaterialProperty tex, MaterialProperty color, MaterialProperty blend, MaterialProperty alpha,
+            MaterialProperty useMask, MaterialProperty mask,
+            MaterialProperty mcEnable, MaterialProperty mcTex, MaterialProperty mcColor,
+            MaterialProperty mcBlend, MaterialProperty mcAlpha, MaterialProperty mcMainColorPower,
+            MaterialProperty mcBumpScale, MaterialProperty mcUseReflection, MaterialProperty mcZRollCancel,
+            MaterialProperty mcEnableLighting, MaterialProperty mcShadowStrength, MaterialProperty mcBlur,
+            MaterialProperty mcRimPower, MaterialProperty mcEmissionAdd,
+            MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emColor,
+            MaterialProperty emStrength)
+        {
+            isShow = Foldout(title, title, isShow);
+            if(!isShow) return;
+            EditorGUILayout.BeginVertical(boxOuter);
+            EditorGUILayout.LabelField(title, customToggleFont);
+
+            if(enable != null && tex != null && blend != null && mask != null
+                && offsetX != null && offsetY != null && scaleX != null && scaleY != null && angle != null)
+            {
+                EditorGUILayout.BeginVertical(boxInner);
+
+                m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "デカールスロットを有効にします"));
+                m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でデカールを無効にします"));
+
+                EditorGUILayout.LabelField("Position (共有 - 全サブ機能に適用)", EditorStyles.boldLabel);
+                m_MaterialEditor.ShaderProperty(offsetX, new GUIContent("Offset X", "デカール中心のUV X座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(offsetY, new GUIContent("Offset Y", "デカール中心のUV Y座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(scaleX,  new GUIContent("Scale X",  "デカールのUV X幅。1.0でUV全幅"));
+                m_MaterialEditor.ShaderProperty(scaleY,  new GUIContent("Scale Y",  "デカールのUV Y幅。1.0でUV全高"));
+                m_MaterialEditor.ShaderProperty(angle,   new GUIContent("Angle",    "デカールの回転角度（度）"));
+
+                EditorGUILayout.LabelField("Main Decal Texture", EditorStyles.boldLabel);
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Decal Texture", "デカールのメインテクスチャ（アルファチャンネルが透明度になります）"), tex, color);
+                m_MaterialEditor.ShaderProperty(alpha, new GUIContent("Opacity", "デカールの不透明度"));
+                EditorGUI.BeginChangeCheck();
+                string[] blendModes = { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
+                int blendMode = (int)blend.floatValue;
+                if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 5;
+                blendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "合成モード"), blendMode, blendModes);
+                if(EditorGUI.EndChangeCheck()) blend.floatValue = blendMode;
+
+                EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
+                m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを使用して範囲を限定します"));
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "デカールの範囲マスク。白=適用、黒=非適用。位置はOffsetXY/ScaleXY/Angleと共有"), mask);
+
+                EditorGUILayout.LabelField("MatCap (shared mask)", EditorStyles.boldLabel);
+                if(mcEnable != null) m_MaterialEditor.ShaderProperty(mcEnable, new GUIContent("Enable MatCap", "MatCapを有効にします（共有マスクが適用されます）"));
+                if(mcEnable != null && mcEnable.floatValue > 0.5f && mcTex != null)
+                {
+                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture", "MatCapテクスチャ"), mcTex, mcColor);
+                    m_MaterialEditor.ShaderProperty(mcAlpha, new GUIContent("Opacity", "MatCapの不透明度"));
+                    EditorGUI.BeginChangeCheck();
+                    int mcBlendMode = (int)mcBlend.floatValue;
+                    if(mcBlendMode < 0 || mcBlendMode >= blendModes.Length) mcBlendMode = 1;
+                    mcBlendMode = EditorGUILayout.Popup(new GUIContent("MatCap Blend Mode", "MatCapの合成モード"), mcBlendMode, blendModes);
+                    if(EditorGUI.EndChangeCheck()) mcBlend.floatValue = mcBlendMode;
+                    m_MaterialEditor.ShaderProperty(mcMainColorPower, new GUIContent("Main Color Strength", "メインテクスチャの色をMatCapに乗算する強度"));
+                    m_MaterialEditor.ShaderProperty(mcBlur, new GUIContent("Blur", "MatCapのぼかし強度（MipMap必要）"));
+                    m_MaterialEditor.ShaderProperty(mcBumpScale, new GUIContent("Normal Strength", "法線マップの影響度"));
+                    m_MaterialEditor.ShaderProperty(mcUseReflection, new GUIContent("Use Reflection", "視線反射モード（鏡面反射）"));
+                    m_MaterialEditor.ShaderProperty(mcZRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首傾きによる変化をキャンセル"));
+                    m_MaterialEditor.ShaderProperty(mcEnableLighting, new GUIContent("Enable Lighting", "ライティングの影響度"));
+                    m_MaterialEditor.ShaderProperty(mcShadowStrength, new GUIContent("Shadow Strength", "影部分でのMatCap減衰強度"));
+                    m_MaterialEditor.ShaderProperty(mcRimPower, new GUIContent("Rim Power", "リムマスク（フレネル）。正=エッジ、負=中心、0=無効"));
+                    m_MaterialEditor.ShaderProperty(mcEmissionAdd, new GUIContent("Emission Addition", "MatCapの色をEmissionとして加算する強度"));
+                }
+
+                EditorGUILayout.LabelField("Emission (shared mask)", EditorStyles.boldLabel);
+                if(emEnable != null) m_MaterialEditor.ShaderProperty(emEnable, new GUIContent("Enable Emission", "エミッションを有効にします（共有マスクが適用されます）"));
+                if(emEnable != null && emEnable.floatValue > 0.5f && emTex != null)
+                {
+                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Emission Texture", "エミッションテクスチャ（黒=無効）"), emTex, emColor);
+                    m_MaterialEditor.ShaderProperty(emStrength, new GUIContent("Strength", "エミッション強度"));
+                }
 
                 EditorGUILayout.EndVertical();
             }

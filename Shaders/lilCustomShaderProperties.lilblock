@@ -39,3 +39,73 @@
                         _DecalEmission_MaskScaleY  ("Mask Scale Y",           Range(0.001,4))  = 1.0
                         _DecalEmission_MaskAngle  ("Mask Angle",              Range(-180,180)) = 0.0
         [lilToggle]     _DecalEmission_UseMask    ("Use Mask",                Int)             = 1
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Slot 1
+        //----------------------------------------------------------------------------------------------------------------------
+        [lilToggle]     _DecalSlot1_Enable              ("Enable",                      Int)             = 0
+        [lilToggle]     _DecalSlot1_DisableBackface      ("Disable on Backface",          Int)             = 0
+                        _DecalSlot1_OffsetX              ("Offset X",                    Range(-2,2))     = 0.5
+                        _DecalSlot1_OffsetY              ("Offset Y",                    Range(-2,2))     = 0.5
+                        _DecalSlot1_ScaleX               ("Scale X",                     Range(0.001,4))  = 0.3
+                        _DecalSlot1_ScaleY               ("Scale Y",                     Range(0.001,4))  = 0.3
+                        _DecalSlot1_Angle                ("Angle",                       Range(-180,180)) = 0.0
+        [lilHDR]        _DecalSlot1_Color                ("Decal Color",                 Color)           = (1,1,1,1)
+                        _DecalSlot1_Tex                  ("Decal Texture",               2D)              = "white" {}
+        [lilEnum]       _DecalSlot1_Blend                ("Blend Mode|Add|Screen|Multiply|Overlay|Soft Light|Replace|Subtract|Lighten|Darken", Int) = 5
+                        _DecalSlot1_Alpha                ("Opacity",                     Range(0,1))      = 1.0
+        [lilToggle]     _DecalSlot1_UseMask              ("Use Mask",                    Int)             = 0
+                        _DecalSlot1_Mask                 ("Mask",                        2D)              = "white" {}
+        [lilToggle]     _DecalSlot1_MatCap_Enable        ("Enable MatCap",               Int)             = 0
+        [lilHDR]        _DecalSlot1_MatCap_Color         ("MatCap Color",                Color)           = (1,1,1,1)
+                        _DecalSlot1_MatCap_Tex           ("MatCap Texture",              2D)              = "white" {}
+        [lilEnum]       _DecalSlot1_MatCap_Blend         ("MatCap Blend Mode|Add|Screen|Multiply|Overlay|Soft Light|Replace|Subtract|Lighten|Darken", Int) = 1
+                        _DecalSlot1_MatCap_Alpha         ("MatCap Opacity",              Range(0,1))      = 1.0
+                        _DecalSlot1_MatCap_MainColorPower("MatCap Main Color Strength",  Range(0,1))      = 0.0
+                        _DecalSlot1_MatCap_BumpScale     ("MatCap Normal Strength",      Range(0,3))      = 1.0
+        [lilToggle]     _DecalSlot1_MatCap_UseReflection ("Use Reflection",              Int)             = 0
+        [lilToggle]     _DecalSlot1_MatCap_ZRollCancel   ("Z-Roll Cancellation",         Int)             = 0
+                        _DecalSlot1_MatCap_EnableLighting("MatCap Enable Lighting",      Range(0,1))      = 1.0
+                        _DecalSlot1_MatCap_ShadowStrength("MatCap Shadow Strength",      Range(0,1))      = 0.0
+                        _DecalSlot1_MatCap_Blur          ("MatCap Blur",                 Range(0,1))      = 0.0
+                        _DecalSlot1_MatCap_RimPower      ("MatCap Rim Power",            Range(-3,3))     = 0.0
+                        _DecalSlot1_MatCap_EmissionAdd   ("MatCap Emission Addition",    Range(0,1))      = 0.0
+        [lilToggle]     _DecalSlot1_Emission_Enable      ("Enable Emission",             Int)             = 0
+        [lilHDR]        _DecalSlot1_Emission_Color       ("Emission Color",              Color)           = (1,1,1,1)
+                        _DecalSlot1_Emission_Tex         ("Emission Texture",            2D)              = "black" {}
+                        _DecalSlot1_Emission_Strength    ("Emission Strength",           Range(0,1))      = 1.0
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Decal Slot 2
+        //----------------------------------------------------------------------------------------------------------------------
+        [lilToggle]     _DecalSlot2_Enable              ("Enable",                      Int)             = 0
+        [lilToggle]     _DecalSlot2_DisableBackface      ("Disable on Backface",          Int)             = 0
+                        _DecalSlot2_OffsetX              ("Offset X",                    Range(-2,2))     = 0.5
+                        _DecalSlot2_OffsetY              ("Offset Y",                    Range(-2,2))     = 0.5
+                        _DecalSlot2_ScaleX               ("Scale X",                     Range(0.001,4))  = 0.3
+                        _DecalSlot2_ScaleY               ("Scale Y",                     Range(0.001,4))  = 0.3
+                        _DecalSlot2_Angle                ("Angle",                       Range(-180,180)) = 0.0
+        [lilHDR]        _DecalSlot2_Color                ("Decal Color",                 Color)           = (1,1,1,1)
+                        _DecalSlot2_Tex                  ("Decal Texture",               2D)              = "white" {}
+        [lilEnum]       _DecalSlot2_Blend                ("Blend Mode|Add|Screen|Multiply|Overlay|Soft Light|Replace|Subtract|Lighten|Darken", Int) = 5
+                        _DecalSlot2_Alpha                ("Opacity",                     Range(0,1))      = 1.0
+        [lilToggle]     _DecalSlot2_UseMask              ("Use Mask",                    Int)             = 0
+                        _DecalSlot2_Mask                 ("Mask",                        2D)              = "white" {}
+        [lilToggle]     _DecalSlot2_MatCap_Enable        ("Enable MatCap",               Int)             = 0
+        [lilHDR]        _DecalSlot2_MatCap_Color         ("MatCap Color",                Color)           = (1,1,1,1)
+                        _DecalSlot2_MatCap_Tex           ("MatCap Texture",              2D)              = "white" {}
+        [lilEnum]       _DecalSlot2_MatCap_Blend         ("MatCap Blend Mode|Add|Screen|Multiply|Overlay|Soft Light|Replace|Subtract|Lighten|Darken", Int) = 1
+                        _DecalSlot2_MatCap_Alpha         ("MatCap Opacity",              Range(0,1))      = 1.0
+                        _DecalSlot2_MatCap_MainColorPower("MatCap Main Color Strength",  Range(0,1))      = 0.0
+                        _DecalSlot2_MatCap_BumpScale     ("MatCap Normal Strength",      Range(0,3))      = 1.0
+        [lilToggle]     _DecalSlot2_MatCap_UseReflection ("Use Reflection",              Int)             = 0
+        [lilToggle]     _DecalSlot2_MatCap_ZRollCancel   ("Z-Roll Cancellation",         Int)             = 0
+                        _DecalSlot2_MatCap_EnableLighting("MatCap Enable Lighting",      Range(0,1))      = 1.0
+                        _DecalSlot2_MatCap_ShadowStrength("MatCap Shadow Strength",      Range(0,1))      = 0.0
+                        _DecalSlot2_MatCap_Blur          ("MatCap Blur",                 Range(0,1))      = 0.0
+                        _DecalSlot2_MatCap_RimPower      ("MatCap Rim Power",            Range(-3,3))     = 0.0
+                        _DecalSlot2_MatCap_EmissionAdd   ("MatCap Emission Addition",    Range(0,1))      = 0.0
+        [lilToggle]     _DecalSlot2_Emission_Enable      ("Enable Emission",             Int)             = 0
+        [lilHDR]        _DecalSlot2_Emission_Color       ("Emission Color",              Color)           = (1,1,1,1)
+                        _DecalSlot2_Emission_Tex         ("Emission Texture",            2D)              = "black" {}
+                        _DecalSlot2_Emission_Strength    ("Emission Strength",           Range(0,1))      = 1.0
