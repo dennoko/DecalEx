@@ -77,6 +77,9 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_MatCap_Blur;
         private MaterialProperty _DecalSlot1_MatCap_RimPower;
         private MaterialProperty _DecalSlot1_MatCap_EmissionAdd;
+        private MaterialProperty _DecalSlot1_NormalMap_Enable;
+        private MaterialProperty _DecalSlot1_NormalMap_Tex;
+        private MaterialProperty _DecalSlot1_NormalMap_Scale;
         private MaterialProperty _DecalSlot1_Emission_Enable;
         private MaterialProperty _DecalSlot1_Emission_Tex;
         private MaterialProperty _DecalSlot1_Emission_Color;
@@ -112,6 +115,9 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_MatCap_Blur;
         private MaterialProperty _DecalSlot2_MatCap_RimPower;
         private MaterialProperty _DecalSlot2_MatCap_EmissionAdd;
+        private MaterialProperty _DecalSlot2_NormalMap_Enable;
+        private MaterialProperty _DecalSlot2_NormalMap_Tex;
+        private MaterialProperty _DecalSlot2_NormalMap_Scale;
         private MaterialProperty _DecalSlot2_Emission_Enable;
         private MaterialProperty _DecalSlot2_Emission_Tex;
         private MaterialProperty _DecalSlot2_Emission_Color;
@@ -187,6 +193,9 @@ namespace lilToon
             _DecalSlot1_MatCap_Blur          = FindProperty("_DecalSlot1_MatCap_Blur", props);
             _DecalSlot1_MatCap_RimPower      = FindProperty("_DecalSlot1_MatCap_RimPower", props);
             _DecalSlot1_MatCap_EmissionAdd   = FindProperty("_DecalSlot1_MatCap_EmissionAdd", props);
+            _DecalSlot1_NormalMap_Enable     = FindProperty("_DecalSlot1_NormalMap_Enable", props);
+            _DecalSlot1_NormalMap_Tex        = FindProperty("_DecalSlot1_NormalMap_Tex", props);
+            _DecalSlot1_NormalMap_Scale      = FindProperty("_DecalSlot1_NormalMap_Scale", props);
             _DecalSlot1_Emission_Enable      = FindProperty("_DecalSlot1_Emission_Enable", props);
             _DecalSlot1_Emission_Tex         = FindProperty("_DecalSlot1_Emission_Tex", props);
             _DecalSlot1_Emission_Color       = FindProperty("_DecalSlot1_Emission_Color", props);
@@ -219,6 +228,9 @@ namespace lilToon
             _DecalSlot2_MatCap_Blur          = FindProperty("_DecalSlot2_MatCap_Blur", props);
             _DecalSlot2_MatCap_RimPower      = FindProperty("_DecalSlot2_MatCap_RimPower", props);
             _DecalSlot2_MatCap_EmissionAdd   = FindProperty("_DecalSlot2_MatCap_EmissionAdd", props);
+            _DecalSlot2_NormalMap_Enable     = FindProperty("_DecalSlot2_NormalMap_Enable", props);
+            _DecalSlot2_NormalMap_Tex        = FindProperty("_DecalSlot2_NormalMap_Tex", props);
+            _DecalSlot2_NormalMap_Scale      = FindProperty("_DecalSlot2_NormalMap_Scale", props);
             _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props);
             _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
             _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
@@ -251,6 +263,7 @@ namespace lilToon
                 _DecalSlot1_OffsetX, _DecalSlot1_OffsetY, _DecalSlot1_ScaleX, _DecalSlot1_ScaleY, _DecalSlot1_Angle,
                 _DecalSlot1_Tex, _DecalSlot1_Color, _DecalSlot1_Blend, _DecalSlot1_Alpha,
                 _DecalSlot1_UseMask, _DecalSlot1_Mask,
+                _DecalSlot1_NormalMap_Enable, _DecalSlot1_NormalMap_Tex, _DecalSlot1_NormalMap_Scale,
                 _DecalSlot1_MatCap_Enable, _DecalSlot1_MatCap_Tex, _DecalSlot1_MatCap_Color, _DecalSlot1_MatCap_Blend,
                 _DecalSlot1_MatCap_Alpha, _DecalSlot1_MatCap_MainColorPower, _DecalSlot1_MatCap_BumpScale,
                 _DecalSlot1_MatCap_UseReflection, _DecalSlot1_MatCap_ZRollCancel,
@@ -264,6 +277,7 @@ namespace lilToon
                 _DecalSlot2_OffsetX, _DecalSlot2_OffsetY, _DecalSlot2_ScaleX, _DecalSlot2_ScaleY, _DecalSlot2_Angle,
                 _DecalSlot2_Tex, _DecalSlot2_Color, _DecalSlot2_Blend, _DecalSlot2_Alpha,
                 _DecalSlot2_UseMask, _DecalSlot2_Mask,
+                _DecalSlot2_NormalMap_Enable, _DecalSlot2_NormalMap_Tex, _DecalSlot2_NormalMap_Scale,
                 _DecalSlot2_MatCap_Enable, _DecalSlot2_MatCap_Tex, _DecalSlot2_MatCap_Color, _DecalSlot2_MatCap_Blend,
                 _DecalSlot2_MatCap_Alpha, _DecalSlot2_MatCap_MainColorPower, _DecalSlot2_MatCap_BumpScale,
                 _DecalSlot2_MatCap_UseReflection, _DecalSlot2_MatCap_ZRollCancel,
@@ -421,6 +435,7 @@ namespace lilToon
             MaterialProperty scaleX, MaterialProperty scaleY, MaterialProperty angle,
             MaterialProperty tex, MaterialProperty color, MaterialProperty blend, MaterialProperty alpha,
             MaterialProperty useMask, MaterialProperty mask,
+            MaterialProperty nmEnable, MaterialProperty nmTex, MaterialProperty nmScale,
             MaterialProperty mcEnable, MaterialProperty mcTex, MaterialProperty mcColor,
             MaterialProperty mcBlend, MaterialProperty mcAlpha, MaterialProperty mcMainColorPower,
             MaterialProperty mcBumpScale, MaterialProperty mcUseReflection, MaterialProperty mcZRollCancel,
@@ -467,6 +482,16 @@ namespace lilToon
                 DrawSubHeader("Mask");
                 m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを使用して範囲を限定します"));
                 m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "範囲マスク。白=適用、黒=非適用（位置は上のPosition設定と共有）"), mask);
+
+                // --- Normal Map ---
+                DrawSubHeader("Normal Map  \u2014  Uses shared position & mask");
+                if(nmEnable != null) m_MaterialEditor.ShaderProperty(nmEnable, new GUIContent("Enable Normal Map", "デカール範囲内のみに適用するノーマルマップを有効にします"));
+                if(nmEnable != null && nmEnable.floatValue > 0.5f && nmTex != null)
+                {
+                    EditorGUILayout.Space(2f);
+                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Normal Map", "タンジェント空間ノーマルマップ"), nmTex);
+                    m_MaterialEditor.ShaderProperty(nmScale, new GUIContent("Strength", "ノーマルマップの強度（0=フラット、1=通常、3=強調）"));
+                }
 
                 // --- MatCap ---
                 DrawSubHeader("MatCap  \u2014  Uses shared position & mask");

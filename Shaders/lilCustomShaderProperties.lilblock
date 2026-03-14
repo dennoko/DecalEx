@@ -56,6 +56,9 @@
                         _DecalSlot1_Alpha                ("Opacity",                     Range(0,1))      = 1.0
         [lilToggle]     _DecalSlot1_UseMask              ("Use Mask",                    Int)             = 0
                         _DecalSlot1_Mask                 ("Mask",                        2D)              = "white" {}
+        [lilToggle]     _DecalSlot1_NormalMap_Enable     ("Enable Normal Map",           Int)             = 0
+                        _DecalSlot1_NormalMap_Tex        ("Normal Map",                  2D)              = "white" {}
+                        _DecalSlot1_NormalMap_Scale      ("Normal Map Strength",         Range(0,3))      = 1.0
         [lilToggle]     _DecalSlot1_MatCap_Enable        ("Enable MatCap",               Int)             = 0
         [lilHDR]        _DecalSlot1_MatCap_Color         ("MatCap Color",                Color)           = (1,1,1,1)
                         _DecalSlot1_MatCap_Tex           ("MatCap Texture",              2D)              = "white" {}
@@ -91,6 +94,9 @@
                         _DecalSlot2_Alpha                ("Opacity",                     Range(0,1))      = 1.0
         [lilToggle]     _DecalSlot2_UseMask              ("Use Mask",                    Int)             = 0
                         _DecalSlot2_Mask                 ("Mask",                        2D)              = "white" {}
+        [lilToggle]     _DecalSlot2_NormalMap_Enable     ("Enable Normal Map",           Int)             = 0
+                        _DecalSlot2_NormalMap_Tex        ("Normal Map",                  2D)              = "white" {}
+                        _DecalSlot2_NormalMap_Scale      ("Normal Map Strength",         Range(0,3))      = 1.0
         [lilToggle]     _DecalSlot2_MatCap_Enable        ("Enable MatCap",               Int)             = 0
         [lilHDR]        _DecalSlot2_MatCap_Color         ("MatCap Color",                Color)           = (1,1,1,1)
                         _DecalSlot2_MatCap_Tex           ("MatCap Texture",              2D)              = "white" {}

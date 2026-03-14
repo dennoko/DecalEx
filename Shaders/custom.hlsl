@@ -66,6 +66,9 @@
     float  _DecalSlot1_MatCap_RimPower; \
     float  _DecalSlot1_MatCap_EmissionAdd; \
     float4 _DecalSlot1_MatCap_Tex_ST; \
+    float  _DecalSlot1_NormalMap_Enable; \
+    float  _DecalSlot1_NormalMap_Scale; \
+    float4 _DecalSlot1_NormalMap_Tex_ST; \
     float  _DecalSlot1_Emission_Enable; \
     float4 _DecalSlot1_Emission_Color; \
     float  _DecalSlot1_Emission_Strength; \
@@ -98,6 +101,9 @@
     float  _DecalSlot2_MatCap_RimPower; \
     float  _DecalSlot2_MatCap_EmissionAdd; \
     float4 _DecalSlot2_MatCap_Tex_ST; \
+    float  _DecalSlot2_NormalMap_Enable; \
+    float  _DecalSlot2_NormalMap_Scale; \
+    float4 _DecalSlot2_NormalMap_Tex_ST; \
     float  _DecalSlot2_Emission_Enable; \
     float4 _DecalSlot2_Emission_Color; \
     float  _DecalSlot2_Emission_Strength; \
@@ -116,7 +122,9 @@
     TEXTURE2D(_DecalSlot2_Tex); \
     TEXTURE2D(_DecalSlot2_Mask); \
     TEXTURE2D(_DecalSlot2_MatCap_Tex); \
-    TEXTURE2D(_DecalSlot2_Emission_Tex);
+    TEXTURE2D(_DecalSlot2_Emission_Tex); \
+    TEXTURE2D(_DecalSlot1_NormalMap_Tex); \
+    TEXTURE2D(_DecalSlot2_NormalMap_Tex);
 
 // Add vertex shader input
 //#define LIL_REQUIRE_APP_POSITION
@@ -287,6 +295,12 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
             sharedMask_s1 = LIL_SAMPLE_2D(_DecalSlot1_Mask, sampler_linear_clamp, slotUV_s1).r * inBounds_s1; \
         } \
         if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s1 = 0.0; \
+        if (_DecalSlot1_NormalMap_Enable > 0.5) { \
+            float4 nmTex_s1  = LIL_SAMPLE_2D(_DecalSlot1_NormalMap_Tex, sampler_linear_clamp, slotUV_s1); \
+            float3 nmTS_s1   = lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale); \
+            float3 nmWS_s1   = normalize(mul(nmTS_s1, fd.TBN)); \
+            fd.N = normalize(lerp(fd.N, nmWS_s1, sharedMask_s1)); \
+        } \
         float4 decalTex_s1    = LIL_SAMPLE_2D(_DecalSlot1_Tex, sampler_linear_clamp, slotUV_s1); \
         float3 decalColor_s1  = decalTex_s1.rgb * _DecalSlot1_Color.rgb; \
         float  decalW_s1      = decalTex_s1.a * saturate(_DecalSlot1_Alpha) * sharedMask_s1; \
@@ -376,6 +390,12 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
             sharedMask_s2 = LIL_SAMPLE_2D(_DecalSlot2_Mask, sampler_linear_clamp, slotUV_s2).r * inBounds_s2; \
         } \
         if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s2 = 0.0; \
+        if (_DecalSlot2_NormalMap_Enable > 0.5) { \
+            float4 nmTex_s2  = LIL_SAMPLE_2D(_DecalSlot2_NormalMap_Tex, sampler_linear_clamp, slotUV_s2); \
+            float3 nmTS_s2   = lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale); \
+            float3 nmWS_s2   = normalize(mul(nmTS_s2, fd.TBN)); \
+            fd.N = normalize(lerp(fd.N, nmWS_s2, sharedMask_s2)); \
+        } \
         float4 decalTex_s2    = LIL_SAMPLE_2D(_DecalSlot2_Tex, sampler_linear_clamp, slotUV_s2); \
         float3 decalColor_s2  = decalTex_s2.rgb * _DecalSlot2_Color.rgb; \
         float  decalW_s2      = decalTex_s2.a * saturate(_DecalSlot2_Alpha) * sharedMask_s2; \
