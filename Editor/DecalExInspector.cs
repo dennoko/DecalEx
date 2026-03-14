@@ -276,6 +276,26 @@ namespace lilToon
         }
 
         //----------------------------------------------------------------------------------------------------------------------
+        // UI Helpers
+
+        private static readonly Color DividerColor = new Color(0.5f, 0.5f, 0.5f, 0.35f);
+
+        private static void DrawDivider()
+        {
+            EditorGUILayout.Space(5f);
+            Rect r = EditorGUILayout.GetControlRect(false, 1f);
+            EditorGUI.DrawRect(r, DividerColor);
+            EditorGUILayout.Space(3f);
+        }
+
+        private static void DrawSubHeader(string label)
+        {
+            DrawDivider();
+            EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
+            EditorGUILayout.Space(2f);
+        }
+
+        //----------------------------------------------------------------------------------------------------------------------
         // Decal MatCap slot
 
         private void DrawDecalMatCapSlot(string title, ref bool isShow,
@@ -301,38 +321,47 @@ namespace lilToon
             {
                 EditorGUILayout.BeginVertical(boxInner);
 
+                // --- Basic ---
                 m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "MatCapを有効にします"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "MatCapテクスチャを設定します"), tex, color);
-                m_MaterialEditor.ShaderProperty(mainColorPower, new GUIContent("Main Color Strength", "メインテクスチャの色をMatCapに乗算する強度。0で無効、1で完全適用"));
-                m_MaterialEditor.ShaderProperty(alpha, new GUIContent("Opacity", "MatCapの不透明度"));
 
-                // Blend Mode
+                // --- MatCap Texture ---
+                DrawSubHeader("Texture");
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture", "MatCapテクスチャを設定します"), tex, color);
+                m_MaterialEditor.ShaderProperty(alpha, new GUIContent("Opacity", "MatCapの不透明度"));
+                m_MaterialEditor.ShaderProperty(mainColorPower, new GUIContent("Main Color Strength", "メインテクスチャの色をMatCapに乗算する強度。0で無効、1で完全適用"));
                 EditorGUI.BeginChangeCheck();
                 string[] blendModes = { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
                 int blendMode = (int)blend.floatValue;
                 if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 0;
-                blendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "合成モード。Add=加算, Screen=スクリーン, Multiply=乗算, Overlay=オーバーレイ, Soft Light=ソフトライト, Replace=置換, Subtract=減算, Lighten=比較(明), Darken=比較(暗)"), blendMode, blendModes);
+                blendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "合成モード"), blendMode, blendModes);
                 if(EditorGUI.EndChangeCheck()) blend.floatValue = blendMode;
+                m_MaterialEditor.ShaderProperty(blur, new GUIContent("Blur", "MatCapのぼかし強度（MipMap必要）"));
 
-                m_MaterialEditor.ShaderProperty(blur, new GUIContent("Blur", "MatCapのぼかし強度。MipMapが必要です"));
-
+                // --- Mask ---
+                DrawSubHeader("Mask");
                 m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを評価するかどうか"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask", "MatCapを適用する範囲を制限するマスクテクスチャ。白=適用、黒=非適用"), mask);
-                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Mask Offset X", "マスク中心のUV X座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Mask Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Mask Scale X",  "マスクのUV X幅。1.0でUV全幅"));
-                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Mask Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
-                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Mask Angle",    "マスクの回転角度（度）"));
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "適用範囲マスク。白=適用、黒=非適用"), mask);
+                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Offset X", "マスク中心のUV X座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Scale X",  "マスクのUV X幅。1.0でUV全幅"));
+                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
+                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Angle",    "マスクの回転角度（度）"));
 
+                // --- Normal / View ---
+                DrawSubHeader("Normal / View");
                 m_MaterialEditor.ShaderProperty(bumpScale, new GUIContent("Normal Strength", "法線マップの影響度。0でフラット、1以上で強調"));
                 m_MaterialEditor.ShaderProperty(reflection, new GUIContent("Use Reflection", "視線反射モード。ONで鏡面反射のような挙動になります"));
                 m_MaterialEditor.ShaderProperty(zRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首の傾きによる見え方の変化をキャンセルします"));
                 m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でMatCapを無効にします"));
+
+                // --- Lighting ---
+                DrawSubHeader("Lighting");
                 m_MaterialEditor.ShaderProperty(lighting, new GUIContent("Enable Lighting", "ライティングの影響を受けるかどうか。0で無効、1で完全適用"));
                 m_MaterialEditor.ShaderProperty(shadow, new GUIContent("Shadow Strength", "影部分でのMatCap減衰強度。0で影響なし、1で影部分で完全に消える"));
-                m_MaterialEditor.ShaderProperty(rimPower, new GUIContent("Rim Power", "リムマスク（フレネル）。正の値=エッジに適用、負の値=中心に適用、0=無効"));
+                m_MaterialEditor.ShaderProperty(rimPower, new GUIContent("Rim Power", "リムマスク（フレネル）。正=エッジ、負=中心、0=無効"));
                 m_MaterialEditor.ShaderProperty(emissionAdd, new GUIContent("Emission Addition", "MatCapの色を発光(Emission)として加算する強度"));
 
+                EditorGUILayout.Space(4f);
                 EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndVertical();
@@ -359,18 +388,25 @@ namespace lilToon
             {
                 EditorGUILayout.BeginVertical(boxInner);
 
+                // --- Basic ---
                 m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "エミッションを有効にします"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "エミッションテクスチャ（黒=無効）"), tex, color);
+
+                // --- Emission Texture ---
+                DrawSubHeader("Texture");
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Emission Texture", "エミッションテクスチャ（黒=無効）"), tex, color);
                 m_MaterialEditor.ShaderProperty(strength, new GUIContent("Strength", "エミッション強度"));
 
+                // --- Mask ---
+                DrawSubHeader("Mask");
                 m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを評価するかどうか"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask", "エミッションを適用する範囲を制限するマスクテクスチャ。白=適用、黒=非適用"), mask);
-                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Mask Offset X", "マスク中心のUV X座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Mask Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Mask Scale X",  "マスクのUV X幅。1.0でUV全幅"));
-                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Mask Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
-                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Mask Angle",    "マスクの回転角度（度）"));
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "適用範囲マスク。白=適用、黒=非適用"), mask);
+                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Offset X", "マスク中心のUV X座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
+                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Scale X",  "マスクのUV X幅。1.0でUV全幅"));
+                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
+                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Angle",    "マスクの回転角度（度）"));
 
+                EditorGUILayout.Space(4f);
                 EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndVertical();
@@ -401,62 +437,74 @@ namespace lilToon
             if(enable != null && tex != null && blend != null && mask != null
                 && offsetX != null && offsetY != null && scaleX != null && scaleY != null && angle != null)
             {
+                string[] blendModes = { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
+
                 EditorGUILayout.BeginVertical(boxInner);
 
+                // --- Basic ---
                 m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "デカールスロットを有効にします"));
-                m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でデカールを無効にします"));
+                m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でデカールを無効にします（全サブ機能に適用）"));
 
-                EditorGUILayout.LabelField("Position (共有 - 全サブ機能に適用)", EditorStyles.boldLabel);
+                // --- Position (shared) ---
+                DrawSubHeader("Position  \u2014  Shared by all sub-features");
                 m_MaterialEditor.ShaderProperty(offsetX, new GUIContent("Offset X", "デカール中心のUV X座標。0.5でUV中央"));
                 m_MaterialEditor.ShaderProperty(offsetY, new GUIContent("Offset Y", "デカール中心のUV Y座標。0.5でUV中央"));
                 m_MaterialEditor.ShaderProperty(scaleX,  new GUIContent("Scale X",  "デカールのUV X幅。1.0でUV全幅"));
                 m_MaterialEditor.ShaderProperty(scaleY,  new GUIContent("Scale Y",  "デカールのUV Y幅。1.0でUV全高"));
                 m_MaterialEditor.ShaderProperty(angle,   new GUIContent("Angle",    "デカールの回転角度（度）"));
 
-                EditorGUILayout.LabelField("Main Decal Texture", EditorStyles.boldLabel);
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Decal Texture", "デカールのメインテクスチャ（アルファチャンネルが透明度になります）"), tex, color);
+                // --- Main Decal Texture ---
+                DrawSubHeader("Main Decal Texture");
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "デカールのメインテクスチャ（Aチャンネルが透明度）"), tex, color);
                 m_MaterialEditor.ShaderProperty(alpha, new GUIContent("Opacity", "デカールの不透明度"));
                 EditorGUI.BeginChangeCheck();
-                string[] blendModes = { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
                 int blendMode = (int)blend.floatValue;
                 if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 5;
                 blendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "合成モード"), blendMode, blendModes);
                 if(EditorGUI.EndChangeCheck()) blend.floatValue = blendMode;
 
-                EditorGUILayout.LabelField("Mask", EditorStyles.boldLabel);
+                // --- Mask ---
+                DrawSubHeader("Mask");
                 m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを使用して範囲を限定します"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "デカールの範囲マスク。白=適用、黒=非適用。位置はOffsetXY/ScaleXY/Angleと共有"), mask);
+                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "範囲マスク。白=適用、黒=非適用（位置は上のPosition設定と共有）"), mask);
 
-                EditorGUILayout.LabelField("MatCap (shared mask)", EditorStyles.boldLabel);
-                if(mcEnable != null) m_MaterialEditor.ShaderProperty(mcEnable, new GUIContent("Enable MatCap", "MatCapを有効にします（共有マスクが適用されます）"));
+                // --- MatCap ---
+                DrawSubHeader("MatCap  \u2014  Uses shared position & mask");
+                if(mcEnable != null) m_MaterialEditor.ShaderProperty(mcEnable, new GUIContent("Enable MatCap", "MatCapを有効にします"));
                 if(mcEnable != null && mcEnable.floatValue > 0.5f && mcTex != null)
                 {
-                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture", "MatCapテクスチャ"), mcTex, mcColor);
+                    EditorGUILayout.Space(2f);
+                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "MatCapテクスチャ"), mcTex, mcColor);
                     m_MaterialEditor.ShaderProperty(mcAlpha, new GUIContent("Opacity", "MatCapの不透明度"));
                     EditorGUI.BeginChangeCheck();
                     int mcBlendMode = (int)mcBlend.floatValue;
                     if(mcBlendMode < 0 || mcBlendMode >= blendModes.Length) mcBlendMode = 1;
-                    mcBlendMode = EditorGUILayout.Popup(new GUIContent("MatCap Blend Mode", "MatCapの合成モード"), mcBlendMode, blendModes);
+                    mcBlendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "MatCapの合成モード"), mcBlendMode, blendModes);
                     if(EditorGUI.EndChangeCheck()) mcBlend.floatValue = mcBlendMode;
                     m_MaterialEditor.ShaderProperty(mcMainColorPower, new GUIContent("Main Color Strength", "メインテクスチャの色をMatCapに乗算する強度"));
                     m_MaterialEditor.ShaderProperty(mcBlur, new GUIContent("Blur", "MatCapのぼかし強度（MipMap必要）"));
+                    EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcBumpScale, new GUIContent("Normal Strength", "法線マップの影響度"));
                     m_MaterialEditor.ShaderProperty(mcUseReflection, new GUIContent("Use Reflection", "視線反射モード（鏡面反射）"));
                     m_MaterialEditor.ShaderProperty(mcZRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首傾きによる変化をキャンセル"));
+                    EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcEnableLighting, new GUIContent("Enable Lighting", "ライティングの影響度"));
                     m_MaterialEditor.ShaderProperty(mcShadowStrength, new GUIContent("Shadow Strength", "影部分でのMatCap減衰強度"));
                     m_MaterialEditor.ShaderProperty(mcRimPower, new GUIContent("Rim Power", "リムマスク（フレネル）。正=エッジ、負=中心、0=無効"));
                     m_MaterialEditor.ShaderProperty(mcEmissionAdd, new GUIContent("Emission Addition", "MatCapの色をEmissionとして加算する強度"));
                 }
 
-                EditorGUILayout.LabelField("Emission (shared mask)", EditorStyles.boldLabel);
-                if(emEnable != null) m_MaterialEditor.ShaderProperty(emEnable, new GUIContent("Enable Emission", "エミッションを有効にします（共有マスクが適用されます）"));
+                // --- Emission ---
+                DrawSubHeader("Emission  \u2014  Uses shared position & mask");
+                if(emEnable != null) m_MaterialEditor.ShaderProperty(emEnable, new GUIContent("Enable Emission", "エミッションを有効にします"));
                 if(emEnable != null && emEnable.floatValue > 0.5f && emTex != null)
                 {
-                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Emission Texture", "エミッションテクスチャ（黒=無効）"), emTex, emColor);
+                    EditorGUILayout.Space(2f);
+                    m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "エミッションテクスチャ（黒=無効）"), emTex, emColor);
                     m_MaterialEditor.ShaderProperty(emStrength, new GUIContent("Strength", "エミッション強度"));
                 }
 
+                EditorGUILayout.Space(4f);
                 EditorGUILayout.EndVertical();
             }
             EditorGUILayout.EndVertical();
