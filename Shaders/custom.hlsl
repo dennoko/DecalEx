@@ -52,6 +52,13 @@
     float  _DecalSlot1_Emission_ScrollX; \
     float  _DecalSlot1_Emission_ScrollY; \
     float4 _DecalSlot1_Emission_ScrollMask_ST; \
+    float  _DecalSlot1_Emission_ALEnable; \
+    float  _DecalSlot1_Emission_ALBass; \
+    float  _DecalSlot1_Emission_ALLowMid; \
+    float  _DecalSlot1_Emission_ALHighMid; \
+    float  _DecalSlot1_Emission_ALTreble; \
+    float  _DecalSlot1_Emission_ALWaveEnable; \
+    float  _DecalSlot1_Emission_ALWaveAxis; \
     /* Decal Slot 2 */ \
     float  _DecalSlot2_Enable; \
     float  _DecalSlot2_DisableBackface; \
@@ -100,7 +107,14 @@
     float  _DecalSlot2_Emission_ScrollEnable; \
     float  _DecalSlot2_Emission_ScrollX; \
     float  _DecalSlot2_Emission_ScrollY; \
-    float4 _DecalSlot2_Emission_ScrollMask_ST;
+    float4 _DecalSlot2_Emission_ScrollMask_ST; \
+    float  _DecalSlot2_Emission_ALEnable; \
+    float  _DecalSlot2_Emission_ALBass; \
+    float  _DecalSlot2_Emission_ALLowMid; \
+    float  _DecalSlot2_Emission_ALHighMid; \
+    float  _DecalSlot2_Emission_ALTreble; \
+    float  _DecalSlot2_Emission_ALWaveEnable; \
+    float  _DecalSlot2_Emission_ALWaveAxis;
 
 // Custom textures
 #define LIL_CUSTOM_TEXTURES \
@@ -194,6 +208,43 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
     else                return min(base, overlay);
 }
 #endif
+
+// AudioLink emission helper macros
+// Defined as separate macros because #if cannot appear inside a #define body.
+#define DNKW_AL_EMISSION_S1_LOGIC \
+    if (_DecalSlot1_Emission_ALEnable > 0.5 && lilCheckAudioLink()) { \
+        float alX_em1 = (_DecalSlot1_Emission_ALWaveEnable > 0.5) \
+            ? ((_DecalSlot1_Emission_ALWaveAxis < 0.5) ? slotUV_em1.x : slotUV_em1.y) \
+            : 0.0; \
+        float alBass_em1    = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em1, 0.0000), 0).r; \
+        float alLowMid_em1  = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em1, 0.0625), 0).r; \
+        float alHighMid_em1 = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em1, 0.1250), 0).r; \
+        float alTreble_em1  = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em1, 0.1875), 0).r; \
+        float alStr_em1 = saturate( \
+            alBass_em1    * _DecalSlot1_Emission_ALBass    + \
+            alLowMid_em1  * _DecalSlot1_Emission_ALLowMid  + \
+            alHighMid_em1 * _DecalSlot1_Emission_ALHighMid + \
+            alTreble_em1  * _DecalSlot1_Emission_ALTreble \
+        ); \
+        emStrFactor_em1 *= alStr_em1; \
+    }
+#define DNKW_AL_EMISSION_S2_LOGIC \
+    if (_DecalSlot2_Emission_ALEnable > 0.5 && lilCheckAudioLink()) { \
+        float alX_em2 = (_DecalSlot2_Emission_ALWaveEnable > 0.5) \
+            ? ((_DecalSlot2_Emission_ALWaveAxis < 0.5) ? slotUV_em2.x : slotUV_em2.y) \
+            : 0.0; \
+        float alBass_em2    = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em2, 0.0000), 0).r; \
+        float alLowMid_em2  = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em2, 0.0625), 0).r; \
+        float alHighMid_em2 = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em2, 0.1250), 0).r; \
+        float alTreble_em2  = _AudioTexture.SampleLevel(lil_sampler_linear_clamp, float2(alX_em2, 0.1875), 0).r; \
+        float alStr_em2 = saturate( \
+            alBass_em2    * _DecalSlot2_Emission_ALBass    + \
+            alLowMid_em2  * _DecalSlot2_Emission_ALLowMid  + \
+            alHighMid_em2 * _DecalSlot2_Emission_ALHighMid + \
+            alTreble_em2  * _DecalSlot2_Emission_ALTreble \
+        ); \
+        emStrFactor_em2 *= alStr_em2; \
+    }
 
 // Note: DNKW_MatCapUV is NOT defined as a function here because HLSLINCLUDE is compiled
 // before Unity's built-in cbuffer declarations (UNITY_MATRIX_V is undefined at this scope).
@@ -352,6 +403,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
             float pulseOn_em1 = max(pulseOn1_em1, pulseOn2_em1); \
             emStrFactor_em1 *= pulseOn_em1; \
         } \
+        DNKW_AL_EMISSION_S1_LOGIC \
         float2 emUV_em1 = slotUV_em1 * _DecalSlot1_Emission_Tex_ST.xy + _DecalSlot1_Emission_Tex_ST.zw; \
         float emScrollMask_em1 = 1.0; \
         if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
@@ -409,6 +461,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
             float pulseOn_em2 = max(pulseOn1_em2, pulseOn2_em2); \
             emStrFactor_em2 *= pulseOn_em2; \
         } \
+        DNKW_AL_EMISSION_S2_LOGIC \
         float2 emUV_em2 = slotUV_em2 * _DecalSlot2_Emission_Tex_ST.xy + _DecalSlot2_Emission_Tex_ST.zw; \
         float emScrollMask_em2 = 1.0; \
         if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
