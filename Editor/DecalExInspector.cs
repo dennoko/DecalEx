@@ -43,6 +43,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_Emission_UseTex;
         private MaterialProperty _DecalSlot1_Emission_Color;
         private MaterialProperty _DecalSlot1_Emission_Strength;
+        private MaterialProperty _DecalSlot1_Emission_Opacity;
         private MaterialProperty _DecalSlot1_Emission_SinEnable;
         private MaterialProperty _DecalSlot1_Emission_SinSpeed;
         private MaterialProperty _DecalSlot1_Emission_SinMin;
@@ -92,6 +93,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_UseTex;
         private MaterialProperty _DecalSlot2_Emission_Color;
         private MaterialProperty _DecalSlot2_Emission_Strength;
+        private MaterialProperty _DecalSlot2_Emission_Opacity;
         private MaterialProperty _DecalSlot2_Emission_SinEnable;
         private MaterialProperty _DecalSlot2_Emission_SinSpeed;
         private MaterialProperty _DecalSlot2_Emission_SinMin;
@@ -146,6 +148,7 @@ namespace lilToon
             _DecalSlot1_Emission_UseTex      = FindProperty("_DecalSlot1_Emission_UseTex", props);
             _DecalSlot1_Emission_Color       = FindProperty("_DecalSlot1_Emission_Color", props);
             _DecalSlot1_Emission_Strength    = FindProperty("_DecalSlot1_Emission_Strength", props);
+            _DecalSlot1_Emission_Opacity     = FindProperty("_DecalSlot1_Emission_Opacity", props);
             _DecalSlot1_Emission_SinEnable   = FindProperty("_DecalSlot1_Emission_SinEnable", props);
             _DecalSlot1_Emission_SinSpeed    = FindProperty("_DecalSlot1_Emission_SinSpeed", props);
             _DecalSlot1_Emission_SinMin      = FindProperty("_DecalSlot1_Emission_SinMin", props);
@@ -192,6 +195,7 @@ namespace lilToon
             _DecalSlot2_Emission_UseTex      = FindProperty("_DecalSlot2_Emission_UseTex", props);
             _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
             _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
+            _DecalSlot2_Emission_Opacity     = FindProperty("_DecalSlot2_Emission_Opacity", props);
             _DecalSlot2_Emission_SinEnable   = FindProperty("_DecalSlot2_Emission_SinEnable", props);
             _DecalSlot2_Emission_SinSpeed    = FindProperty("_DecalSlot2_Emission_SinSpeed", props);
             _DecalSlot2_Emission_SinMin      = FindProperty("_DecalSlot2_Emission_SinMin", props);
@@ -221,7 +225,7 @@ namespace lilToon
                 _DecalSlot1_MatCap_EnableLighting, _DecalSlot1_MatCap_ShadowStrength, _DecalSlot1_MatCap_Blur,
                 _DecalSlot1_MatCap_RimPower, _DecalSlot1_MatCap_EmissionAdd,
                 _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_UseTex, _DecalSlot1_Emission_Color,
-                _DecalSlot1_Emission_Strength,
+                _DecalSlot1_Emission_Strength, _DecalSlot1_Emission_Opacity,
                 _DecalSlot1_Emission_SinEnable, _DecalSlot1_Emission_SinSpeed,
                 _DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax,
                 _DecalSlot1_Emission_PulseEnable, _DecalSlot1_Emission_PulseSpeed, _DecalSlot1_Emission_PulseMin,
@@ -240,7 +244,7 @@ namespace lilToon
                 _DecalSlot2_MatCap_EnableLighting, _DecalSlot2_MatCap_ShadowStrength, _DecalSlot2_MatCap_Blur,
                 _DecalSlot2_MatCap_RimPower, _DecalSlot2_MatCap_EmissionAdd,
                 _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_UseTex, _DecalSlot2_Emission_Color,
-                _DecalSlot2_Emission_Strength,
+                _DecalSlot2_Emission_Strength, _DecalSlot2_Emission_Opacity,
                 _DecalSlot2_Emission_SinEnable, _DecalSlot2_Emission_SinSpeed,
                 _DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax,
                 _DecalSlot2_Emission_PulseEnable, _DecalSlot2_Emission_PulseSpeed, _DecalSlot2_Emission_PulseMin,
@@ -300,7 +304,7 @@ namespace lilToon
             MaterialProperty mcEnableLighting, MaterialProperty mcShadowStrength, MaterialProperty mcBlur,
             MaterialProperty mcRimPower, MaterialProperty mcEmissionAdd,
             MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emUseTex, MaterialProperty emColor,
-            MaterialProperty emStrength,
+            MaterialProperty emStrength, MaterialProperty emOpacity,
             MaterialProperty emSinEnable, MaterialProperty emSinSpeed,
             MaterialProperty emSinMin, MaterialProperty emSinMax,
             MaterialProperty emPulseEnable, MaterialProperty emPulseSpeed, MaterialProperty emPulseMin,
@@ -408,6 +412,7 @@ namespace lilToon
                         emUseTex.floatValue = emTex.textureValue != null ? 1f : 0f;
                     }
                     m_MaterialEditor.ShaderProperty(emStrength, new GUIContent(L("Strength", "強度"), L("Emission strength", "エミッション強度")));
+                    m_MaterialEditor.ShaderProperty(emOpacity, new GUIContent(L("Opacity", "不透明度"), L("How strongly emissive color overlays onto the lit result. 0 keeps original look when dark", "発光色をライティング結果へ重ねる強さ。0で暗い時に元の見た目を維持")));
 
                     // Sin Wave
                     EditorGUILayout.Space(4f);

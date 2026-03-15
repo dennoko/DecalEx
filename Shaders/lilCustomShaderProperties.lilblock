@@ -35,6 +35,7 @@
         [lilHDR]        _DecalSlot1_Emission_Color       ("Emission Color",              Color)           = (1,1,1,1)
                         _DecalSlot1_Emission_Tex         ("Emission Texture",            2D)              = "white" {}
                         _DecalSlot1_Emission_Strength    ("Emission Strength",           Range(0,1))      = 1.0
+                        _DecalSlot1_Emission_Opacity     ("Emission Opacity",            Range(0,1))      = 0.0
         [HideInInspector]_DecalSlot1_Emission_UseTex     ("Emission Use Texture",        Float)           = 0
                         _DecalSlot1_Emission_SinEnable   ("Sin Wave",                   Float)           = 0
                         _DecalSlot1_Emission_SinSpeed    ("Sin Speed",                  Range(0.1,10))   = 1.0
@@ -84,6 +85,7 @@
         [lilHDR]        _DecalSlot2_Emission_Color       ("Emission Color",              Color)           = (1,1,1,1)
                         _DecalSlot2_Emission_Tex         ("Emission Texture",            2D)              = "white" {}
                         _DecalSlot2_Emission_Strength    ("Emission Strength",           Range(0,1))      = 1.0
+                        _DecalSlot2_Emission_Opacity     ("Emission Opacity",            Range(0,1))      = 0.0
         [HideInInspector]_DecalSlot2_Emission_UseTex     ("Emission Use Texture",        Float)           = 0
                         _DecalSlot2_Emission_SinEnable   ("Sin Wave",                   Float)           = 0
                         _DecalSlot2_Emission_SinSpeed    ("Sin Speed",                  Range(0.1,10))   = 1.0

@@ -36,6 +36,7 @@
     float  _DecalSlot1_Emission_Enable; \
     float4 _DecalSlot1_Emission_Color; \
     float  _DecalSlot1_Emission_Strength; \
+    float  _DecalSlot1_Emission_Opacity; \
     float  _DecalSlot1_Emission_UseTex; \
     float4 _DecalSlot1_Emission_Tex_ST; \
     float  _DecalSlot1_Emission_SinEnable; \
@@ -82,6 +83,7 @@
     float  _DecalSlot2_Emission_Enable; \
     float4 _DecalSlot2_Emission_Color; \
     float  _DecalSlot2_Emission_Strength; \
+    float  _DecalSlot2_Emission_Opacity; \
     float  _DecalSlot2_Emission_UseTex; \
     float4 _DecalSlot2_Emission_Tex_ST; \
     float  _DecalSlot2_Emission_SinEnable; \
@@ -331,8 +333,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot1_Emission_PulseEnable > 0.5) { \
             float pt_em1  = _Time.y * _DecalSlot1_Emission_PulseSpeed; \
             float ph0_em1 = frac(sin(floor(pt_em1)       * 78.233) * 43758.5453); \
-            float ph1_em1 = frac(sin((floor(pt_em1)+1.0) * 78.233) * 43758.5453); \
-            emStrFactor_em1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, lerp(ph0_em1, ph1_em1, smoothstep(0.0, 1.0, frac(pt_em1)))); \
+            emStrFactor_em1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, ph0_em1); \
         } \
         float2 emUV_em1 = slotUV_em1; \
         float emScrollMask_em1 = 1.0; \
@@ -343,7 +344,11 @@ float DNKW_FresRim(float NdotV, float rimPower)
         float3 emTexCol_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
             ? _DecalSlot1_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em1, dxSlot_em1, dySlot_em1).rgb \
             : float3(1.0, 1.0, 1.0); \
-        fd.emissionColor += emTexCol_em1 * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * emStrFactor_em1 * sharedMask_em1 * emScrollMask_em1; \
+        float3 emCol_em1 = emTexCol_em1 * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * emStrFactor_em1 * sharedMask_em1 * emScrollMask_em1; \
+        fd.emissionColor += emCol_em1; \
+        float emLum_em1 = dot(emCol_em1, float3(0.2126, 0.7152, 0.0722)); \
+        float emAlpha_em1 = saturate(_DecalSlot1_Emission_Opacity) * saturate(emLum_em1); \
+        fd.col.rgb = lerp(fd.col.rgb, fd.col.rgb + emCol_em1, emAlpha_em1); \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -373,8 +378,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot2_Emission_PulseEnable > 0.5) { \
             float pt_em2  = _Time.y * _DecalSlot2_Emission_PulseSpeed; \
             float ph0_em2 = frac(sin(floor(pt_em2)       * 78.233) * 43758.5453); \
-            float ph1_em2 = frac(sin((floor(pt_em2)+1.0) * 78.233) * 43758.5453); \
-            emStrFactor_em2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, lerp(ph0_em2, ph1_em2, smoothstep(0.0, 1.0, frac(pt_em2)))); \
+            emStrFactor_em2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, ph0_em2); \
         } \
         float2 emUV_em2 = slotUV_em2; \
         float emScrollMask_em2 = 1.0; \
@@ -385,7 +389,11 @@ float DNKW_FresRim(float NdotV, float rimPower)
         float3 emTexCol_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
             ? _DecalSlot2_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em2, dxSlot_em2, dySlot_em2).rgb \
             : float3(1.0, 1.0, 1.0); \
-        fd.emissionColor += emTexCol_em2 * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * emStrFactor_em2 * sharedMask_em2 * emScrollMask_em2; \
+        float3 emCol_em2 = emTexCol_em2 * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * emStrFactor_em2 * sharedMask_em2 * emScrollMask_em2; \
+        fd.emissionColor += emCol_em2; \
+        float emLum_em2 = dot(emCol_em2, float3(0.2126, 0.7152, 0.0722)); \
+        float emAlpha_em2 = saturate(_DecalSlot2_Emission_Opacity) * saturate(emLum_em2); \
+        fd.col.rgb = lerp(fd.col.rgb, fd.col.rgb + emCol_em2, emAlpha_em2); \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
