@@ -43,6 +43,17 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_Emission_Tex;
         private MaterialProperty _DecalSlot1_Emission_Color;
         private MaterialProperty _DecalSlot1_Emission_Strength;
+        private MaterialProperty _DecalSlot1_Emission_SinEnable;
+        private MaterialProperty _DecalSlot1_Emission_SinSpeed;
+        private MaterialProperty _DecalSlot1_Emission_SinMin;
+        private MaterialProperty _DecalSlot1_Emission_SinMax;
+        private MaterialProperty _DecalSlot1_Emission_PulseEnable;
+        private MaterialProperty _DecalSlot1_Emission_PulseSpeed;
+        private MaterialProperty _DecalSlot1_Emission_PulseMin;
+        private MaterialProperty _DecalSlot1_Emission_ScrollEnable;
+        private MaterialProperty _DecalSlot1_Emission_ScrollX;
+        private MaterialProperty _DecalSlot1_Emission_ScrollY;
+        private MaterialProperty _DecalSlot1_Emission_ScrollMask;
 
         //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 2 properties
@@ -81,6 +92,17 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_Tex;
         private MaterialProperty _DecalSlot2_Emission_Color;
         private MaterialProperty _DecalSlot2_Emission_Strength;
+        private MaterialProperty _DecalSlot2_Emission_SinEnable;
+        private MaterialProperty _DecalSlot2_Emission_SinSpeed;
+        private MaterialProperty _DecalSlot2_Emission_SinMin;
+        private MaterialProperty _DecalSlot2_Emission_SinMax;
+        private MaterialProperty _DecalSlot2_Emission_PulseEnable;
+        private MaterialProperty _DecalSlot2_Emission_PulseSpeed;
+        private MaterialProperty _DecalSlot2_Emission_PulseMin;
+        private MaterialProperty _DecalSlot2_Emission_ScrollEnable;
+        private MaterialProperty _DecalSlot2_Emission_ScrollX;
+        private MaterialProperty _DecalSlot2_Emission_ScrollY;
+        private MaterialProperty _DecalSlot2_Emission_ScrollMask;
 
         private const string shaderName = "dennoko_decalex";
 
@@ -124,6 +146,17 @@ namespace lilToon
             _DecalSlot1_Emission_Tex         = FindProperty("_DecalSlot1_Emission_Tex", props);
             _DecalSlot1_Emission_Color       = FindProperty("_DecalSlot1_Emission_Color", props);
             _DecalSlot1_Emission_Strength    = FindProperty("_DecalSlot1_Emission_Strength", props);
+            _DecalSlot1_Emission_SinEnable   = FindProperty("_DecalSlot1_Emission_SinEnable", props);
+            _DecalSlot1_Emission_SinSpeed    = FindProperty("_DecalSlot1_Emission_SinSpeed", props);
+            _DecalSlot1_Emission_SinMin      = FindProperty("_DecalSlot1_Emission_SinMin", props);
+            _DecalSlot1_Emission_SinMax      = FindProperty("_DecalSlot1_Emission_SinMax", props);
+            _DecalSlot1_Emission_PulseEnable = FindProperty("_DecalSlot1_Emission_PulseEnable", props);
+            _DecalSlot1_Emission_PulseSpeed  = FindProperty("_DecalSlot1_Emission_PulseSpeed", props);
+            _DecalSlot1_Emission_PulseMin    = FindProperty("_DecalSlot1_Emission_PulseMin", props);
+            _DecalSlot1_Emission_ScrollEnable = FindProperty("_DecalSlot1_Emission_ScrollEnable", props);
+            _DecalSlot1_Emission_ScrollX     = FindProperty("_DecalSlot1_Emission_ScrollX", props);
+            _DecalSlot1_Emission_ScrollY     = FindProperty("_DecalSlot1_Emission_ScrollY", props);
+            _DecalSlot1_Emission_ScrollMask  = FindProperty("_DecalSlot1_Emission_ScrollMask", props);
 
             _DecalSlot2_Enable               = FindProperty("_DecalSlot2_Enable", props);
             _DecalSlot2_DisableBackface       = FindProperty("_DecalSlot2_DisableBackface", props);
@@ -159,7 +192,17 @@ namespace lilToon
             _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
             _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
             _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
-
+            _DecalSlot2_Emission_SinEnable   = FindProperty("_DecalSlot2_Emission_SinEnable", props);
+            _DecalSlot2_Emission_SinSpeed    = FindProperty("_DecalSlot2_Emission_SinSpeed", props);
+            _DecalSlot2_Emission_SinMin      = FindProperty("_DecalSlot2_Emission_SinMin", props);
+            _DecalSlot2_Emission_SinMax      = FindProperty("_DecalSlot2_Emission_SinMax", props);
+            _DecalSlot2_Emission_PulseEnable = FindProperty("_DecalSlot2_Emission_PulseEnable", props);
+            _DecalSlot2_Emission_PulseSpeed  = FindProperty("_DecalSlot2_Emission_PulseSpeed", props);
+            _DecalSlot2_Emission_PulseMin    = FindProperty("_DecalSlot2_Emission_PulseMin", props);
+            _DecalSlot2_Emission_ScrollEnable = FindProperty("_DecalSlot2_Emission_ScrollEnable", props);
+            _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props);
+            _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props);
+            _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props);
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -178,7 +221,12 @@ namespace lilToon
                 _DecalSlot1_MatCap_EnableLighting, _DecalSlot1_MatCap_ShadowStrength, _DecalSlot1_MatCap_Blur,
                 _DecalSlot1_MatCap_RimPower, _DecalSlot1_MatCap_EmissionAdd,
                 _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_Color,
-                _DecalSlot1_Emission_Strength);
+                _DecalSlot1_Emission_Strength,
+                _DecalSlot1_Emission_SinEnable, _DecalSlot1_Emission_SinSpeed,
+                _DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax,
+                _DecalSlot1_Emission_PulseEnable, _DecalSlot1_Emission_PulseSpeed, _DecalSlot1_Emission_PulseMin,
+                _DecalSlot1_Emission_ScrollEnable, _DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY,
+                _DecalSlot1_Emission_ScrollMask);
 
             DrawDecalSlot("Decal Slot 2", ref isShowDecalSlot2,
                 _DecalSlot2_Enable, _DecalSlot2_DisableBackface,
@@ -192,7 +240,12 @@ namespace lilToon
                 _DecalSlot2_MatCap_EnableLighting, _DecalSlot2_MatCap_ShadowStrength, _DecalSlot2_MatCap_Blur,
                 _DecalSlot2_MatCap_RimPower, _DecalSlot2_MatCap_EmissionAdd,
                 _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_Color,
-                _DecalSlot2_Emission_Strength);
+                _DecalSlot2_Emission_Strength,
+                _DecalSlot2_Emission_SinEnable, _DecalSlot2_Emission_SinSpeed,
+                _DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax,
+                _DecalSlot2_Emission_PulseEnable, _DecalSlot2_Emission_PulseSpeed, _DecalSlot2_Emission_PulseMin,
+                _DecalSlot2_Emission_ScrollEnable, _DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY,
+                _DecalSlot2_Emission_ScrollMask);
 
             EditorGUILayout.EndVertical();
         }
@@ -241,7 +294,12 @@ namespace lilToon
             MaterialProperty mcEnableLighting, MaterialProperty mcShadowStrength, MaterialProperty mcBlur,
             MaterialProperty mcRimPower, MaterialProperty mcEmissionAdd,
             MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emColor,
-            MaterialProperty emStrength)
+            MaterialProperty emStrength,
+            MaterialProperty emSinEnable, MaterialProperty emSinSpeed,
+            MaterialProperty emSinMin, MaterialProperty emSinMax,
+            MaterialProperty emPulseEnable, MaterialProperty emPulseSpeed, MaterialProperty emPulseMin,
+            MaterialProperty emScrollEnable, MaterialProperty emScrollX, MaterialProperty emScrollY,
+            MaterialProperty emScrollMask)
         {
             isShow = Foldout(title, title, isShow);
             if(!isShow) return;
@@ -326,6 +384,43 @@ namespace lilToon
                     EditorGUILayout.Space(2f);
                     m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Texture", "エミッションテクスチャ（黒=無効）"), emTex, emColor);
                     m_MaterialEditor.ShaderProperty(emStrength, new GUIContent("Strength", "エミッション強度"));
+
+                    // Sin Wave
+                    EditorGUILayout.Space(4f);
+                    DrawToggleProp(emSinEnable, new GUIContent("Sin Wave", "強度を正弦波でアニメーションします"));
+                    if(emSinEnable != null && emSinEnable.floatValue > 0.5f)
+                    {
+                        EditorGUI.indentLevel++;
+                        m_MaterialEditor.ShaderProperty(emSinSpeed, new GUIContent("Speed", "振動速度（大きいほど速い）"));
+                        m_MaterialEditor.ShaderProperty(emSinMin,   new GUIContent("Min",   "最小輝度（0=完全消灯）"));
+                        m_MaterialEditor.ShaderProperty(emSinMax,   new GUIContent("Max",   "最大輝度（1=Strength全開）"));
+                        EditorGUI.indentLevel--;
+                    }
+
+                    // Random Pulse
+                    EditorGUILayout.Space(2f);
+                    DrawToggleProp(emPulseEnable, new GUIContent("Random Pulse", "強度をランダムにパルス発光させます"));
+                    if(emPulseEnable != null && emPulseEnable.floatValue > 0.5f)
+                    {
+                        EditorGUI.indentLevel++;
+                        m_MaterialEditor.ShaderProperty(emPulseSpeed, new GUIContent("Speed", "パルス速度"));
+                        m_MaterialEditor.ShaderProperty(emPulseMin,   new GUIContent("Min",   "ランダム輝度の下限（0=完全消灯あり）"));
+                        EditorGUI.indentLevel--;
+                    }
+
+                    // UV Scroll
+                    EditorGUILayout.Space(2f);
+                    DrawToggleProp(emScrollEnable, new GUIContent("UV Scroll", "エミッションテクスチャをスクロールアニメーションします"));
+                    if(emScrollEnable != null && emScrollEnable.floatValue > 0.5f)
+                    {
+                        EditorGUI.indentLevel++;
+                        m_MaterialEditor.ShaderProperty(emScrollX, new GUIContent("Scroll X", "横スクロール速度（UV/秒）"));
+                        m_MaterialEditor.ShaderProperty(emScrollY, new GUIContent("Scroll Y", "縦スクロール速度（UV/秒）"));
+                        m_MaterialEditor.TexturePropertySingleLine(
+                            new GUIContent("Scroll Mask", "スクロールの可視ウィンドウを定義するマスク（静止UV、白=表示）"),
+                            emScrollMask);
+                        EditorGUI.indentLevel--;
+                    }
                 }
 
                 EditorGUILayout.Space(4f);

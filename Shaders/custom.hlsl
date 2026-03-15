@@ -38,6 +38,17 @@
     float4 _DecalSlot1_Emission_Color; \
     float  _DecalSlot1_Emission_Strength; \
     float4 _DecalSlot1_Emission_Tex_ST; \
+    float  _DecalSlot1_Emission_SinEnable; \
+    float  _DecalSlot1_Emission_SinSpeed; \
+    float  _DecalSlot1_Emission_SinMin; \
+    float  _DecalSlot1_Emission_SinMax; \
+    float  _DecalSlot1_Emission_PulseEnable; \
+    float  _DecalSlot1_Emission_PulseSpeed; \
+    float  _DecalSlot1_Emission_PulseMin; \
+    float  _DecalSlot1_Emission_ScrollEnable; \
+    float  _DecalSlot1_Emission_ScrollX; \
+    float  _DecalSlot1_Emission_ScrollY; \
+    float4 _DecalSlot1_Emission_ScrollMask_ST; \
     /* Decal Slot 2 */ \
     float  _DecalSlot2_Enable; \
     float  _DecalSlot2_DisableBackface; \
@@ -72,7 +83,18 @@
     float  _DecalSlot2_Emission_Enable; \
     float4 _DecalSlot2_Emission_Color; \
     float  _DecalSlot2_Emission_Strength; \
-    float4 _DecalSlot2_Emission_Tex_ST;
+    float4 _DecalSlot2_Emission_Tex_ST; \
+    float  _DecalSlot2_Emission_SinEnable; \
+    float  _DecalSlot2_Emission_SinSpeed; \
+    float  _DecalSlot2_Emission_SinMin; \
+    float  _DecalSlot2_Emission_SinMax; \
+    float  _DecalSlot2_Emission_PulseEnable; \
+    float  _DecalSlot2_Emission_PulseSpeed; \
+    float  _DecalSlot2_Emission_PulseMin; \
+    float  _DecalSlot2_Emission_ScrollEnable; \
+    float  _DecalSlot2_Emission_ScrollX; \
+    float  _DecalSlot2_Emission_ScrollY; \
+    float4 _DecalSlot2_Emission_ScrollMask_ST;
 
 // Custom textures
 #define LIL_CUSTOM_TEXTURES \
@@ -85,7 +107,9 @@
     TEXTURE2D(_DecalSlot2_Mask); \
     TEXTURE2D(_DecalSlot2_MatCap_Tex); \
     TEXTURE2D(_DecalSlot2_Emission_Tex); \
-    TEXTURE2D(_DecalSlot2_NormalMap_Tex);
+    TEXTURE2D(_DecalSlot2_NormalMap_Tex); \
+    TEXTURE2D(_DecalSlot1_Emission_ScrollMask); \
+    TEXTURE2D(_DecalSlot2_Emission_ScrollMask);
 
 // Add vertex shader input
 //#define LIL_REQUIRE_APP_POSITION
@@ -226,8 +250,24 @@ float DNKW_FresRim(float NdotV, float rimPower)
             fd.emissionColor += mcCol_s1 * mcMask_s1 * _DecalSlot1_MatCap_EmissionAdd; \
         } \
         if (_DecalSlot1_Emission_Enable > 0.5) { \
-            float4 emTex_s1 = LIL_SAMPLE_2D(_DecalSlot1_Emission_Tex, sampler_linear_clamp, slotUV_s1); \
-            fd.emissionColor += emTex_s1.rgb * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * sharedMask_s1; \
+            float emStrFactor_s1 = 1.0; \
+            if (_DecalSlot1_Emission_SinEnable > 0.5) { \
+                emStrFactor_s1 *= lerp(_DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot1_Emission_SinSpeed)); \
+            } \
+            if (_DecalSlot1_Emission_PulseEnable > 0.5) { \
+                float pt_s1  = _Time.y * _DecalSlot1_Emission_PulseSpeed; \
+                float ph0_s1 = frac(sin(floor(pt_s1)       * 78.233) * 43758.5453); \
+                float ph1_s1 = frac(sin((floor(pt_s1)+1.0) * 78.233) * 43758.5453); \
+                emStrFactor_s1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, lerp(ph0_s1, ph1_s1, smoothstep(0.0, 1.0, frac(pt_s1)))); \
+            } \
+            float2 emUV_s1        = slotUV_s1; \
+            float  emScrollMask_s1 = 1.0; \
+            if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
+                emUV_s1        += float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
+                emScrollMask_s1 = LIL_SAMPLE_2D(_DecalSlot1_Emission_ScrollMask, sampler_linear_clamp, slotUV_s1).r; \
+            } \
+            float4 emTex_s1 = LIL_SAMPLE_2D(_DecalSlot1_Emission_Tex, sampler_linear_repeat, emUV_s1); \
+            fd.emissionColor += emTex_s1.rgb * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * emStrFactor_s1 * sharedMask_s1 * emScrollMask_s1; \
         } \
     }
 
@@ -275,8 +315,24 @@ float DNKW_FresRim(float NdotV, float rimPower)
             fd.emissionColor += mcCol_s2 * mcMask_s2 * _DecalSlot2_MatCap_EmissionAdd; \
         } \
         if (_DecalSlot2_Emission_Enable > 0.5) { \
-            float4 emTex_s2 = LIL_SAMPLE_2D(_DecalSlot2_Emission_Tex, sampler_linear_clamp, slotUV_s2); \
-            fd.emissionColor += emTex_s2.rgb * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * sharedMask_s2; \
+            float emStrFactor_s2 = 1.0; \
+            if (_DecalSlot2_Emission_SinEnable > 0.5) { \
+                emStrFactor_s2 *= lerp(_DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot2_Emission_SinSpeed)); \
+            } \
+            if (_DecalSlot2_Emission_PulseEnable > 0.5) { \
+                float pt_s2  = _Time.y * _DecalSlot2_Emission_PulseSpeed; \
+                float ph0_s2 = frac(sin(floor(pt_s2)       * 78.233) * 43758.5453); \
+                float ph1_s2 = frac(sin((floor(pt_s2)+1.0) * 78.233) * 43758.5453); \
+                emStrFactor_s2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, lerp(ph0_s2, ph1_s2, smoothstep(0.0, 1.0, frac(pt_s2)))); \
+            } \
+            float2 emUV_s2        = slotUV_s2; \
+            float  emScrollMask_s2 = 1.0; \
+            if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
+                emUV_s2        += float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
+                emScrollMask_s2 = LIL_SAMPLE_2D(_DecalSlot2_Emission_ScrollMask, sampler_linear_clamp, slotUV_s2).r; \
+            } \
+            float4 emTex_s2 = LIL_SAMPLE_2D(_DecalSlot2_Emission_Tex, sampler_linear_repeat, emUV_s2); \
+            fd.emissionColor += emTex_s2.rgb * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * emStrFactor_s2 * sharedMask_s2 * emScrollMask_s2; \
         } \
     }
 
