@@ -7,47 +7,6 @@ namespace lilToon
     public class DecalExInspector : lilToonInspector
     {
         //----------------------------------------------------------------------------------------------------------------------
-        // Decal MatCap properties
-        private static bool isShowDecalMatCap;
-        private MaterialProperty _DecalMatCap_Enable;
-        private MaterialProperty _DecalMatCap_Color;
-        private MaterialProperty _DecalMatCap_MainColorPower;
-        private MaterialProperty _DecalMatCap_Tex;
-        private MaterialProperty _DecalMatCap_Blend;
-        private MaterialProperty _DecalMatCap_Mask;
-        private MaterialProperty _DecalMatCap_MaskOffsetX;
-        private MaterialProperty _DecalMatCap_MaskOffsetY;
-        private MaterialProperty _DecalMatCap_MaskScaleX;
-        private MaterialProperty _DecalMatCap_MaskScaleY;
-        private MaterialProperty _DecalMatCap_MaskAngle;
-        private MaterialProperty _DecalMatCap_UseMask;
-        private MaterialProperty _DecalMatCap_BumpScale;
-        private MaterialProperty _DecalMatCap_UseReflection;
-        private MaterialProperty _DecalMatCap_DisableBackface;
-        private MaterialProperty _DecalMatCap_EnableLighting;
-        private MaterialProperty _DecalMatCap_ShadowStrength;
-        private MaterialProperty _DecalMatCap_Blur;
-        private MaterialProperty _DecalMatCap_Alpha;
-        private MaterialProperty _DecalMatCap_RimPower;
-        private MaterialProperty _DecalMatCap_ZRollCancel;
-        private MaterialProperty _DecalMatCap_EmissionAdd;
-
-        //----------------------------------------------------------------------------------------------------------------------
-        // Decal Emission properties
-        private static bool isShowDecalEmission;
-        private MaterialProperty _DecalEmission_Enable;
-        private MaterialProperty _DecalEmission_Color;
-        private MaterialProperty _DecalEmission_Tex;
-        private MaterialProperty _DecalEmission_Strength;
-        private MaterialProperty _DecalEmission_Mask;
-        private MaterialProperty _DecalEmission_MaskOffsetX;
-        private MaterialProperty _DecalEmission_MaskOffsetY;
-        private MaterialProperty _DecalEmission_MaskScaleX;
-        private MaterialProperty _DecalEmission_MaskScaleY;
-        private MaterialProperty _DecalEmission_MaskAngle;
-        private MaterialProperty _DecalEmission_UseMask;
-
-        //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 1 properties
         private static bool isShowDecalSlot1;
         private MaterialProperty _DecalSlot1_Enable;
@@ -131,41 +90,6 @@ namespace lilToon
             ReplaceToCustomShaders();
             isShowRenderMode = !material.shader.name.Contains("Optional");
 
-            _DecalMatCap_Enable          = FindProperty("_DecalMatCap_Enable", props);
-            _DecalMatCap_Color           = FindProperty("_DecalMatCap_Color", props);
-            _DecalMatCap_MainColorPower  = FindProperty("_DecalMatCap_MainColorPower", props);
-            _DecalMatCap_Tex             = FindProperty("_DecalMatCap_Tex", props);
-            _DecalMatCap_Blend           = FindProperty("_DecalMatCap_Blend", props);
-            _DecalMatCap_Mask            = FindProperty("_DecalMatCap_Mask", props);
-            _DecalMatCap_MaskOffsetX     = FindProperty("_DecalMatCap_MaskOffsetX", props);
-            _DecalMatCap_MaskOffsetY     = FindProperty("_DecalMatCap_MaskOffsetY", props);
-            _DecalMatCap_MaskScaleX      = FindProperty("_DecalMatCap_MaskScaleX", props);
-            _DecalMatCap_MaskScaleY      = FindProperty("_DecalMatCap_MaskScaleY", props);
-            _DecalMatCap_MaskAngle       = FindProperty("_DecalMatCap_MaskAngle", props);
-            _DecalMatCap_UseMask         = FindProperty("_DecalMatCap_UseMask", props);
-            _DecalMatCap_BumpScale       = FindProperty("_DecalMatCap_BumpScale", props);
-            _DecalMatCap_UseReflection   = FindProperty("_DecalMatCap_UseReflection", props);
-            _DecalMatCap_DisableBackface = FindProperty("_DecalMatCap_DisableBackface", props);
-            _DecalMatCap_EnableLighting  = FindProperty("_DecalMatCap_EnableLighting", props);
-            _DecalMatCap_ShadowStrength  = FindProperty("_DecalMatCap_ShadowStrength", props);
-            _DecalMatCap_Blur            = FindProperty("_DecalMatCap_Blur", props);
-            _DecalMatCap_Alpha           = FindProperty("_DecalMatCap_Alpha", props);
-            _DecalMatCap_RimPower        = FindProperty("_DecalMatCap_RimPower", props);
-            _DecalMatCap_ZRollCancel     = FindProperty("_DecalMatCap_ZRollCancel", props);
-            _DecalMatCap_EmissionAdd     = FindProperty("_DecalMatCap_EmissionAdd", props);
-
-            _DecalEmission_Enable     = FindProperty("_DecalEmission_Enable", props);
-            _DecalEmission_Color      = FindProperty("_DecalEmission_Color", props);
-            _DecalEmission_Tex        = FindProperty("_DecalEmission_Tex", props);
-            _DecalEmission_Strength   = FindProperty("_DecalEmission_Strength", props);
-            _DecalEmission_Mask       = FindProperty("_DecalEmission_Mask", props);
-            _DecalEmission_MaskOffsetX = FindProperty("_DecalEmission_MaskOffsetX", props);
-            _DecalEmission_MaskOffsetY = FindProperty("_DecalEmission_MaskOffsetY", props);
-            _DecalEmission_MaskScaleX  = FindProperty("_DecalEmission_MaskScaleX", props);
-            _DecalEmission_MaskScaleY  = FindProperty("_DecalEmission_MaskScaleY", props);
-            _DecalEmission_MaskAngle   = FindProperty("_DecalEmission_MaskAngle", props);
-            _DecalEmission_UseMask     = FindProperty("_DecalEmission_UseMask", props);
-
             _DecalSlot1_Enable               = FindProperty("_DecalSlot1_Enable", props);
             _DecalSlot1_DisableBackface       = FindProperty("_DecalSlot1_DisableBackface", props);
             _DecalSlot1_OffsetX              = FindProperty("_DecalSlot1_OffsetX", props);
@@ -235,28 +159,12 @@ namespace lilToon
             _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
             _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
             _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
+
         }
 
         protected override void DrawCustomProperties(Material material)
         {
             EditorGUILayout.BeginVertical(boxOuter);
-
-            DrawDecalMatCapSlot("Decal MatCap", ref isShowDecalMatCap,
-                _DecalMatCap_Enable, _DecalMatCap_Color, _DecalMatCap_MainColorPower, _DecalMatCap_Tex,
-                _DecalMatCap_Blend, _DecalMatCap_Mask,
-                _DecalMatCap_MaskOffsetX, _DecalMatCap_MaskOffsetY,
-                _DecalMatCap_MaskScaleX, _DecalMatCap_MaskScaleY, _DecalMatCap_MaskAngle,
-                _DecalMatCap_BumpScale, _DecalMatCap_UseReflection, _DecalMatCap_DisableBackface,
-                _DecalMatCap_EnableLighting, _DecalMatCap_ShadowStrength,
-                _DecalMatCap_Blur, _DecalMatCap_Alpha, _DecalMatCap_RimPower,
-                _DecalMatCap_ZRollCancel, _DecalMatCap_UseMask, _DecalMatCap_EmissionAdd);
-
-            DrawDecalEmissionSlot("Decal Emission", ref isShowDecalEmission,
-                _DecalEmission_Enable, _DecalEmission_Color, _DecalEmission_Tex, _DecalEmission_Strength,
-                _DecalEmission_Mask,
-                _DecalEmission_MaskOffsetX, _DecalEmission_MaskOffsetY,
-                _DecalEmission_MaskScaleX, _DecalEmission_MaskScaleY, _DecalEmission_MaskAngle,
-                _DecalEmission_UseMask);
 
             DrawDecalSlot("Decal Slot 1", ref isShowDecalSlot1,
                 _DecalSlot1_Enable, _DecalSlot1_DisableBackface,
@@ -302,128 +210,19 @@ namespace lilToon
             EditorGUILayout.Space(3f);
         }
 
+        private static void DrawToggleProp(MaterialProperty prop, GUIContent label)
+        {
+            EditorGUI.BeginChangeCheck();
+            bool val = EditorGUILayout.Toggle(label, prop.floatValue > 0.5f);
+            if (EditorGUI.EndChangeCheck())
+                prop.floatValue = val ? 1f : 0f;
+        }
+
         private static void DrawSubHeader(string label)
         {
             DrawDivider();
             EditorGUILayout.LabelField(label, EditorStyles.boldLabel);
             EditorGUILayout.Space(2f);
-        }
-
-        //----------------------------------------------------------------------------------------------------------------------
-        // Decal MatCap slot
-
-        private void DrawDecalMatCapSlot(string title, ref bool isShow,
-            MaterialProperty enable, MaterialProperty color, MaterialProperty mainColorPower, MaterialProperty tex,
-            MaterialProperty blend, MaterialProperty mask,
-            MaterialProperty maskOffsetX, MaterialProperty maskOffsetY,
-            MaterialProperty maskScaleX, MaterialProperty maskScaleY, MaterialProperty maskAngle,
-            MaterialProperty bumpScale, MaterialProperty reflection, MaterialProperty disableBackface,
-            MaterialProperty lighting, MaterialProperty shadow,
-            MaterialProperty blur, MaterialProperty alpha, MaterialProperty rimPower,
-            MaterialProperty zRollCancel, MaterialProperty useMask, MaterialProperty emissionAdd)
-        {
-            isShow = Foldout(title, title, isShow);
-            if(!isShow) return;
-            EditorGUILayout.BeginVertical(boxOuter);
-            EditorGUILayout.LabelField(title, customToggleFont);
-
-            if(enable != null && tex != null && blend != null && mask != null
-                && maskOffsetX != null && maskOffsetY != null && maskScaleX != null && maskScaleY != null && maskAngle != null
-                && bumpScale != null && reflection != null && disableBackface != null
-                && lighting != null && shadow != null && blur != null && alpha != null
-                && mainColorPower != null && rimPower != null && zRollCancel != null && useMask != null && emissionAdd != null)
-            {
-                EditorGUILayout.BeginVertical(boxInner);
-
-                // --- Basic ---
-                m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "MatCapを有効にします"));
-
-                // --- MatCap Texture ---
-                DrawSubHeader("Texture");
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("MatCap Texture", "MatCapテクスチャを設定します"), tex, color);
-                m_MaterialEditor.ShaderProperty(alpha, new GUIContent("Opacity", "MatCapの不透明度"));
-                m_MaterialEditor.ShaderProperty(mainColorPower, new GUIContent("Main Color Strength", "メインテクスチャの色をMatCapに乗算する強度。0で無効、1で完全適用"));
-                EditorGUI.BeginChangeCheck();
-                string[] blendModes = { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
-                int blendMode = (int)blend.floatValue;
-                if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 0;
-                blendMode = EditorGUILayout.Popup(new GUIContent("Blend Mode", "合成モード"), blendMode, blendModes);
-                if(EditorGUI.EndChangeCheck()) blend.floatValue = blendMode;
-                m_MaterialEditor.ShaderProperty(blur, new GUIContent("Blur", "MatCapのぼかし強度（MipMap必要）"));
-
-                // --- Mask ---
-                DrawSubHeader("Mask");
-                m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを評価するかどうか"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "適用範囲マスク。白=適用、黒=非適用"), mask);
-                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Offset X", "マスク中心のUV X座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Scale X",  "マスクのUV X幅。1.0でUV全幅"));
-                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
-                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Angle",    "マスクの回転角度（度）"));
-
-                // --- Normal / View ---
-                DrawSubHeader("Normal / View");
-                m_MaterialEditor.ShaderProperty(bumpScale, new GUIContent("Normal Strength", "法線マップの影響度。0でフラット、1以上で強調"));
-                m_MaterialEditor.ShaderProperty(reflection, new GUIContent("Use Reflection", "視線反射モード。ONで鏡面反射のような挙動になります"));
-                m_MaterialEditor.ShaderProperty(zRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首の傾きによる見え方の変化をキャンセルします"));
-                m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でMatCapを無効にします"));
-
-                // --- Lighting ---
-                DrawSubHeader("Lighting");
-                m_MaterialEditor.ShaderProperty(lighting, new GUIContent("Enable Lighting", "ライティングの影響を受けるかどうか。0で無効、1で完全適用"));
-                m_MaterialEditor.ShaderProperty(shadow, new GUIContent("Shadow Strength", "影部分でのMatCap減衰強度。0で影響なし、1で影部分で完全に消える"));
-                m_MaterialEditor.ShaderProperty(rimPower, new GUIContent("Rim Power", "リムマスク（フレネル）。正=エッジ、負=中心、0=無効"));
-                m_MaterialEditor.ShaderProperty(emissionAdd, new GUIContent("Emission Addition", "MatCapの色を発光(Emission)として加算する強度"));
-
-                EditorGUILayout.Space(4f);
-                EditorGUILayout.EndVertical();
-            }
-            EditorGUILayout.EndVertical();
-        }
-
-        //----------------------------------------------------------------------------------------------------------------------
-        // Decal Emission slot
-
-        private void DrawDecalEmissionSlot(string title, ref bool isShow,
-            MaterialProperty enable, MaterialProperty color, MaterialProperty tex, MaterialProperty strength,
-            MaterialProperty mask,
-            MaterialProperty maskOffsetX, MaterialProperty maskOffsetY,
-            MaterialProperty maskScaleX, MaterialProperty maskScaleY, MaterialProperty maskAngle,
-            MaterialProperty useMask)
-        {
-            isShow = Foldout(title, title, isShow);
-            if(!isShow) return;
-            EditorGUILayout.BeginVertical(boxOuter);
-            EditorGUILayout.LabelField(title, customToggleFont);
-
-            if(enable != null && tex != null && strength != null && mask != null
-                && maskOffsetX != null && maskOffsetY != null && maskScaleX != null && maskScaleY != null && maskAngle != null
-                && useMask != null)
-            {
-                EditorGUILayout.BeginVertical(boxInner);
-
-                // --- Basic ---
-                m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "エミッションを有効にします"));
-
-                // --- Emission Texture ---
-                DrawSubHeader("Texture");
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Emission Texture", "エミッションテクスチャ（黒=無効）"), tex, color);
-                m_MaterialEditor.ShaderProperty(strength, new GUIContent("Strength", "エミッション強度"));
-
-                // --- Mask ---
-                DrawSubHeader("Mask");
-                m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを評価するかどうか"));
-                m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "適用範囲マスク。白=適用、黒=非適用"), mask);
-                m_MaterialEditor.ShaderProperty(maskOffsetX, new GUIContent("Offset X", "マスク中心のUV X座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskOffsetY, new GUIContent("Offset Y", "マスク中心のUV Y座標。0.5でUV中央"));
-                m_MaterialEditor.ShaderProperty(maskScaleX,  new GUIContent("Scale X",  "マスクのUV X幅。1.0でUV全幅"));
-                m_MaterialEditor.ShaderProperty(maskScaleY,  new GUIContent("Scale Y",  "マスクのUV Y幅。1.0でUV全高"));
-                m_MaterialEditor.ShaderProperty(maskAngle,   new GUIContent("Angle",    "マスクの回転角度（度）"));
-
-                EditorGUILayout.Space(4f);
-                EditorGUILayout.EndVertical();
-            }
-            EditorGUILayout.EndVertical();
         }
 
         //----------------------------------------------------------------------------------------------------------------------
@@ -457,8 +256,8 @@ namespace lilToon
                 EditorGUILayout.BeginVertical(boxInner);
 
                 // --- Basic ---
-                m_MaterialEditor.ShaderProperty(enable, new GUIContent("Enable", "デカールスロットを有効にします"));
-                m_MaterialEditor.ShaderProperty(disableBackface, new GUIContent("Disable on Backface", "裏面でデカールを無効にします（全サブ機能に適用）"));
+                DrawToggleProp(enable, new GUIContent("Enable", "デカールスロットを有効にします"));
+                DrawToggleProp(disableBackface, new GUIContent("Disable on Backface", "裏面でデカールを無効にします（全サブ機能に適用）"));
 
                 // --- Position (shared) ---
                 DrawSubHeader("Position  \u2014  Shared by all sub-features");
@@ -480,12 +279,12 @@ namespace lilToon
 
                 // --- Mask ---
                 DrawSubHeader("Mask");
-                m_MaterialEditor.ShaderProperty(useMask, new GUIContent("Use Mask", "マスクテクスチャを使用して範囲を限定します"));
+                DrawToggleProp(useMask, new GUIContent("Use Mask", "マスクテクスチャを使用して範囲を限定します"));
                 m_MaterialEditor.TexturePropertySingleLine(new GUIContent("Mask Texture", "範囲マスク。白=適用、黒=非適用（位置は上のPosition設定と共有）"), mask);
 
                 // --- Normal Map ---
                 DrawSubHeader("Normal Map  \u2014  Uses shared position & mask");
-                if(nmEnable != null) m_MaterialEditor.ShaderProperty(nmEnable, new GUIContent("Enable Normal Map", "デカール範囲内のみに適用するノーマルマップを有効にします"));
+                if(nmEnable != null) DrawToggleProp(nmEnable, new GUIContent("Enable Normal Map", "デカール範囲内のみに適用するノーマルマップを有効にします"));
                 if(nmEnable != null && nmEnable.floatValue > 0.5f && nmTex != null)
                 {
                     EditorGUILayout.Space(2f);
@@ -495,7 +294,7 @@ namespace lilToon
 
                 // --- MatCap ---
                 DrawSubHeader("MatCap  \u2014  Uses shared position & mask");
-                if(mcEnable != null) m_MaterialEditor.ShaderProperty(mcEnable, new GUIContent("Enable MatCap", "MatCapを有効にします"));
+                if(mcEnable != null) DrawToggleProp(mcEnable, new GUIContent("Enable MatCap", "MatCapを有効にします"));
                 if(mcEnable != null && mcEnable.floatValue > 0.5f && mcTex != null)
                 {
                     EditorGUILayout.Space(2f);
@@ -510,8 +309,8 @@ namespace lilToon
                     m_MaterialEditor.ShaderProperty(mcBlur, new GUIContent("Blur", "MatCapのぼかし強度（MipMap必要）"));
                     EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcBumpScale, new GUIContent("Normal Strength", "法線マップの影響度"));
-                    m_MaterialEditor.ShaderProperty(mcUseReflection, new GUIContent("Use Reflection", "視線反射モード（鏡面反射）"));
-                    m_MaterialEditor.ShaderProperty(mcZRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首傾きによる変化をキャンセル"));
+                    DrawToggleProp(mcUseReflection, new GUIContent("Use Reflection", "視線反射モード（鏡面反射）"));
+                    DrawToggleProp(mcZRollCancel, new GUIContent("Z-Roll Cancellation", "Z軸の首傾きによる変化をキャンセル"));
                     EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcEnableLighting, new GUIContent("Enable Lighting", "ライティングの影響度"));
                     m_MaterialEditor.ShaderProperty(mcShadowStrength, new GUIContent("Shadow Strength", "影部分でのMatCap減衰強度"));
@@ -521,7 +320,7 @@ namespace lilToon
 
                 // --- Emission ---
                 DrawSubHeader("Emission  \u2014  Uses shared position & mask");
-                if(emEnable != null) m_MaterialEditor.ShaderProperty(emEnable, new GUIContent("Enable Emission", "エミッションを有効にします"));
+                if(emEnable != null) DrawToggleProp(emEnable, new GUIContent("Enable Emission", "エミッションを有効にします"));
                 if(emEnable != null && emEnable.floatValue > 0.5f && emTex != null)
                 {
                     EditorGUILayout.Space(2f);

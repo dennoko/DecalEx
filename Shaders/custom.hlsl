@@ -3,44 +3,9 @@
 
 // Custom variables
 #define LIL_CUSTOM_PROPERTIES \
-    /* Decal MatCap */ \
-    float  _DecalMatCap_Enable; \
-    float4 _DecalMatCap_Color; \
-    int    _DecalMatCap_Blend; \
-    float  _DecalMatCap_BumpScale; \
-    int    _DecalMatCap_UseReflection; \
-    int    _DecalMatCap_DisableBackface; \
-    float  _DecalMatCap_EnableLighting; \
-    float  _DecalMatCap_ShadowStrength; \
-    float  _DecalMatCap_Blur; \
-    float  _DecalMatCap_Alpha; \
-    float  _DecalMatCap_MainColorPower; \
-    float  _DecalMatCap_RimPower; \
-    int    _DecalMatCap_ZRollCancel; \
-    int    _DecalMatCap_UseMask; \
-    float  _DecalMatCap_EmissionAdd; \
-    float4 _DecalMatCap_Tex_ST; \
-    float4 _DecalMatCap_Mask_ST; \
-    float  _DecalMatCap_MaskOffsetX; \
-    float  _DecalMatCap_MaskOffsetY; \
-    float  _DecalMatCap_MaskScaleX; \
-    float  _DecalMatCap_MaskScaleY; \
-    float  _DecalMatCap_MaskAngle; \
-    /* Decal Emission */ \
-    float  _DecalEmission_Enable; \
-    float4 _DecalEmission_Color; \
-    float  _DecalEmission_Strength; \
-    int    _DecalEmission_UseMask; \
-    float4 _DecalEmission_Tex_ST; \
-    float4 _DecalEmission_Mask_ST; \
-    float  _DecalEmission_MaskOffsetX; \
-    float  _DecalEmission_MaskOffsetY; \
-    float  _DecalEmission_MaskScaleX; \
-    float  _DecalEmission_MaskScaleY; \
-    float  _DecalEmission_MaskAngle; \
     /* Decal Slot 1 */ \
     float  _DecalSlot1_Enable; \
-    int    _DecalSlot1_DisableBackface; \
+    float  _DecalSlot1_DisableBackface; \
     float  _DecalSlot1_OffsetX; \
     float  _DecalSlot1_OffsetY; \
     float  _DecalSlot1_ScaleX; \
@@ -49,7 +14,7 @@
     float4 _DecalSlot1_Color; \
     int    _DecalSlot1_Blend; \
     float  _DecalSlot1_Alpha; \
-    int    _DecalSlot1_UseMask; \
+    float  _DecalSlot1_UseMask; \
     float4 _DecalSlot1_Tex_ST; \
     float4 _DecalSlot1_Mask_ST; \
     float  _DecalSlot1_MatCap_Enable; \
@@ -58,8 +23,8 @@
     float  _DecalSlot1_MatCap_Alpha; \
     float  _DecalSlot1_MatCap_MainColorPower; \
     float  _DecalSlot1_MatCap_BumpScale; \
-    int    _DecalSlot1_MatCap_UseReflection; \
-    int    _DecalSlot1_MatCap_ZRollCancel; \
+    float  _DecalSlot1_MatCap_UseReflection; \
+    float  _DecalSlot1_MatCap_ZRollCancel; \
     float  _DecalSlot1_MatCap_EnableLighting; \
     float  _DecalSlot1_MatCap_ShadowStrength; \
     float  _DecalSlot1_MatCap_Blur; \
@@ -75,7 +40,7 @@
     float4 _DecalSlot1_Emission_Tex_ST; \
     /* Decal Slot 2 */ \
     float  _DecalSlot2_Enable; \
-    int    _DecalSlot2_DisableBackface; \
+    float  _DecalSlot2_DisableBackface; \
     float  _DecalSlot2_OffsetX; \
     float  _DecalSlot2_OffsetY; \
     float  _DecalSlot2_ScaleX; \
@@ -84,7 +49,7 @@
     float4 _DecalSlot2_Color; \
     int    _DecalSlot2_Blend; \
     float  _DecalSlot2_Alpha; \
-    int    _DecalSlot2_UseMask; \
+    float  _DecalSlot2_UseMask; \
     float4 _DecalSlot2_Tex_ST; \
     float4 _DecalSlot2_Mask_ST; \
     float  _DecalSlot2_MatCap_Enable; \
@@ -93,8 +58,8 @@
     float  _DecalSlot2_MatCap_Alpha; \
     float  _DecalSlot2_MatCap_MainColorPower; \
     float  _DecalSlot2_MatCap_BumpScale; \
-    int    _DecalSlot2_MatCap_UseReflection; \
-    int    _DecalSlot2_MatCap_ZRollCancel; \
+    float  _DecalSlot2_MatCap_UseReflection; \
+    float  _DecalSlot2_MatCap_ZRollCancel; \
     float  _DecalSlot2_MatCap_EnableLighting; \
     float  _DecalSlot2_MatCap_ShadowStrength; \
     float  _DecalSlot2_MatCap_Blur; \
@@ -111,19 +76,15 @@
 
 // Custom textures
 #define LIL_CUSTOM_TEXTURES \
-    TEXTURE2D(_DecalMatCap_Tex); \
-    TEXTURE2D(_DecalMatCap_Mask); \
-    TEXTURE2D(_DecalEmission_Tex); \
-    TEXTURE2D(_DecalEmission_Mask); \
     TEXTURE2D(_DecalSlot1_Tex); \
     TEXTURE2D(_DecalSlot1_Mask); \
     TEXTURE2D(_DecalSlot1_MatCap_Tex); \
     TEXTURE2D(_DecalSlot1_Emission_Tex); \
+    TEXTURE2D(_DecalSlot1_NormalMap_Tex); \
     TEXTURE2D(_DecalSlot2_Tex); \
     TEXTURE2D(_DecalSlot2_Mask); \
     TEXTURE2D(_DecalSlot2_MatCap_Tex); \
     TEXTURE2D(_DecalSlot2_Emission_Tex); \
-    TEXTURE2D(_DecalSlot1_NormalMap_Tex); \
     TEXTURE2D(_DecalSlot2_NormalMap_Tex);
 
 // Add vertex shader input
@@ -181,108 +142,45 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------
-// Decal MatCap Logic
-#define DNKW_DECAL_MATCAP_LOGIC \
-    if (_DecalMatCap_Enable > 0.5) { \
-        /* Normal Calculation */ \
-        float3 N_mc = normalize(lerp(fd.origN, fd.N, _DecalMatCap_BumpScale)); \
-        \
-        /* Reflection Mode */ \
-        if (_DecalMatCap_UseReflection > 0.5) { \
-            N_mc = reflect(-fd.V, N_mc); \
-        } \
-        \
-        /* View Space Conversion */ \
-        float3 N_vs; \
-        if (_DecalMatCap_ZRollCancel > 0.5) { \
-            float3 worldViewDir = -UNITY_MATRIX_V[2].xyz; \
-            float3 viewUp = float3(0, 1, 0); \
-            float3 viewRight = cross(viewUp, worldViewDir); \
-            if (length(viewRight) < 0.001) { \
-                viewRight = float3(1, 0, 0); \
-            } else { \
-                viewRight = normalize(viewRight); \
-            } \
-            viewUp = cross(worldViewDir, viewRight); \
-            N_vs = float3(dot(viewRight, N_mc), dot(viewUp, N_mc), dot(worldViewDir, N_mc)); \
-        } else { \
-            N_vs = mul((float3x3)UNITY_MATRIX_V, N_mc); \
-        } \
-        N_vs.z *= -1.0; \
-        float2 uv_mc = N_vs.xy * 0.5 + 0.5; \
-        \
-        /* Sampling */ \
-        float4 mcTex = LIL_SAMPLE_2D_LOD(_DecalMatCap_Tex, sampler_linear_clamp, uv_mc, _DecalMatCap_Blur * 8.0); \
-        float3 mcColor = mcTex.rgb * _DecalMatCap_Color.rgb; \
-        mcColor *= lerp(1.0, fd.albedo, _DecalMatCap_MainColorPower); \
-        \
-        /* Positioned Mask */ \
-        float maskDMC = 1.0; \
-        if (_DecalMatCap_UseMask > 0.5) { \
-            float2 maskUV_dmc = DNKW_DecalMaskUV(fd.uv0, float2(_DecalMatCap_MaskOffsetX, _DecalMatCap_MaskOffsetY), float2(_DecalMatCap_MaskScaleX, _DecalMatCap_MaskScaleY), _DecalMatCap_MaskAngle); \
-            float inBounds_dmc = step(0.0, maskUV_dmc.x) * step(maskUV_dmc.x, 1.0) * step(0.0, maskUV_dmc.y) * step(maskUV_dmc.y, 1.0); \
-            maskDMC = LIL_SAMPLE_2D(_DecalMatCap_Mask, sampler_linear_clamp, maskUV_dmc).r * inBounds_dmc; \
-        } \
-        \
-        /* Backface Disable */ \
-        if (_DecalMatCap_DisableBackface > 0.5 && fd.facing < 0) maskDMC = 0.0; \
-        maskDMC *= saturate(_DecalMatCap_Alpha); \
-        \
-        /* Rim Mask (Fresnel) */ \
-        float rimPwr = _DecalMatCap_RimPower; \
-        if (abs(rimPwr) > 0.01) { \
-            float NdotV_dmc = saturate(dot(fd.N, fd.V)); \
-            float fresnel_dmc; \
-            if (rimPwr > 0.0) { \
-                fresnel_dmc = pow(1.0 - NdotV_dmc, rimPwr); \
-            } else { \
-                fresnel_dmc = 1.0 - pow(1.0 - NdotV_dmc, -rimPwr); \
-            } \
-            maskDMC *= fresnel_dmc; \
-        } \
-        \
-        /* Lighting Integration */ \
-        float shadowFac_dmc = lerp(1.0, fd.attenuation * fd.shadowmix, _DecalMatCap_ShadowStrength); \
-        float3 lightFac_dmc = lerp(float3(1,1,1), fd.lightColor, _DecalMatCap_EnableLighting); \
-        mcColor *= shadowFac_dmc * lightFac_dmc; \
-        \
-        /* Blending */ \
-        float3 targetColor_dmc = fd.col.rgb; \
-        int blendMode_dmc = _DecalMatCap_Blend; \
-        if (blendMode_dmc == 0) targetColor_dmc += mcColor; \
-        else if (blendMode_dmc == 1) targetColor_dmc = 1.0 - (1.0 - targetColor_dmc) * (1.0 - mcColor); \
-        else if (blendMode_dmc == 2) targetColor_dmc *= mcColor; \
-        else if (blendMode_dmc == 3) { \
-            float3 ovl_dmc; \
-            ovl_dmc.r = (targetColor_dmc.r < 0.5) ? (2.0 * targetColor_dmc.r * mcColor.r) : (1.0 - 2.0 * (1.0 - targetColor_dmc.r) * (1.0 - mcColor.r)); \
-            ovl_dmc.g = (targetColor_dmc.g < 0.5) ? (2.0 * targetColor_dmc.g * mcColor.g) : (1.0 - 2.0 * (1.0 - targetColor_dmc.g) * (1.0 - mcColor.g)); \
-            ovl_dmc.b = (targetColor_dmc.b < 0.5) ? (2.0 * targetColor_dmc.b * mcColor.b) : (1.0 - 2.0 * (1.0 - targetColor_dmc.b) * (1.0 - mcColor.b)); \
-            targetColor_dmc = ovl_dmc; \
-        } \
-        else if (blendMode_dmc == 4) targetColor_dmc = (1.0 - 2.0 * mcColor) * targetColor_dmc * targetColor_dmc + 2.0 * mcColor * targetColor_dmc; \
-        else if (blendMode_dmc == 5) targetColor_dmc = mcColor; \
-        else if (blendMode_dmc == 6) targetColor_dmc -= mcColor; \
-        else if (blendMode_dmc == 7) targetColor_dmc = max(targetColor_dmc, mcColor); \
-        else if (blendMode_dmc == 8) targetColor_dmc = min(targetColor_dmc, mcColor); \
-        \
-        fd.col.rgb = lerp(fd.col.rgb, targetColor_dmc, maskDMC); \
-        fd.emissionColor += mcColor * maskDMC * _DecalMatCap_EmissionAdd; \
+// Helper: Blend mode calculation (shared across all slots to reduce code duplication)
+#ifndef DNKW_BLEND_COLORS_DEFINED
+#define DNKW_BLEND_COLORS_DEFINED
+float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
+{
+    if      (mode == 0) return base + overlay;
+    else if (mode == 1) return 1.0 - (1.0 - base) * (1.0 - overlay);
+    else if (mode == 2) return base * overlay;
+    else if (mode == 3) {
+        float3 r;
+        r.r = (base.r < 0.5) ? (2.0*base.r*overlay.r) : (1.0-2.0*(1.0-base.r)*(1.0-overlay.r));
+        r.g = (base.g < 0.5) ? (2.0*base.g*overlay.g) : (1.0-2.0*(1.0-base.g)*(1.0-overlay.g));
+        r.b = (base.b < 0.5) ? (2.0*base.b*overlay.b) : (1.0-2.0*(1.0-base.b)*(1.0-overlay.b));
+        return r;
     }
+    else if (mode == 4) return (1.0-2.0*overlay)*base*base + 2.0*overlay*base;
+    else if (mode == 5) return overlay;
+    else if (mode == 6) return base - overlay;
+    else if (mode == 7) return max(base, overlay);
+    else                return min(base, overlay);
+}
+#endif
+
+// Note: DNKW_MatCapUV is NOT defined as a function here because HLSLINCLUDE is compiled
+// before Unity's built-in cbuffer declarations (UNITY_MATRIX_V is undefined at this scope).
+// MatCap UV computation is inlined directly inside each slot's macro instead,
+// where it is expanded at shader-body compile time with UNITY_MATRIX_V in scope.
 
 //----------------------------------------------------------------------------------------------------------------------
-// Decal Emission Logic
-#define DNKW_DECAL_EMISSION_LOGIC \
-    if (_DecalEmission_Enable > 0.5) { \
-        float4 emTex = LIL_SAMPLE_2D(_DecalEmission_Tex, sampler_linear_repeat, fd.uv0); \
-        float3 emColor = emTex.rgb * _DecalEmission_Color.rgb * _DecalEmission_Strength; \
-        float emMask = 1.0; \
-        if (_DecalEmission_UseMask > 0.5) { \
-            float2 maskUV_dem = DNKW_DecalMaskUV(fd.uv0, float2(_DecalEmission_MaskOffsetX, _DecalEmission_MaskOffsetY), float2(_DecalEmission_MaskScaleX, _DecalEmission_MaskScaleY), _DecalEmission_MaskAngle); \
-            float inBounds_dem = step(0.0, maskUV_dem.x) * step(maskUV_dem.x, 1.0) * step(0.0, maskUV_dem.y) * step(maskUV_dem.y, 1.0); \
-            emMask = LIL_SAMPLE_2D(_DecalEmission_Mask, sampler_linear_clamp, maskUV_dem).r * inBounds_dem; \
-        } \
-        fd.emissionColor += emColor * emMask; \
-    }
+// Helper: Fresnel rim factor (shared across all slots)
+#ifndef DNKW_FRES_RIM_DEFINED
+#define DNKW_FRES_RIM_DEFINED
+float DNKW_FresRim(float NdotV, float rimPower)
+{
+    if (abs(rimPower) < 0.01) return 1.0;
+    if (rimPower > 0.0) return pow(1.0 - NdotV, rimPower);
+    return 1.0 - pow(1.0 - NdotV, -rimPower);
+}
+#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 // Decal Slot 1 Logic
@@ -296,41 +194,23 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
         } \
         if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s1 = 0.0; \
         if (_DecalSlot1_NormalMap_Enable > 0.5) { \
-            float4 nmTex_s1  = LIL_SAMPLE_2D(_DecalSlot1_NormalMap_Tex, sampler_linear_clamp, slotUV_s1); \
-            float3 nmTS_s1   = lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale); \
-            float3 nmWS_s1   = normalize(mul(nmTS_s1, fd.TBN)); \
+            float4 nmTex_s1 = LIL_SAMPLE_2D(_DecalSlot1_NormalMap_Tex, sampler_linear_clamp, slotUV_s1); \
+            float3 nmWS_s1  = normalize(mul(lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale), fd.TBN)); \
             fd.N = normalize(lerp(fd.N, nmWS_s1, sharedMask_s1)); \
         } \
-        float4 decalTex_s1    = LIL_SAMPLE_2D(_DecalSlot1_Tex, sampler_linear_clamp, slotUV_s1); \
-        float3 decalColor_s1  = decalTex_s1.rgb * _DecalSlot1_Color.rgb; \
-        float  decalW_s1      = decalTex_s1.a * saturate(_DecalSlot1_Alpha) * sharedMask_s1; \
-        float3 decalTgt_s1    = fd.col.rgb; \
-        int    decalBm_s1     = _DecalSlot1_Blend; \
-        if      (decalBm_s1 == 0) decalTgt_s1 = decalTgt_s1 + decalColor_s1; \
-        else if (decalBm_s1 == 1) decalTgt_s1 = 1.0 - (1.0 - decalTgt_s1) * (1.0 - decalColor_s1); \
-        else if (decalBm_s1 == 2) decalTgt_s1 = decalTgt_s1 * decalColor_s1; \
-        else if (decalBm_s1 == 3) { \
-            float3 ovlD_s1; \
-            ovlD_s1.r = (decalTgt_s1.r < 0.5) ? (2.0*decalTgt_s1.r*decalColor_s1.r) : (1.0-2.0*(1.0-decalTgt_s1.r)*(1.0-decalColor_s1.r)); \
-            ovlD_s1.g = (decalTgt_s1.g < 0.5) ? (2.0*decalTgt_s1.g*decalColor_s1.g) : (1.0-2.0*(1.0-decalTgt_s1.g)*(1.0-decalColor_s1.g)); \
-            ovlD_s1.b = (decalTgt_s1.b < 0.5) ? (2.0*decalTgt_s1.b*decalColor_s1.b) : (1.0-2.0*(1.0-decalTgt_s1.b)*(1.0-decalColor_s1.b)); \
-            decalTgt_s1 = ovlD_s1; \
-        } \
-        else if (decalBm_s1 == 4) decalTgt_s1 = (1.0-2.0*decalColor_s1)*decalTgt_s1*decalTgt_s1 + 2.0*decalColor_s1*decalTgt_s1; \
-        else if (decalBm_s1 == 5) decalTgt_s1 = decalColor_s1; \
-        else if (decalBm_s1 == 6) decalTgt_s1 = decalTgt_s1 - decalColor_s1; \
-        else if (decalBm_s1 == 7) decalTgt_s1 = max(decalTgt_s1, decalColor_s1); \
-        else if (decalBm_s1 == 8) decalTgt_s1 = min(decalTgt_s1, decalColor_s1); \
-        fd.col.rgb = lerp(fd.col.rgb, decalTgt_s1, decalW_s1); \
+        float4 decalTex_s1   = LIL_SAMPLE_2D(_DecalSlot1_Tex, sampler_linear_clamp, slotUV_s1); \
+        float3 decalColor_s1 = decalTex_s1.rgb * _DecalSlot1_Color.rgb; \
+        float  decalW_s1     = decalTex_s1.a * saturate(_DecalSlot1_Alpha) * sharedMask_s1; \
+        fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, decalColor_s1, _DecalSlot1_Blend), decalW_s1); \
         if (_DecalSlot1_MatCap_Enable > 0.5) { \
             float3 Nmc_s1 = normalize(lerp(fd.origN, fd.N, _DecalSlot1_MatCap_BumpScale)); \
-            if (_DecalSlot1_MatCap_UseReflection > 0.5) { Nmc_s1 = reflect(-fd.V, Nmc_s1); } \
+            if (_DecalSlot1_MatCap_UseReflection > 0.5) Nmc_s1 = reflect(-fd.V, Nmc_s1); \
             float3 Nvs_s1; \
             if (_DecalSlot1_MatCap_ZRollCancel > 0.5) { \
                 float3 wvd_s1 = -UNITY_MATRIX_V[2].xyz; \
                 float3 vup_s1 = float3(0, 1, 0); \
                 float3 vrt_s1 = cross(vup_s1, wvd_s1); \
-                if (length(vrt_s1) < 0.001) { vrt_s1 = float3(1, 0, 0); } else { vrt_s1 = normalize(vrt_s1); } \
+                vrt_s1 = (length(vrt_s1) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s1); \
                 vup_s1 = cross(wvd_s1, vrt_s1); \
                 Nvs_s1 = float3(dot(vrt_s1, Nmc_s1), dot(vup_s1, Nmc_s1), dot(wvd_s1, Nmc_s1)); \
             } else { \
@@ -339,43 +219,15 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
             Nvs_s1.z *= -1.0; \
             float2 uvmc_s1  = Nvs_s1.xy * 0.5 + 0.5; \
             float4 mcTex_s1 = LIL_SAMPLE_2D_LOD(_DecalSlot1_MatCap_Tex, sampler_linear_clamp, uvmc_s1, _DecalSlot1_MatCap_Blur * 8.0); \
-            float3 mcCol_s1 = mcTex_s1.rgb * _DecalSlot1_MatCap_Color.rgb; \
-            mcCol_s1 *= lerp(1.0, fd.albedo, _DecalSlot1_MatCap_MainColorPower); \
-            float mcMask_s1 = sharedMask_s1 * saturate(_DecalSlot1_MatCap_Alpha); \
-            float rimP_s1 = _DecalSlot1_MatCap_RimPower; \
-            if (abs(rimP_s1) > 0.01) { \
-                float NdotV_s1 = saturate(dot(fd.N, fd.V)); \
-                float fres_s1; \
-                if (rimP_s1 > 0.0) { fres_s1 = pow(1.0 - NdotV_s1, rimP_s1); } else { fres_s1 = 1.0 - pow(1.0 - NdotV_s1, -rimP_s1); } \
-                mcMask_s1 *= fres_s1; \
-            } \
-            float  sfac_s1 = lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot1_MatCap_ShadowStrength); \
-            float3 lfac_s1 = lerp(float3(1,1,1), fd.lightColor, _DecalSlot1_MatCap_EnableLighting); \
-            mcCol_s1 *= sfac_s1 * lfac_s1; \
-            float3 mcTgt_s1 = fd.col.rgb; \
-            int    mcBm_s1  = _DecalSlot1_MatCap_Blend; \
-            if      (mcBm_s1 == 0) mcTgt_s1 = mcTgt_s1 + mcCol_s1; \
-            else if (mcBm_s1 == 1) mcTgt_s1 = 1.0 - (1.0 - mcTgt_s1) * (1.0 - mcCol_s1); \
-            else if (mcBm_s1 == 2) mcTgt_s1 = mcTgt_s1 * mcCol_s1; \
-            else if (mcBm_s1 == 3) { \
-                float3 ovlM_s1; \
-                ovlM_s1.r = (mcTgt_s1.r < 0.5) ? (2.0*mcTgt_s1.r*mcCol_s1.r) : (1.0-2.0*(1.0-mcTgt_s1.r)*(1.0-mcCol_s1.r)); \
-                ovlM_s1.g = (mcTgt_s1.g < 0.5) ? (2.0*mcTgt_s1.g*mcCol_s1.g) : (1.0-2.0*(1.0-mcTgt_s1.g)*(1.0-mcCol_s1.g)); \
-                ovlM_s1.b = (mcTgt_s1.b < 0.5) ? (2.0*mcTgt_s1.b*mcCol_s1.b) : (1.0-2.0*(1.0-mcTgt_s1.b)*(1.0-mcCol_s1.b)); \
-                mcTgt_s1 = ovlM_s1; \
-            } \
-            else if (mcBm_s1 == 4) mcTgt_s1 = (1.0-2.0*mcCol_s1)*mcTgt_s1*mcTgt_s1 + 2.0*mcCol_s1*mcTgt_s1; \
-            else if (mcBm_s1 == 5) mcTgt_s1 = mcCol_s1; \
-            else if (mcBm_s1 == 6) mcTgt_s1 = mcTgt_s1 - mcCol_s1; \
-            else if (mcBm_s1 == 7) mcTgt_s1 = max(mcTgt_s1, mcCol_s1); \
-            else if (mcBm_s1 == 8) mcTgt_s1 = min(mcTgt_s1, mcCol_s1); \
-            fd.col.rgb = lerp(fd.col.rgb, mcTgt_s1, mcMask_s1); \
+            float3 mcCol_s1 = mcTex_s1.rgb * _DecalSlot1_MatCap_Color.rgb * lerp(1.0, fd.albedo, _DecalSlot1_MatCap_MainColorPower); \
+            float  mcMask_s1 = sharedMask_s1 * saturate(_DecalSlot1_MatCap_Alpha) * DNKW_FresRim(saturate(dot(fd.N, fd.V)), _DecalSlot1_MatCap_RimPower); \
+            mcCol_s1 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot1_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot1_MatCap_EnableLighting); \
+            fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s1, _DecalSlot1_MatCap_Blend), mcMask_s1); \
             fd.emissionColor += mcCol_s1 * mcMask_s1 * _DecalSlot1_MatCap_EmissionAdd; \
         } \
         if (_DecalSlot1_Emission_Enable > 0.5) { \
             float4 emTex_s1 = LIL_SAMPLE_2D(_DecalSlot1_Emission_Tex, sampler_linear_clamp, slotUV_s1); \
-            float3 emCol_s1 = emTex_s1.rgb * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength; \
-            fd.emissionColor += emCol_s1 * sharedMask_s1; \
+            fd.emissionColor += emTex_s1.rgb * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * sharedMask_s1; \
         } \
     }
 
@@ -391,41 +243,23 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
         } \
         if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s2 = 0.0; \
         if (_DecalSlot2_NormalMap_Enable > 0.5) { \
-            float4 nmTex_s2  = LIL_SAMPLE_2D(_DecalSlot2_NormalMap_Tex, sampler_linear_clamp, slotUV_s2); \
-            float3 nmTS_s2   = lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale); \
-            float3 nmWS_s2   = normalize(mul(nmTS_s2, fd.TBN)); \
+            float4 nmTex_s2 = LIL_SAMPLE_2D(_DecalSlot2_NormalMap_Tex, sampler_linear_clamp, slotUV_s2); \
+            float3 nmWS_s2  = normalize(mul(lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale), fd.TBN)); \
             fd.N = normalize(lerp(fd.N, nmWS_s2, sharedMask_s2)); \
         } \
-        float4 decalTex_s2    = LIL_SAMPLE_2D(_DecalSlot2_Tex, sampler_linear_clamp, slotUV_s2); \
-        float3 decalColor_s2  = decalTex_s2.rgb * _DecalSlot2_Color.rgb; \
-        float  decalW_s2      = decalTex_s2.a * saturate(_DecalSlot2_Alpha) * sharedMask_s2; \
-        float3 decalTgt_s2    = fd.col.rgb; \
-        int    decalBm_s2     = _DecalSlot2_Blend; \
-        if      (decalBm_s2 == 0) decalTgt_s2 = decalTgt_s2 + decalColor_s2; \
-        else if (decalBm_s2 == 1) decalTgt_s2 = 1.0 - (1.0 - decalTgt_s2) * (1.0 - decalColor_s2); \
-        else if (decalBm_s2 == 2) decalTgt_s2 = decalTgt_s2 * decalColor_s2; \
-        else if (decalBm_s2 == 3) { \
-            float3 ovlD_s2; \
-            ovlD_s2.r = (decalTgt_s2.r < 0.5) ? (2.0*decalTgt_s2.r*decalColor_s2.r) : (1.0-2.0*(1.0-decalTgt_s2.r)*(1.0-decalColor_s2.r)); \
-            ovlD_s2.g = (decalTgt_s2.g < 0.5) ? (2.0*decalTgt_s2.g*decalColor_s2.g) : (1.0-2.0*(1.0-decalTgt_s2.g)*(1.0-decalColor_s2.g)); \
-            ovlD_s2.b = (decalTgt_s2.b < 0.5) ? (2.0*decalTgt_s2.b*decalColor_s2.b) : (1.0-2.0*(1.0-decalTgt_s2.b)*(1.0-decalColor_s2.b)); \
-            decalTgt_s2 = ovlD_s2; \
-        } \
-        else if (decalBm_s2 == 4) decalTgt_s2 = (1.0-2.0*decalColor_s2)*decalTgt_s2*decalTgt_s2 + 2.0*decalColor_s2*decalTgt_s2; \
-        else if (decalBm_s2 == 5) decalTgt_s2 = decalColor_s2; \
-        else if (decalBm_s2 == 6) decalTgt_s2 = decalTgt_s2 - decalColor_s2; \
-        else if (decalBm_s2 == 7) decalTgt_s2 = max(decalTgt_s2, decalColor_s2); \
-        else if (decalBm_s2 == 8) decalTgt_s2 = min(decalTgt_s2, decalColor_s2); \
-        fd.col.rgb = lerp(fd.col.rgb, decalTgt_s2, decalW_s2); \
+        float4 decalTex_s2   = LIL_SAMPLE_2D(_DecalSlot2_Tex, sampler_linear_clamp, slotUV_s2); \
+        float3 decalColor_s2 = decalTex_s2.rgb * _DecalSlot2_Color.rgb; \
+        float  decalW_s2     = decalTex_s2.a * saturate(_DecalSlot2_Alpha) * sharedMask_s2; \
+        fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, decalColor_s2, _DecalSlot2_Blend), decalW_s2); \
         if (_DecalSlot2_MatCap_Enable > 0.5) { \
             float3 Nmc_s2 = normalize(lerp(fd.origN, fd.N, _DecalSlot2_MatCap_BumpScale)); \
-            if (_DecalSlot2_MatCap_UseReflection > 0.5) { Nmc_s2 = reflect(-fd.V, Nmc_s2); } \
+            if (_DecalSlot2_MatCap_UseReflection > 0.5) Nmc_s2 = reflect(-fd.V, Nmc_s2); \
             float3 Nvs_s2; \
             if (_DecalSlot2_MatCap_ZRollCancel > 0.5) { \
                 float3 wvd_s2 = -UNITY_MATRIX_V[2].xyz; \
                 float3 vup_s2 = float3(0, 1, 0); \
                 float3 vrt_s2 = cross(vup_s2, wvd_s2); \
-                if (length(vrt_s2) < 0.001) { vrt_s2 = float3(1, 0, 0); } else { vrt_s2 = normalize(vrt_s2); } \
+                vrt_s2 = (length(vrt_s2) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s2); \
                 vup_s2 = cross(wvd_s2, vrt_s2); \
                 Nvs_s2 = float3(dot(vrt_s2, Nmc_s2), dot(vup_s2, Nmc_s2), dot(wvd_s2, Nmc_s2)); \
             } else { \
@@ -434,43 +268,15 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
             Nvs_s2.z *= -1.0; \
             float2 uvmc_s2  = Nvs_s2.xy * 0.5 + 0.5; \
             float4 mcTex_s2 = LIL_SAMPLE_2D_LOD(_DecalSlot2_MatCap_Tex, sampler_linear_clamp, uvmc_s2, _DecalSlot2_MatCap_Blur * 8.0); \
-            float3 mcCol_s2 = mcTex_s2.rgb * _DecalSlot2_MatCap_Color.rgb; \
-            mcCol_s2 *= lerp(1.0, fd.albedo, _DecalSlot2_MatCap_MainColorPower); \
-            float mcMask_s2 = sharedMask_s2 * saturate(_DecalSlot2_MatCap_Alpha); \
-            float rimP_s2 = _DecalSlot2_MatCap_RimPower; \
-            if (abs(rimP_s2) > 0.01) { \
-                float NdotV_s2 = saturate(dot(fd.N, fd.V)); \
-                float fres_s2; \
-                if (rimP_s2 > 0.0) { fres_s2 = pow(1.0 - NdotV_s2, rimP_s2); } else { fres_s2 = 1.0 - pow(1.0 - NdotV_s2, -rimP_s2); } \
-                mcMask_s2 *= fres_s2; \
-            } \
-            float  sfac_s2 = lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot2_MatCap_ShadowStrength); \
-            float3 lfac_s2 = lerp(float3(1,1,1), fd.lightColor, _DecalSlot2_MatCap_EnableLighting); \
-            mcCol_s2 *= sfac_s2 * lfac_s2; \
-            float3 mcTgt_s2 = fd.col.rgb; \
-            int    mcBm_s2  = _DecalSlot2_MatCap_Blend; \
-            if      (mcBm_s2 == 0) mcTgt_s2 = mcTgt_s2 + mcCol_s2; \
-            else if (mcBm_s2 == 1) mcTgt_s2 = 1.0 - (1.0 - mcTgt_s2) * (1.0 - mcCol_s2); \
-            else if (mcBm_s2 == 2) mcTgt_s2 = mcTgt_s2 * mcCol_s2; \
-            else if (mcBm_s2 == 3) { \
-                float3 ovlM_s2; \
-                ovlM_s2.r = (mcTgt_s2.r < 0.5) ? (2.0*mcTgt_s2.r*mcCol_s2.r) : (1.0-2.0*(1.0-mcTgt_s2.r)*(1.0-mcCol_s2.r)); \
-                ovlM_s2.g = (mcTgt_s2.g < 0.5) ? (2.0*mcTgt_s2.g*mcCol_s2.g) : (1.0-2.0*(1.0-mcTgt_s2.g)*(1.0-mcCol_s2.g)); \
-                ovlM_s2.b = (mcTgt_s2.b < 0.5) ? (2.0*mcTgt_s2.b*mcCol_s2.b) : (1.0-2.0*(1.0-mcTgt_s2.b)*(1.0-mcCol_s2.b)); \
-                mcTgt_s2 = ovlM_s2; \
-            } \
-            else if (mcBm_s2 == 4) mcTgt_s2 = (1.0-2.0*mcCol_s2)*mcTgt_s2*mcTgt_s2 + 2.0*mcCol_s2*mcTgt_s2; \
-            else if (mcBm_s2 == 5) mcTgt_s2 = mcCol_s2; \
-            else if (mcBm_s2 == 6) mcTgt_s2 = mcTgt_s2 - mcCol_s2; \
-            else if (mcBm_s2 == 7) mcTgt_s2 = max(mcTgt_s2, mcCol_s2); \
-            else if (mcBm_s2 == 8) mcTgt_s2 = min(mcTgt_s2, mcCol_s2); \
-            fd.col.rgb = lerp(fd.col.rgb, mcTgt_s2, mcMask_s2); \
+            float3 mcCol_s2 = mcTex_s2.rgb * _DecalSlot2_MatCap_Color.rgb * lerp(1.0, fd.albedo, _DecalSlot2_MatCap_MainColorPower); \
+            float  mcMask_s2 = sharedMask_s2 * saturate(_DecalSlot2_MatCap_Alpha) * DNKW_FresRim(saturate(dot(fd.N, fd.V)), _DecalSlot2_MatCap_RimPower); \
+            mcCol_s2 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot2_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot2_MatCap_EnableLighting); \
+            fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s2, _DecalSlot2_MatCap_Blend), mcMask_s2); \
             fd.emissionColor += mcCol_s2 * mcMask_s2 * _DecalSlot2_MatCap_EmissionAdd; \
         } \
         if (_DecalSlot2_Emission_Enable > 0.5) { \
             float4 emTex_s2 = LIL_SAMPLE_2D(_DecalSlot2_Emission_Tex, sampler_linear_clamp, slotUV_s2); \
-            float3 emCol_s2 = emTex_s2.rgb * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength; \
-            fd.emissionColor += emCol_s2 * sharedMask_s2; \
+            fd.emissionColor += emTex_s2.rgb * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * sharedMask_s2; \
         } \
     }
 
@@ -480,8 +286,6 @@ float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
 #if !defined(UNITY_PASS_SHADOWCASTER)
 #define BEFORE_MATCAP \
 { \
-    DNKW_DECAL_MATCAP_LOGIC \
-    DNKW_DECAL_EMISSION_LOGIC \
     DNKW_DECAL_SLOT1_LOGIC \
     DNKW_DECAL_SLOT2_LOGIC \
 }
