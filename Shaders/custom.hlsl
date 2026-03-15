@@ -171,14 +171,12 @@
 // angle  : rotation in degrees
 #ifndef DNKW_DECAL_MASK_UV_DEFINED
 #define DNKW_DECAL_MASK_UV_DEFINED
-float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float angle)
+float2 DNKW_DecalMaskUV(float2 uv, float2 offset, float2 scale, float sinA, float cosA)
 {
     // Rotate around UV center (0.5, 0.5) first - matching lilToon's lilCalcDecalUV behavior
-    float rad = angle * 0.01745329252f; // degrees to radians
-    float s, c;
-    sincos(rad, s, c);
+    // sinA/cosA are precomputed by the caller to avoid duplicate sincos calls
     float2 d = uv - 0.5;
-    d = float2(d.x * c - d.y * s, d.x * s + d.y * c);
+    d = float2(d.x * cosA - d.y * sinA, d.x * sinA + d.y * cosA);
     d += 0.5;
     // Then apply position offset and scale
     return (d - offset) / max(scale, 0.0001) + 0.5;
@@ -246,10 +244,10 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
         emStrFactor_em2 *= alStr_em2; \
     }
 
-// Note: DNKW_MatCapUV is NOT defined as a function here because HLSLINCLUDE is compiled
-// before Unity's built-in cbuffer declarations (UNITY_MATRIX_V is undefined at this scope).
-// MatCap UV computation is inlined directly inside each slot's macro instead,
-// where it is expanded at shader-body compile time with UNITY_MATRIX_V in scope.
+// Note: the MatCap camera basis (_dnkw_wvd/vrt/vup) is computed once in BEFORE_MATCAP
+// rather than as a helper function, because HLSLINCLUDE is compiled before Unity's built-in
+// cbuffer declarations (UNITY_MATRIX_V is undefined at HLSLINCLUDE scope).
+// The basis is shared across both slot macros to avoid duplicate computation.
 
 //----------------------------------------------------------------------------------------------------------------------
 // Helper: Fresnel rim factor (shared across all slots)
@@ -269,16 +267,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
     float2 ddxUV_s1 = ddx(fd.uv0); \
     float2 ddyUV_s1 = ddy(fd.uv0); \
     if (_DecalSlot1_Enable > 0.5) { \
-        float2 slotUV_s1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), _DecalSlot1_Angle); \
-        float inBounds_s1 = step(0.0, slotUV_s1.x) * step(slotUV_s1.x, 1.0) * step(0.0, slotUV_s1.y) * step(slotUV_s1.y, 1.0); \
-        float sharedMask_s1 = inBounds_s1; \
         float rad_s1  = _DecalSlot1_Angle * 0.01745329252f; \
         float sinA_s1, cosA_s1; \
         sincos(rad_s1, sinA_s1, cosA_s1); \
+        float2 slotUV_s1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), sinA_s1, cosA_s1); \
+        float inBounds_s1 = step(0.0, slotUV_s1.x) * step(slotUV_s1.x, 1.0) * step(0.0, slotUV_s1.y) * step(slotUV_s1.y, 1.0); \
+        float sharedMask_s1 = inBounds_s1; \
         float2 dxR_s1    = float2(ddxUV_s1.x*cosA_s1 - ddxUV_s1.y*sinA_s1, ddxUV_s1.x*sinA_s1 + ddxUV_s1.y*cosA_s1); \
         float2 dyR_s1    = float2(ddyUV_s1.x*cosA_s1 - ddyUV_s1.y*sinA_s1, ddyUV_s1.x*sinA_s1 + ddyUV_s1.y*cosA_s1); \
-        float2 dxSlot_s1 = dxR_s1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
-        float2 dySlot_s1 = dyR_s1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
+        float2 safeScale_s1 = max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_s1 = dxR_s1 / safeScale_s1; \
+        float2 dySlot_s1 = dyR_s1 / safeScale_s1; \
         if (_DecalSlot1_UseMask > 0.5) { \
             sharedMask_s1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1).r * inBounds_s1; \
         } \
@@ -298,12 +297,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot1_MatCap_Enable > 0.5) { \
             float3 Nmc_s1 = normalize(lerp(fd.origN, fd.N, _DecalSlot1_MatCap_BumpScale)); \
             if (_DecalSlot1_MatCap_UseReflection > 0.5) Nmc_s1 = reflect(-fd.V, Nmc_s1); \
-            float3 wvd_s1 = -UNITY_MATRIX_V[2].xyz; \
-            float3 vup_s1 = float3(0, 1, 0); \
-            float3 vrt_s1 = cross(vup_s1, wvd_s1); \
-            vrt_s1 = (length(vrt_s1) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s1); \
-            vup_s1 = cross(wvd_s1, vrt_s1); \
-            float3 Nvs_s1 = float3(dot(vrt_s1, Nmc_s1), dot(vup_s1, Nmc_s1), dot(wvd_s1, Nmc_s1)); \
+            float3 Nvs_s1 = float3(dot(_dnkw_vrt, Nmc_s1), dot(_dnkw_vup, Nmc_s1), dot(_dnkw_wvd, Nmc_s1)); \
             Nvs_s1.z *= -1.0; \
             float2 uvmc_s1  = Nvs_s1.xy * 0.5 + 0.5; \
             float4 mcTex_s1 = LIL_SAMPLE_2D_LOD(_DecalSlot1_MatCap_Tex, sampler_linear_clamp, uvmc_s1, _DecalSlot1_MatCap_Blur * 8.0); \
@@ -321,16 +315,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
     float2 ddxUV_s2 = ddx(fd.uv0); \
     float2 ddyUV_s2 = ddy(fd.uv0); \
     if (_DecalSlot2_Enable > 0.5) { \
-        float2 slotUV_s2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), _DecalSlot2_Angle); \
-        float inBounds_s2 = step(0.0, slotUV_s2.x) * step(slotUV_s2.x, 1.0) * step(0.0, slotUV_s2.y) * step(slotUV_s2.y, 1.0); \
-        float sharedMask_s2 = inBounds_s2; \
         float rad_s2  = _DecalSlot2_Angle * 0.01745329252f; \
         float sinA_s2, cosA_s2; \
         sincos(rad_s2, sinA_s2, cosA_s2); \
+        float2 slotUV_s2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), sinA_s2, cosA_s2); \
+        float inBounds_s2 = step(0.0, slotUV_s2.x) * step(slotUV_s2.x, 1.0) * step(0.0, slotUV_s2.y) * step(slotUV_s2.y, 1.0); \
+        float sharedMask_s2 = inBounds_s2; \
         float2 dxR_s2    = float2(ddxUV_s2.x*cosA_s2 - ddxUV_s2.y*sinA_s2, ddxUV_s2.x*sinA_s2 + ddxUV_s2.y*cosA_s2); \
         float2 dyR_s2    = float2(ddyUV_s2.x*cosA_s2 - ddyUV_s2.y*sinA_s2, ddyUV_s2.x*sinA_s2 + ddyUV_s2.y*cosA_s2); \
-        float2 dxSlot_s2 = dxR_s2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
-        float2 dySlot_s2 = dyR_s2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
+        float2 safeScale_s2 = max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_s2 = dxR_s2 / safeScale_s2; \
+        float2 dySlot_s2 = dyR_s2 / safeScale_s2; \
         if (_DecalSlot2_UseMask > 0.5) { \
             sharedMask_s2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2).r * inBounds_s2; \
         } \
@@ -350,12 +345,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot2_MatCap_Enable > 0.5) { \
             float3 Nmc_s2 = normalize(lerp(fd.origN, fd.N, _DecalSlot2_MatCap_BumpScale)); \
             if (_DecalSlot2_MatCap_UseReflection > 0.5) Nmc_s2 = reflect(-fd.V, Nmc_s2); \
-            float3 wvd_s2 = -UNITY_MATRIX_V[2].xyz; \
-            float3 vup_s2 = float3(0, 1, 0); \
-            float3 vrt_s2 = cross(vup_s2, wvd_s2); \
-            vrt_s2 = (length(vrt_s2) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s2); \
-            vup_s2 = cross(wvd_s2, vrt_s2); \
-            float3 Nvs_s2 = float3(dot(vrt_s2, Nmc_s2), dot(vup_s2, Nmc_s2), dot(wvd_s2, Nmc_s2)); \
+            float3 Nvs_s2 = float3(dot(_dnkw_vrt, Nmc_s2), dot(_dnkw_vup, Nmc_s2), dot(_dnkw_wvd, Nmc_s2)); \
             Nvs_s2.z *= -1.0; \
             float2 uvmc_s2  = Nvs_s2.xy * 0.5 + 0.5; \
             float4 mcTex_s2 = LIL_SAMPLE_2D_LOD(_DecalSlot2_MatCap_Tex, sampler_linear_clamp, uvmc_s2, _DecalSlot2_MatCap_Blur * 8.0); \
@@ -373,16 +363,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
     float2 ddxUV_em1 = ddx(fd.uv0); \
     float2 ddyUV_em1 = ddy(fd.uv0); \
     if (_DecalSlot1_Enable > 0.5 && _DecalSlot1_Emission_Enable > 0.5) { \
-        float2 slotUV_em1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), _DecalSlot1_Angle); \
-        float inBounds_em1 = step(0.0, slotUV_em1.x) * step(slotUV_em1.x, 1.0) * step(0.0, slotUV_em1.y) * step(slotUV_em1.y, 1.0); \
-        float sharedMask_em1 = inBounds_em1; \
         float rad_em1 = _DecalSlot1_Angle * 0.01745329252f; \
         float sinA_em1, cosA_em1; \
         sincos(rad_em1, sinA_em1, cosA_em1); \
+        float2 slotUV_em1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), sinA_em1, cosA_em1); \
+        float inBounds_em1 = step(0.0, slotUV_em1.x) * step(slotUV_em1.x, 1.0) * step(0.0, slotUV_em1.y) * step(slotUV_em1.y, 1.0); \
+        float sharedMask_em1 = inBounds_em1; \
         float2 dxR_em1 = float2(ddxUV_em1.x*cosA_em1 - ddxUV_em1.y*sinA_em1, ddxUV_em1.x*sinA_em1 + ddxUV_em1.y*cosA_em1); \
         float2 dyR_em1 = float2(ddyUV_em1.x*cosA_em1 - ddyUV_em1.y*sinA_em1, ddyUV_em1.x*sinA_em1 + ddyUV_em1.y*cosA_em1); \
-        float2 dxSlot_em1 = dxR_em1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
-        float2 dySlot_em1 = dyR_em1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
+        float2 safeScale_em1 = max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_em1 = dxR_em1 / safeScale_em1; \
+        float2 dySlot_em1 = dyR_em1 / safeScale_em1; \
         if (_DecalSlot1_UseMask > 0.5) { \
             sharedMask_em1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_em1, dxSlot_em1, dySlot_em1).r * inBounds_em1; \
         } \
@@ -422,7 +413,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         fd.emissionColor += emCol_em1; \
         float emLum_em1 = dot(emCol_em1, float3(0.2126, 0.7152, 0.0722)); \
         float emAlpha_em1 = saturate(_DecalSlot1_Emission_Opacity) * saturate(emLum_em1); \
-        fd.col.rgb = lerp(fd.col.rgb, fd.col.rgb + emCol_em1, emAlpha_em1); \
+        fd.col.rgb += emCol_em1 * emAlpha_em1; \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -431,16 +422,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
     float2 ddxUV_em2 = ddx(fd.uv0); \
     float2 ddyUV_em2 = ddy(fd.uv0); \
     if (_DecalSlot2_Enable > 0.5 && _DecalSlot2_Emission_Enable > 0.5) { \
-        float2 slotUV_em2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), _DecalSlot2_Angle); \
-        float inBounds_em2 = step(0.0, slotUV_em2.x) * step(slotUV_em2.x, 1.0) * step(0.0, slotUV_em2.y) * step(slotUV_em2.y, 1.0); \
-        float sharedMask_em2 = inBounds_em2; \
         float rad_em2 = _DecalSlot2_Angle * 0.01745329252f; \
         float sinA_em2, cosA_em2; \
         sincos(rad_em2, sinA_em2, cosA_em2); \
+        float2 slotUV_em2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), sinA_em2, cosA_em2); \
+        float inBounds_em2 = step(0.0, slotUV_em2.x) * step(slotUV_em2.x, 1.0) * step(0.0, slotUV_em2.y) * step(slotUV_em2.y, 1.0); \
+        float sharedMask_em2 = inBounds_em2; \
         float2 dxR_em2 = float2(ddxUV_em2.x*cosA_em2 - ddxUV_em2.y*sinA_em2, ddxUV_em2.x*sinA_em2 + ddxUV_em2.y*cosA_em2); \
         float2 dyR_em2 = float2(ddyUV_em2.x*cosA_em2 - ddyUV_em2.y*sinA_em2, ddyUV_em2.x*sinA_em2 + ddyUV_em2.y*cosA_em2); \
-        float2 dxSlot_em2 = dxR_em2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
-        float2 dySlot_em2 = dyR_em2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
+        float2 safeScale_em2 = max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_em2 = dxR_em2 / safeScale_em2; \
+        float2 dySlot_em2 = dyR_em2 / safeScale_em2; \
         if (_DecalSlot2_UseMask > 0.5) { \
             sharedMask_em2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_em2, dxSlot_em2, dySlot_em2).r * inBounds_em2; \
         } \
@@ -480,7 +472,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
         fd.emissionColor += emCol_em2; \
         float emLum_em2 = dot(emCol_em2, float3(0.2126, 0.7152, 0.0722)); \
         float emAlpha_em2 = saturate(_DecalSlot2_Emission_Opacity) * saturate(emLum_em2); \
-        fd.col.rgb = lerp(fd.col.rgb, fd.col.rgb + emCol_em2, emAlpha_em2); \
+        fd.col.rgb += emCol_em2 * emAlpha_em2; \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -489,6 +481,10 @@ float DNKW_FresRim(float NdotV, float rimPower)
 #if !defined(UNITY_PASS_SHADOWCASTER)
 #define BEFORE_MATCAP \
 { \
+    float3 _dnkw_wvd = -UNITY_MATRIX_V[2].xyz; \
+    float3 _dnkw_vrt = cross(float3(0,1,0), _dnkw_wvd); \
+    _dnkw_vrt = (dot(_dnkw_vrt, _dnkw_vrt) < 0.000001) ? float3(1,0,0) : normalize(_dnkw_vrt); \
+    float3 _dnkw_vup = cross(_dnkw_wvd, _dnkw_vrt); \
     DNKW_DECAL_SLOT1_LOGIC \
     DNKW_DECAL_SLOT2_LOGIC \
 }
