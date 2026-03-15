@@ -386,6 +386,7 @@ namespace lilToon
                             }
                         }
                     }
+                    m_MaterialEditor.TextureScaleOffsetProperty(nmTex);
                     m_MaterialEditor.ShaderProperty(nmScale, new GUIContent(L("Strength", "強度"), L("Normal map strength (0=flat, 1=normal, 3=enhanced)", "ノーマルマップの強度（0=フラット、1=通常、3=強調）")));
                 }
 
@@ -462,8 +463,9 @@ namespace lilToon
                         m_MaterialEditor.ShaderProperty(emScrollX, new GUIContent(L("Scroll X", "スクロール X"), L("Horizontal scroll speed (UV/sec)", "横スクロール速度（UV/秒）")));
                         m_MaterialEditor.ShaderProperty(emScrollY, new GUIContent(L("Scroll Y", "スクロール Y"), L("Vertical scroll speed (UV/sec)", "縦スクロール速度（UV/秒）")));
                         m_MaterialEditor.TexturePropertySingleLine(
-                            new GUIContent(L("Scroll Mask", "スクロールマスク"), L("Mask defining the visible scroll window (static UV, white=show)", "スクロールの可視ウィンドウを定義するマスク（静止UV、白=表示）")),
+                            new GUIContent(L("Scroll Mask", "スクロールマスク"), L("Mask defining the visible scroll window (scroll UV, white=show)", "スクロールの可視ウィンドウを定義するマスク（スクロールUV、白=表示）")),
                             emScrollMask);
+                        m_MaterialEditor.TextureScaleOffsetProperty(emScrollMask);
                         EditorGUI.indentLevel--;
                     }
                 }

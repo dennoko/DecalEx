@@ -233,7 +233,10 @@ float DNKW_FresRim(float NdotV, float rimPower)
         } \
         if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s1 = 0.0; \
         if (_DecalSlot1_NormalMap_Enable > 0.5) { \
-            float4 nmTex_s1 = _DecalSlot1_NormalMap_Tex.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1); \
+            float2 nmUV_s1 = slotUV_s1 * _DecalSlot1_NormalMap_Tex_ST.xy + _DecalSlot1_NormalMap_Tex_ST.zw; \
+            float2 nmDx_s1 = dxSlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+            float2 nmDy_s1 = dySlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+            float4 nmTex_s1 = _DecalSlot1_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s1, nmDx_s1, nmDy_s1); \
             float3 nmWS_s1  = normalize(mul(lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale), fd.TBN)); \
             fd.N = normalize(lerp(fd.N, nmWS_s1, sharedMask_s1)); \
         } \
@@ -282,7 +285,10 @@ float DNKW_FresRim(float NdotV, float rimPower)
         } \
         if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s2 = 0.0; \
         if (_DecalSlot2_NormalMap_Enable > 0.5) { \
-            float4 nmTex_s2 = _DecalSlot2_NormalMap_Tex.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2); \
+            float2 nmUV_s2 = slotUV_s2 * _DecalSlot2_NormalMap_Tex_ST.xy + _DecalSlot2_NormalMap_Tex_ST.zw; \
+            float2 nmDx_s2 = dxSlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+            float2 nmDy_s2 = dySlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+            float4 nmTex_s2 = _DecalSlot2_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s2, nmDx_s2, nmDy_s2); \
             float3 nmWS_s2  = normalize(mul(lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale), fd.TBN)); \
             fd.N = normalize(lerp(fd.N, nmWS_s2, sharedMask_s2)); \
         } \
@@ -349,10 +355,13 @@ float DNKW_FresRim(float NdotV, float rimPower)
         float2 emUV_em1 = slotUV_em1 * _DecalSlot1_Emission_Tex_ST.xy + _DecalSlot1_Emission_Tex_ST.zw; \
         float emScrollMask_em1 = 1.0; \
         if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
-            emUV_em1 += float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
-            emScrollMask_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
-                ? _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_clamp,  slotUV_em1, dxSlot_em1, dySlot_em1).r \
-                : _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, emUV_em1,   dxSlot_em1, dySlot_em1).r; \
+            float2 scrollDelta_em1 = float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
+            emUV_em1 += scrollDelta_em1; \
+            float2 scrollMaskBaseUV_em1 = slotUV_em1 + scrollDelta_em1; \
+            float2 scrollMaskUV_em1 = scrollMaskBaseUV_em1 * _DecalSlot1_Emission_ScrollMask_ST.xy + _DecalSlot1_Emission_ScrollMask_ST.zw; \
+            float2 scrollMaskDx_em1 = dxSlot_em1 * _DecalSlot1_Emission_ScrollMask_ST.xy; \
+            float2 scrollMaskDy_em1 = dySlot_em1 * _DecalSlot1_Emission_ScrollMask_ST.xy; \
+            emScrollMask_em1 = _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, scrollMaskUV_em1, scrollMaskDx_em1, scrollMaskDy_em1).r; \
         } \
         float3 emTexCol_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
             ? _DecalSlot1_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em1, dxSlot_em1, dySlot_em1).rgb \
@@ -403,10 +412,13 @@ float DNKW_FresRim(float NdotV, float rimPower)
         float2 emUV_em2 = slotUV_em2 * _DecalSlot2_Emission_Tex_ST.xy + _DecalSlot2_Emission_Tex_ST.zw; \
         float emScrollMask_em2 = 1.0; \
         if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
-            emUV_em2 += float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
-            emScrollMask_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
-                ? _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_clamp,  slotUV_em2, dxSlot_em2, dySlot_em2).r \
-                : _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, emUV_em2,   dxSlot_em2, dySlot_em2).r; \
+            float2 scrollDelta_em2 = float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
+            emUV_em2 += scrollDelta_em2; \
+            float2 scrollMaskBaseUV_em2 = slotUV_em2 + scrollDelta_em2; \
+            float2 scrollMaskUV_em2 = scrollMaskBaseUV_em2 * _DecalSlot2_Emission_ScrollMask_ST.xy + _DecalSlot2_Emission_ScrollMask_ST.zw; \
+            float2 scrollMaskDx_em2 = dxSlot_em2 * _DecalSlot2_Emission_ScrollMask_ST.xy; \
+            float2 scrollMaskDy_em2 = dySlot_em2 * _DecalSlot2_Emission_ScrollMask_ST.xy; \
+            emScrollMask_em2 = _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, scrollMaskUV_em2, scrollMaskDx_em2, scrollMaskDy_em2).r; \
         } \
         float3 emTexCol_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
             ? _DecalSlot2_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em2, dxSlot_em2, dySlot_em2).rgb \
