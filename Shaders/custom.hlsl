@@ -24,7 +24,6 @@
     float  _DecalSlot1_MatCap_MainColorPower; \
     float  _DecalSlot1_MatCap_BumpScale; \
     float  _DecalSlot1_MatCap_UseReflection; \
-    float  _DecalSlot1_MatCap_ZRollCancel; \
     float  _DecalSlot1_MatCap_EnableLighting; \
     float  _DecalSlot1_MatCap_ShadowStrength; \
     float  _DecalSlot1_MatCap_Blur; \
@@ -37,6 +36,7 @@
     float  _DecalSlot1_Emission_Enable; \
     float4 _DecalSlot1_Emission_Color; \
     float  _DecalSlot1_Emission_Strength; \
+    float  _DecalSlot1_Emission_UseTex; \
     float4 _DecalSlot1_Emission_Tex_ST; \
     float  _DecalSlot1_Emission_SinEnable; \
     float  _DecalSlot1_Emission_SinSpeed; \
@@ -70,7 +70,6 @@
     float  _DecalSlot2_MatCap_MainColorPower; \
     float  _DecalSlot2_MatCap_BumpScale; \
     float  _DecalSlot2_MatCap_UseReflection; \
-    float  _DecalSlot2_MatCap_ZRollCancel; \
     float  _DecalSlot2_MatCap_EnableLighting; \
     float  _DecalSlot2_MatCap_ShadowStrength; \
     float  _DecalSlot2_MatCap_Blur; \
@@ -83,6 +82,7 @@
     float  _DecalSlot2_Emission_Enable; \
     float4 _DecalSlot2_Emission_Color; \
     float  _DecalSlot2_Emission_Strength; \
+    float  _DecalSlot2_Emission_UseTex; \
     float4 _DecalSlot2_Emission_Tex_ST; \
     float  _DecalSlot2_Emission_SinEnable; \
     float  _DecalSlot2_Emission_SinSpeed; \
@@ -238,17 +238,12 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot1_MatCap_Enable > 0.5) { \
             float3 Nmc_s1 = normalize(lerp(fd.origN, fd.N, _DecalSlot1_MatCap_BumpScale)); \
             if (_DecalSlot1_MatCap_UseReflection > 0.5) Nmc_s1 = reflect(-fd.V, Nmc_s1); \
-            float3 Nvs_s1; \
-            if (_DecalSlot1_MatCap_ZRollCancel > 0.5) { \
-                float3 wvd_s1 = -UNITY_MATRIX_V[2].xyz; \
-                float3 vup_s1 = float3(0, 1, 0); \
-                float3 vrt_s1 = cross(vup_s1, wvd_s1); \
-                vrt_s1 = (length(vrt_s1) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s1); \
-                vup_s1 = cross(wvd_s1, vrt_s1); \
-                Nvs_s1 = float3(dot(vrt_s1, Nmc_s1), dot(vup_s1, Nmc_s1), dot(wvd_s1, Nmc_s1)); \
-            } else { \
-                Nvs_s1 = mul((float3x3)UNITY_MATRIX_V, Nmc_s1); \
-            } \
+            float3 wvd_s1 = -UNITY_MATRIX_V[2].xyz; \
+            float3 vup_s1 = float3(0, 1, 0); \
+            float3 vrt_s1 = cross(vup_s1, wvd_s1); \
+            vrt_s1 = (length(vrt_s1) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s1); \
+            vup_s1 = cross(wvd_s1, vrt_s1); \
+            float3 Nvs_s1 = float3(dot(vrt_s1, Nmc_s1), dot(vup_s1, Nmc_s1), dot(wvd_s1, Nmc_s1)); \
             Nvs_s1.z *= -1.0; \
             float2 uvmc_s1  = Nvs_s1.xy * 0.5 + 0.5; \
             float4 mcTex_s1 = LIL_SAMPLE_2D_LOD(_DecalSlot1_MatCap_Tex, sampler_linear_clamp, uvmc_s1, _DecalSlot1_MatCap_Blur * 8.0); \
@@ -257,26 +252,6 @@ float DNKW_FresRim(float NdotV, float rimPower)
             mcCol_s1 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot1_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot1_MatCap_EnableLighting); \
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s1, _DecalSlot1_MatCap_Blend), mcMask_s1); \
             fd.emissionColor += mcCol_s1 * mcMask_s1 * _DecalSlot1_MatCap_EmissionAdd; \
-        } \
-        if (_DecalSlot1_Emission_Enable > 0.5) { \
-            float emStrFactor_s1 = 1.0; \
-            if (_DecalSlot1_Emission_SinEnable > 0.5) { \
-                emStrFactor_s1 *= lerp(_DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot1_Emission_SinSpeed)); \
-            } \
-            if (_DecalSlot1_Emission_PulseEnable > 0.5) { \
-                float pt_s1  = _Time.y * _DecalSlot1_Emission_PulseSpeed; \
-                float ph0_s1 = frac(sin(floor(pt_s1)       * 78.233) * 43758.5453); \
-                float ph1_s1 = frac(sin((floor(pt_s1)+1.0) * 78.233) * 43758.5453); \
-                emStrFactor_s1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, lerp(ph0_s1, ph1_s1, smoothstep(0.0, 1.0, frac(pt_s1)))); \
-            } \
-            float2 emUV_s1        = slotUV_s1; \
-            float  emScrollMask_s1 = 1.0; \
-            if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
-                emUV_s1        += float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
-                emScrollMask_s1 = _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1).r; \
-            } \
-            float4 emTex_s1 = _DecalSlot1_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_s1, dxSlot_s1, dySlot_s1); \
-            fd.emissionColor += emTex_s1.rgb * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * emStrFactor_s1 * sharedMask_s1 * emScrollMask_s1; \
         } \
     }
 
@@ -312,17 +287,12 @@ float DNKW_FresRim(float NdotV, float rimPower)
         if (_DecalSlot2_MatCap_Enable > 0.5) { \
             float3 Nmc_s2 = normalize(lerp(fd.origN, fd.N, _DecalSlot2_MatCap_BumpScale)); \
             if (_DecalSlot2_MatCap_UseReflection > 0.5) Nmc_s2 = reflect(-fd.V, Nmc_s2); \
-            float3 Nvs_s2; \
-            if (_DecalSlot2_MatCap_ZRollCancel > 0.5) { \
-                float3 wvd_s2 = -UNITY_MATRIX_V[2].xyz; \
-                float3 vup_s2 = float3(0, 1, 0); \
-                float3 vrt_s2 = cross(vup_s2, wvd_s2); \
-                vrt_s2 = (length(vrt_s2) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s2); \
-                vup_s2 = cross(wvd_s2, vrt_s2); \
-                Nvs_s2 = float3(dot(vrt_s2, Nmc_s2), dot(vup_s2, Nmc_s2), dot(wvd_s2, Nmc_s2)); \
-            } else { \
-                Nvs_s2 = mul((float3x3)UNITY_MATRIX_V, Nmc_s2); \
-            } \
+            float3 wvd_s2 = -UNITY_MATRIX_V[2].xyz; \
+            float3 vup_s2 = float3(0, 1, 0); \
+            float3 vrt_s2 = cross(vup_s2, wvd_s2); \
+            vrt_s2 = (length(vrt_s2) < 0.001) ? float3(1, 0, 0) : normalize(vrt_s2); \
+            vup_s2 = cross(wvd_s2, vrt_s2); \
+            float3 Nvs_s2 = float3(dot(vrt_s2, Nmc_s2), dot(vup_s2, Nmc_s2), dot(wvd_s2, Nmc_s2)); \
             Nvs_s2.z *= -1.0; \
             float2 uvmc_s2  = Nvs_s2.xy * 0.5 + 0.5; \
             float4 mcTex_s2 = LIL_SAMPLE_2D_LOD(_DecalSlot2_MatCap_Tex, sampler_linear_clamp, uvmc_s2, _DecalSlot2_MatCap_Blur * 8.0); \
@@ -332,26 +302,90 @@ float DNKW_FresRim(float NdotV, float rimPower)
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s2, _DecalSlot2_MatCap_Blend), mcMask_s2); \
             fd.emissionColor += mcCol_s2 * mcMask_s2 * _DecalSlot2_MatCap_EmissionAdd; \
         } \
-        if (_DecalSlot2_Emission_Enable > 0.5) { \
-            float emStrFactor_s2 = 1.0; \
-            if (_DecalSlot2_Emission_SinEnable > 0.5) { \
-                emStrFactor_s2 *= lerp(_DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot2_Emission_SinSpeed)); \
-            } \
-            if (_DecalSlot2_Emission_PulseEnable > 0.5) { \
-                float pt_s2  = _Time.y * _DecalSlot2_Emission_PulseSpeed; \
-                float ph0_s2 = frac(sin(floor(pt_s2)       * 78.233) * 43758.5453); \
-                float ph1_s2 = frac(sin((floor(pt_s2)+1.0) * 78.233) * 43758.5453); \
-                emStrFactor_s2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, lerp(ph0_s2, ph1_s2, smoothstep(0.0, 1.0, frac(pt_s2)))); \
-            } \
-            float2 emUV_s2        = slotUV_s2; \
-            float  emScrollMask_s2 = 1.0; \
-            if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
-                emUV_s2        += float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
-                emScrollMask_s2 = _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2).r; \
-            } \
-            float4 emTex_s2 = _DecalSlot2_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_s2, dxSlot_s2, dySlot_s2); \
-            fd.emissionColor += emTex_s2.rgb * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * emStrFactor_s2 * sharedMask_s2 * emScrollMask_s2; \
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Decal Slot 1 Emission Logic
+#define DNKW_DECAL_SLOT1_EMISSION_LOGIC \
+    float2 ddxUV_em1 = ddx(fd.uv0); \
+    float2 ddyUV_em1 = ddy(fd.uv0); \
+    if (_DecalSlot1_Enable > 0.5 && _DecalSlot1_Emission_Enable > 0.5) { \
+        float2 slotUV_em1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), _DecalSlot1_Angle); \
+        float inBounds_em1 = step(0.0, slotUV_em1.x) * step(slotUV_em1.x, 1.0) * step(0.0, slotUV_em1.y) * step(slotUV_em1.y, 1.0); \
+        float sharedMask_em1 = inBounds_em1; \
+        float rad_em1 = _DecalSlot1_Angle * 0.01745329252f; \
+        float sinA_em1, cosA_em1; \
+        sincos(rad_em1, sinA_em1, cosA_em1); \
+        float2 dxR_em1 = float2(ddxUV_em1.x*cosA_em1 - ddxUV_em1.y*sinA_em1, ddxUV_em1.x*sinA_em1 + ddxUV_em1.y*cosA_em1); \
+        float2 dyR_em1 = float2(ddyUV_em1.x*cosA_em1 - ddyUV_em1.y*sinA_em1, ddyUV_em1.x*sinA_em1 + ddyUV_em1.y*cosA_em1); \
+        float2 dxSlot_em1 = dxR_em1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
+        float2 dySlot_em1 = dyR_em1 / max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) / 10.0; \
+        if (_DecalSlot1_UseMask > 0.5) { \
+            sharedMask_em1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_em1, dxSlot_em1, dySlot_em1).r * inBounds_em1; \
         } \
+        if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_em1 = 0.0; \
+        float emStrFactor_em1 = 1.0; \
+        if (_DecalSlot1_Emission_SinEnable > 0.5) { \
+            emStrFactor_em1 *= lerp(_DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot1_Emission_SinSpeed)); \
+        } \
+        if (_DecalSlot1_Emission_PulseEnable > 0.5) { \
+            float pt_em1  = _Time.y * _DecalSlot1_Emission_PulseSpeed; \
+            float ph0_em1 = frac(sin(floor(pt_em1)       * 78.233) * 43758.5453); \
+            float ph1_em1 = frac(sin((floor(pt_em1)+1.0) * 78.233) * 43758.5453); \
+            emStrFactor_em1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, lerp(ph0_em1, ph1_em1, smoothstep(0.0, 1.0, frac(pt_em1)))); \
+        } \
+        float2 emUV_em1 = slotUV_em1; \
+        float emScrollMask_em1 = 1.0; \
+        if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
+            emUV_em1 += float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
+            emScrollMask_em1 = _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_em1, dxSlot_em1, dySlot_em1).r; \
+        } \
+        float3 emTexCol_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
+            ? _DecalSlot1_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em1, dxSlot_em1, dySlot_em1).rgb \
+            : float3(1.0, 1.0, 1.0); \
+        fd.emissionColor += emTexCol_em1 * _DecalSlot1_Emission_Color.rgb * _DecalSlot1_Emission_Strength * emStrFactor_em1 * sharedMask_em1 * emScrollMask_em1; \
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Decal Slot 2 Emission Logic
+#define DNKW_DECAL_SLOT2_EMISSION_LOGIC \
+    float2 ddxUV_em2 = ddx(fd.uv0); \
+    float2 ddyUV_em2 = ddy(fd.uv0); \
+    if (_DecalSlot2_Enable > 0.5 && _DecalSlot2_Emission_Enable > 0.5) { \
+        float2 slotUV_em2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), _DecalSlot2_Angle); \
+        float inBounds_em2 = step(0.0, slotUV_em2.x) * step(slotUV_em2.x, 1.0) * step(0.0, slotUV_em2.y) * step(slotUV_em2.y, 1.0); \
+        float sharedMask_em2 = inBounds_em2; \
+        float rad_em2 = _DecalSlot2_Angle * 0.01745329252f; \
+        float sinA_em2, cosA_em2; \
+        sincos(rad_em2, sinA_em2, cosA_em2); \
+        float2 dxR_em2 = float2(ddxUV_em2.x*cosA_em2 - ddxUV_em2.y*sinA_em2, ddxUV_em2.x*sinA_em2 + ddxUV_em2.y*cosA_em2); \
+        float2 dyR_em2 = float2(ddyUV_em2.x*cosA_em2 - ddyUV_em2.y*sinA_em2, ddyUV_em2.x*sinA_em2 + ddyUV_em2.y*cosA_em2); \
+        float2 dxSlot_em2 = dxR_em2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
+        float2 dySlot_em2 = dyR_em2 / max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) / 10.0; \
+        if (_DecalSlot2_UseMask > 0.5) { \
+            sharedMask_em2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_em2, dxSlot_em2, dySlot_em2).r * inBounds_em2; \
+        } \
+        if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_em2 = 0.0; \
+        float emStrFactor_em2 = 1.0; \
+        if (_DecalSlot2_Emission_SinEnable > 0.5) { \
+            emStrFactor_em2 *= lerp(_DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot2_Emission_SinSpeed)); \
+        } \
+        if (_DecalSlot2_Emission_PulseEnable > 0.5) { \
+            float pt_em2  = _Time.y * _DecalSlot2_Emission_PulseSpeed; \
+            float ph0_em2 = frac(sin(floor(pt_em2)       * 78.233) * 43758.5453); \
+            float ph1_em2 = frac(sin((floor(pt_em2)+1.0) * 78.233) * 43758.5453); \
+            emStrFactor_em2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, lerp(ph0_em2, ph1_em2, smoothstep(0.0, 1.0, frac(pt_em2)))); \
+        } \
+        float2 emUV_em2 = slotUV_em2; \
+        float emScrollMask_em2 = 1.0; \
+        if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
+            emUV_em2 += float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
+            emScrollMask_em2 = _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_em2, dxSlot_em2, dySlot_em2).r; \
+        } \
+        float3 emTexCol_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
+            ? _DecalSlot2_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em2, dxSlot_em2, dySlot_em2).rgb \
+            : float3(1.0, 1.0, 1.0); \
+        fd.emissionColor += emTexCol_em2 * _DecalSlot2_Emission_Color.rgb * _DecalSlot2_Emission_Strength * emStrFactor_em2 * sharedMask_em2 * emScrollMask_em2; \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -363,8 +397,15 @@ float DNKW_FresRim(float NdotV, float rimPower)
     DNKW_DECAL_SLOT1_LOGIC \
     DNKW_DECAL_SLOT2_LOGIC \
 }
+
+#define BEFORE_EMISSION_1ST \
+{ \
+    DNKW_DECAL_SLOT1_EMISSION_LOGIC \
+    DNKW_DECAL_SLOT2_EMISSION_LOGIC \
+}
 #else
 #define BEFORE_MATCAP
+#define BEFORE_EMISSION_1ST
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------

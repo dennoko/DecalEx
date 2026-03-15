@@ -30,7 +30,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_MatCap_MainColorPower;
         private MaterialProperty _DecalSlot1_MatCap_BumpScale;
         private MaterialProperty _DecalSlot1_MatCap_UseReflection;
-        private MaterialProperty _DecalSlot1_MatCap_ZRollCancel;
         private MaterialProperty _DecalSlot1_MatCap_EnableLighting;
         private MaterialProperty _DecalSlot1_MatCap_ShadowStrength;
         private MaterialProperty _DecalSlot1_MatCap_Blur;
@@ -41,6 +40,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_NormalMap_Scale;
         private MaterialProperty _DecalSlot1_Emission_Enable;
         private MaterialProperty _DecalSlot1_Emission_Tex;
+        private MaterialProperty _DecalSlot1_Emission_UseTex;
         private MaterialProperty _DecalSlot1_Emission_Color;
         private MaterialProperty _DecalSlot1_Emission_Strength;
         private MaterialProperty _DecalSlot1_Emission_SinEnable;
@@ -79,7 +79,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_MatCap_MainColorPower;
         private MaterialProperty _DecalSlot2_MatCap_BumpScale;
         private MaterialProperty _DecalSlot2_MatCap_UseReflection;
-        private MaterialProperty _DecalSlot2_MatCap_ZRollCancel;
         private MaterialProperty _DecalSlot2_MatCap_EnableLighting;
         private MaterialProperty _DecalSlot2_MatCap_ShadowStrength;
         private MaterialProperty _DecalSlot2_MatCap_Blur;
@@ -90,6 +89,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_NormalMap_Scale;
         private MaterialProperty _DecalSlot2_Emission_Enable;
         private MaterialProperty _DecalSlot2_Emission_Tex;
+        private MaterialProperty _DecalSlot2_Emission_UseTex;
         private MaterialProperty _DecalSlot2_Emission_Color;
         private MaterialProperty _DecalSlot2_Emission_Strength;
         private MaterialProperty _DecalSlot2_Emission_SinEnable;
@@ -133,7 +133,6 @@ namespace lilToon
             _DecalSlot1_MatCap_MainColorPower = FindProperty("_DecalSlot1_MatCap_MainColorPower", props);
             _DecalSlot1_MatCap_BumpScale     = FindProperty("_DecalSlot1_MatCap_BumpScale", props);
             _DecalSlot1_MatCap_UseReflection = FindProperty("_DecalSlot1_MatCap_UseReflection", props);
-            _DecalSlot1_MatCap_ZRollCancel   = FindProperty("_DecalSlot1_MatCap_ZRollCancel", props);
             _DecalSlot1_MatCap_EnableLighting = FindProperty("_DecalSlot1_MatCap_EnableLighting", props);
             _DecalSlot1_MatCap_ShadowStrength = FindProperty("_DecalSlot1_MatCap_ShadowStrength", props);
             _DecalSlot1_MatCap_Blur          = FindProperty("_DecalSlot1_MatCap_Blur", props);
@@ -144,6 +143,7 @@ namespace lilToon
             _DecalSlot1_NormalMap_Scale      = FindProperty("_DecalSlot1_NormalMap_Scale", props);
             _DecalSlot1_Emission_Enable      = FindProperty("_DecalSlot1_Emission_Enable", props);
             _DecalSlot1_Emission_Tex         = FindProperty("_DecalSlot1_Emission_Tex", props);
+            _DecalSlot1_Emission_UseTex      = FindProperty("_DecalSlot1_Emission_UseTex", props);
             _DecalSlot1_Emission_Color       = FindProperty("_DecalSlot1_Emission_Color", props);
             _DecalSlot1_Emission_Strength    = FindProperty("_DecalSlot1_Emission_Strength", props);
             _DecalSlot1_Emission_SinEnable   = FindProperty("_DecalSlot1_Emission_SinEnable", props);
@@ -179,7 +179,6 @@ namespace lilToon
             _DecalSlot2_MatCap_MainColorPower = FindProperty("_DecalSlot2_MatCap_MainColorPower", props);
             _DecalSlot2_MatCap_BumpScale     = FindProperty("_DecalSlot2_MatCap_BumpScale", props);
             _DecalSlot2_MatCap_UseReflection = FindProperty("_DecalSlot2_MatCap_UseReflection", props);
-            _DecalSlot2_MatCap_ZRollCancel   = FindProperty("_DecalSlot2_MatCap_ZRollCancel", props);
             _DecalSlot2_MatCap_EnableLighting = FindProperty("_DecalSlot2_MatCap_EnableLighting", props);
             _DecalSlot2_MatCap_ShadowStrength = FindProperty("_DecalSlot2_MatCap_ShadowStrength", props);
             _DecalSlot2_MatCap_Blur          = FindProperty("_DecalSlot2_MatCap_Blur", props);
@@ -190,6 +189,7 @@ namespace lilToon
             _DecalSlot2_NormalMap_Scale      = FindProperty("_DecalSlot2_NormalMap_Scale", props);
             _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props);
             _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
+            _DecalSlot2_Emission_UseTex      = FindProperty("_DecalSlot2_Emission_UseTex", props);
             _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
             _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
             _DecalSlot2_Emission_SinEnable   = FindProperty("_DecalSlot2_Emission_SinEnable", props);
@@ -217,10 +217,10 @@ namespace lilToon
                 _DecalSlot1_NormalMap_Enable, _DecalSlot1_NormalMap_Tex, _DecalSlot1_NormalMap_Scale,
                 _DecalSlot1_MatCap_Enable, _DecalSlot1_MatCap_Tex, _DecalSlot1_MatCap_Color, _DecalSlot1_MatCap_Blend,
                 _DecalSlot1_MatCap_Alpha, _DecalSlot1_MatCap_MainColorPower, _DecalSlot1_MatCap_BumpScale,
-                _DecalSlot1_MatCap_UseReflection, _DecalSlot1_MatCap_ZRollCancel,
+                _DecalSlot1_MatCap_UseReflection,
                 _DecalSlot1_MatCap_EnableLighting, _DecalSlot1_MatCap_ShadowStrength, _DecalSlot1_MatCap_Blur,
                 _DecalSlot1_MatCap_RimPower, _DecalSlot1_MatCap_EmissionAdd,
-                _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_Color,
+                _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_UseTex, _DecalSlot1_Emission_Color,
                 _DecalSlot1_Emission_Strength,
                 _DecalSlot1_Emission_SinEnable, _DecalSlot1_Emission_SinSpeed,
                 _DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax,
@@ -236,10 +236,10 @@ namespace lilToon
                 _DecalSlot2_NormalMap_Enable, _DecalSlot2_NormalMap_Tex, _DecalSlot2_NormalMap_Scale,
                 _DecalSlot2_MatCap_Enable, _DecalSlot2_MatCap_Tex, _DecalSlot2_MatCap_Color, _DecalSlot2_MatCap_Blend,
                 _DecalSlot2_MatCap_Alpha, _DecalSlot2_MatCap_MainColorPower, _DecalSlot2_MatCap_BumpScale,
-                _DecalSlot2_MatCap_UseReflection, _DecalSlot2_MatCap_ZRollCancel,
+                _DecalSlot2_MatCap_UseReflection,
                 _DecalSlot2_MatCap_EnableLighting, _DecalSlot2_MatCap_ShadowStrength, _DecalSlot2_MatCap_Blur,
                 _DecalSlot2_MatCap_RimPower, _DecalSlot2_MatCap_EmissionAdd,
-                _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_Color,
+                _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_UseTex, _DecalSlot2_Emission_Color,
                 _DecalSlot2_Emission_Strength,
                 _DecalSlot2_Emission_SinEnable, _DecalSlot2_Emission_SinSpeed,
                 _DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax,
@@ -296,10 +296,10 @@ namespace lilToon
             MaterialProperty nmEnable, MaterialProperty nmTex, MaterialProperty nmScale,
             MaterialProperty mcEnable, MaterialProperty mcTex, MaterialProperty mcColor,
             MaterialProperty mcBlend, MaterialProperty mcAlpha, MaterialProperty mcMainColorPower,
-            MaterialProperty mcBumpScale, MaterialProperty mcUseReflection, MaterialProperty mcZRollCancel,
+            MaterialProperty mcBumpScale, MaterialProperty mcUseReflection,
             MaterialProperty mcEnableLighting, MaterialProperty mcShadowStrength, MaterialProperty mcBlur,
             MaterialProperty mcRimPower, MaterialProperty mcEmissionAdd,
-            MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emColor,
+            MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emUseTex, MaterialProperty emColor,
             MaterialProperty emStrength,
             MaterialProperty emSinEnable, MaterialProperty emSinSpeed,
             MaterialProperty emSinMin, MaterialProperty emSinMax,
@@ -355,6 +355,19 @@ namespace lilToon
                 {
                     EditorGUILayout.Space(2f);
                     m_MaterialEditor.TexturePropertySingleLine(new GUIContent(L("Normal Map", "ノーマルマップ"), L("Tangent space normal map", "タンジェント空間ノーマルマップ")), nmTex);
+                    if(nmTex.textureValue != null)
+                    {
+                        string nmPath = AssetDatabase.GetAssetPath(nmTex.textureValue);
+                        var nmImporter = AssetImporter.GetAtPath(nmPath) as TextureImporter;
+                        if(nmImporter != null && nmImporter.textureType != TextureImporterType.NormalMap)
+                        {
+                            if(lilEditorGUI.AutoFixHelpBox(L("Texture is not set as Normal Map. Click \"Fix Now\" to fix the import settings.", "テクスチャがNormal Mapとして設定されていません。「今すぐ修正」をクリックしてインポート設定を修正してください。")))
+                            {
+                                nmImporter.textureType = TextureImporterType.NormalMap;
+                                AssetDatabase.ImportAsset(nmPath);
+                            }
+                        }
+                    }
                     m_MaterialEditor.ShaderProperty(nmScale, new GUIContent(L("Strength", "強度"), L("Normal map strength (0=flat, 1=normal, 3=enhanced)", "ノーマルマップの強度（0=フラット、1=通常、3=強調）")));
                 }
 
@@ -376,7 +389,6 @@ namespace lilToon
                     EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcBumpScale, new GUIContent(L("Normal Strength", "法線強度"), L("Normal map influence on MatCap UV", "MatCap UV計算への法線マップ影響度")));
                     DrawToggleProp(mcUseReflection, new GUIContent(L("Use Reflection", "反射モード"), L("Reflection mode (view-dependent MatCap)", "視線反射モード（鏡面反射）")));
-                    DrawToggleProp(mcZRollCancel, new GUIContent(L("Z-Roll Cancellation", "Z軸ロールキャンセル"), L("Cancel MatCap shift caused by Z-axis head tilt", "Z軸の首傾きによる変化をキャンセル")));
                     EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcEnableLighting, new GUIContent(L("Enable Lighting", "ライティング有効"), L("Lighting influence (0=off, 1=full)", "ライティングの影響度")));
                     m_MaterialEditor.ShaderProperty(mcShadowStrength, new GUIContent(L("Shadow Strength", "シャドウ強度"), L("MatCap attenuation in shadow areas", "影部分でのMatCap減衰強度")));
@@ -391,6 +403,10 @@ namespace lilToon
                 {
                     EditorGUILayout.Space(2f);
                     m_MaterialEditor.TexturePropertySingleLine(new GUIContent(L("Texture", "テクスチャ"), L("Emission texture (black=off)", "エミッションテクスチャ（黒=無効）")), emTex, emColor);
+                    if(emUseTex != null)
+                    {
+                        emUseTex.floatValue = emTex.textureValue != null ? 1f : 0f;
+                    }
                     m_MaterialEditor.ShaderProperty(emStrength, new GUIContent(L("Strength", "強度"), L("Emission strength", "エミッション強度")));
 
                     // Sin Wave
