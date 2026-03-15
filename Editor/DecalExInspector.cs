@@ -49,8 +49,10 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_Emission_SinMin;
         private MaterialProperty _DecalSlot1_Emission_SinMax;
         private MaterialProperty _DecalSlot1_Emission_PulseEnable;
-        private MaterialProperty _DecalSlot1_Emission_PulseSpeed;
-        private MaterialProperty _DecalSlot1_Emission_PulseMin;
+        private MaterialProperty _DecalSlot1_Emission_PulseProbability1;
+        private MaterialProperty _DecalSlot1_Emission_PulseDuration1;
+        private MaterialProperty _DecalSlot1_Emission_PulseProbability2;
+        private MaterialProperty _DecalSlot1_Emission_PulseDuration2;
         private MaterialProperty _DecalSlot1_Emission_ScrollEnable;
         private MaterialProperty _DecalSlot1_Emission_ScrollX;
         private MaterialProperty _DecalSlot1_Emission_ScrollY;
@@ -99,8 +101,10 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_SinMin;
         private MaterialProperty _DecalSlot2_Emission_SinMax;
         private MaterialProperty _DecalSlot2_Emission_PulseEnable;
-        private MaterialProperty _DecalSlot2_Emission_PulseSpeed;
-        private MaterialProperty _DecalSlot2_Emission_PulseMin;
+        private MaterialProperty _DecalSlot2_Emission_PulseProbability1;
+        private MaterialProperty _DecalSlot2_Emission_PulseDuration1;
+        private MaterialProperty _DecalSlot2_Emission_PulseProbability2;
+        private MaterialProperty _DecalSlot2_Emission_PulseDuration2;
         private MaterialProperty _DecalSlot2_Emission_ScrollEnable;
         private MaterialProperty _DecalSlot2_Emission_ScrollX;
         private MaterialProperty _DecalSlot2_Emission_ScrollY;
@@ -154,8 +158,10 @@ namespace lilToon
             _DecalSlot1_Emission_SinMin      = FindProperty("_DecalSlot1_Emission_SinMin", props);
             _DecalSlot1_Emission_SinMax      = FindProperty("_DecalSlot1_Emission_SinMax", props);
             _DecalSlot1_Emission_PulseEnable = FindProperty("_DecalSlot1_Emission_PulseEnable", props);
-            _DecalSlot1_Emission_PulseSpeed  = FindProperty("_DecalSlot1_Emission_PulseSpeed", props);
-            _DecalSlot1_Emission_PulseMin    = FindProperty("_DecalSlot1_Emission_PulseMin", props);
+            _DecalSlot1_Emission_PulseProbability1 = FindProperty("_DecalSlot1_Emission_PulseProbability1", props);
+            _DecalSlot1_Emission_PulseDuration1    = FindProperty("_DecalSlot1_Emission_PulseDuration1", props);
+            _DecalSlot1_Emission_PulseProbability2 = FindProperty("_DecalSlot1_Emission_PulseProbability2", props);
+            _DecalSlot1_Emission_PulseDuration2    = FindProperty("_DecalSlot1_Emission_PulseDuration2", props);
             _DecalSlot1_Emission_ScrollEnable = FindProperty("_DecalSlot1_Emission_ScrollEnable", props);
             _DecalSlot1_Emission_ScrollX     = FindProperty("_DecalSlot1_Emission_ScrollX", props);
             _DecalSlot1_Emission_ScrollY     = FindProperty("_DecalSlot1_Emission_ScrollY", props);
@@ -201,8 +207,10 @@ namespace lilToon
             _DecalSlot2_Emission_SinMin      = FindProperty("_DecalSlot2_Emission_SinMin", props);
             _DecalSlot2_Emission_SinMax      = FindProperty("_DecalSlot2_Emission_SinMax", props);
             _DecalSlot2_Emission_PulseEnable = FindProperty("_DecalSlot2_Emission_PulseEnable", props);
-            _DecalSlot2_Emission_PulseSpeed  = FindProperty("_DecalSlot2_Emission_PulseSpeed", props);
-            _DecalSlot2_Emission_PulseMin    = FindProperty("_DecalSlot2_Emission_PulseMin", props);
+            _DecalSlot2_Emission_PulseProbability1 = FindProperty("_DecalSlot2_Emission_PulseProbability1", props);
+            _DecalSlot2_Emission_PulseDuration1    = FindProperty("_DecalSlot2_Emission_PulseDuration1", props);
+            _DecalSlot2_Emission_PulseProbability2 = FindProperty("_DecalSlot2_Emission_PulseProbability2", props);
+            _DecalSlot2_Emission_PulseDuration2    = FindProperty("_DecalSlot2_Emission_PulseDuration2", props);
             _DecalSlot2_Emission_ScrollEnable = FindProperty("_DecalSlot2_Emission_ScrollEnable", props);
             _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props);
             _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props);
@@ -228,7 +236,9 @@ namespace lilToon
                 _DecalSlot1_Emission_Strength, _DecalSlot1_Emission_Opacity,
                 _DecalSlot1_Emission_SinEnable, _DecalSlot1_Emission_SinSpeed,
                 _DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax,
-                _DecalSlot1_Emission_PulseEnable, _DecalSlot1_Emission_PulseSpeed, _DecalSlot1_Emission_PulseMin,
+                _DecalSlot1_Emission_PulseEnable,
+                _DecalSlot1_Emission_PulseProbability1, _DecalSlot1_Emission_PulseDuration1,
+                _DecalSlot1_Emission_PulseProbability2, _DecalSlot1_Emission_PulseDuration2,
                 _DecalSlot1_Emission_ScrollEnable, _DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY,
                 _DecalSlot1_Emission_ScrollMask);
 
@@ -247,7 +257,9 @@ namespace lilToon
                 _DecalSlot2_Emission_Strength, _DecalSlot2_Emission_Opacity,
                 _DecalSlot2_Emission_SinEnable, _DecalSlot2_Emission_SinSpeed,
                 _DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax,
-                _DecalSlot2_Emission_PulseEnable, _DecalSlot2_Emission_PulseSpeed, _DecalSlot2_Emission_PulseMin,
+                _DecalSlot2_Emission_PulseEnable,
+                _DecalSlot2_Emission_PulseProbability1, _DecalSlot2_Emission_PulseDuration1,
+                _DecalSlot2_Emission_PulseProbability2, _DecalSlot2_Emission_PulseDuration2,
                 _DecalSlot2_Emission_ScrollEnable, _DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY,
                 _DecalSlot2_Emission_ScrollMask);
 
@@ -307,7 +319,9 @@ namespace lilToon
             MaterialProperty emStrength, MaterialProperty emOpacity,
             MaterialProperty emSinEnable, MaterialProperty emSinSpeed,
             MaterialProperty emSinMin, MaterialProperty emSinMax,
-            MaterialProperty emPulseEnable, MaterialProperty emPulseSpeed, MaterialProperty emPulseMin,
+            MaterialProperty emPulseEnable,
+            MaterialProperty emPulseProbability1, MaterialProperty emPulseDuration1,
+            MaterialProperty emPulseProbability2, MaterialProperty emPulseDuration2,
             MaterialProperty emScrollEnable, MaterialProperty emScrollX, MaterialProperty emScrollY,
             MaterialProperty emScrollMask)
         {
@@ -432,8 +446,10 @@ namespace lilToon
                     if(emPulseEnable != null && emPulseEnable.floatValue > 0.5f)
                     {
                         EditorGUI.indentLevel++;
-                        m_MaterialEditor.ShaderProperty(emPulseSpeed, new GUIContent(L("Speed", "速度"), L("Pulse switching speed", "パルス速度")));
-                        m_MaterialEditor.ShaderProperty(emPulseMin,   new GUIContent(L("Min",   "最小"), L("Minimum random brightness (0=can fully turn off)", "ランダム輝度の下限（0=完全消灯あり）")));
+                        m_MaterialEditor.ShaderProperty(emPulseProbability1, new GUIContent(L("Pulse Probability 1", "発光確率1"), L("Chance to trigger pulse pattern 1 in each time window", "各時間ウィンドウでパターン1が発光する確率")));
+                        m_MaterialEditor.ShaderProperty(emPulseDuration1,    new GUIContent(L("Pulse Duration 1", "発光時間1"), L("How long pulse pattern 1 stays on when triggered (seconds)", "パターン1が発光した際の持続時間（秒）")));
+                        m_MaterialEditor.ShaderProperty(emPulseProbability2, new GUIContent(L("Pulse Probability 2", "発光確率2"), L("Chance to trigger pulse pattern 2 in each time window", "各時間ウィンドウでパターン2が発光する確率")));
+                        m_MaterialEditor.ShaderProperty(emPulseDuration2,    new GUIContent(L("Pulse Duration 2", "発光時間2"), L("How long pulse pattern 2 stays on when triggered (seconds)", "パターン2が発光した際の持続時間（秒）")));
                         EditorGUI.indentLevel--;
                     }
 

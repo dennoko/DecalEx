@@ -44,8 +44,10 @@
     float  _DecalSlot1_Emission_SinMin; \
     float  _DecalSlot1_Emission_SinMax; \
     float  _DecalSlot1_Emission_PulseEnable; \
-    float  _DecalSlot1_Emission_PulseSpeed; \
-    float  _DecalSlot1_Emission_PulseMin; \
+    float  _DecalSlot1_Emission_PulseProbability1; \
+    float  _DecalSlot1_Emission_PulseDuration1; \
+    float  _DecalSlot1_Emission_PulseProbability2; \
+    float  _DecalSlot1_Emission_PulseDuration2; \
     float  _DecalSlot1_Emission_ScrollEnable; \
     float  _DecalSlot1_Emission_ScrollX; \
     float  _DecalSlot1_Emission_ScrollY; \
@@ -91,8 +93,10 @@
     float  _DecalSlot2_Emission_SinMin; \
     float  _DecalSlot2_Emission_SinMax; \
     float  _DecalSlot2_Emission_PulseEnable; \
-    float  _DecalSlot2_Emission_PulseSpeed; \
-    float  _DecalSlot2_Emission_PulseMin; \
+    float  _DecalSlot2_Emission_PulseProbability1; \
+    float  _DecalSlot2_Emission_PulseDuration1; \
+    float  _DecalSlot2_Emission_PulseProbability2; \
+    float  _DecalSlot2_Emission_PulseDuration2; \
     float  _DecalSlot2_Emission_ScrollEnable; \
     float  _DecalSlot2_Emission_ScrollX; \
     float  _DecalSlot2_Emission_ScrollY; \
@@ -331,15 +335,24 @@ float DNKW_FresRim(float NdotV, float rimPower)
             emStrFactor_em1 *= lerp(_DecalSlot1_Emission_SinMin, _DecalSlot1_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot1_Emission_SinSpeed)); \
         } \
         if (_DecalSlot1_Emission_PulseEnable > 0.5) { \
-            float pt_em1  = _Time.y * _DecalSlot1_Emission_PulseSpeed; \
-            float ph0_em1 = frac(sin(floor(pt_em1)       * 78.233) * 43758.5453); \
-            emStrFactor_em1 *= lerp(_DecalSlot1_Emission_PulseMin, 1.0, ph0_em1); \
+            float pulseDuration1_em1 = max(_DecalSlot1_Emission_PulseDuration1, 0.001); \
+            float pulseDuration2_em1 = max(_DecalSlot1_Emission_PulseDuration2, 0.001); \
+            float pulseIndex1_em1 = floor(_Time.y / pulseDuration1_em1); \
+            float pulseIndex2_em1 = floor(_Time.y / pulseDuration2_em1); \
+            float pulseRand1_em1 = frac(sin((pulseIndex1_em1 + 11.17) * 78.233) * 43758.5453); \
+            float pulseRand2_em1 = frac(sin((pulseIndex2_em1 + 47.29) * 37.719) * 24634.6345); \
+            float pulseOn1_em1 = step(pulseRand1_em1, saturate(_DecalSlot1_Emission_PulseProbability1)); \
+            float pulseOn2_em1 = step(pulseRand2_em1, saturate(_DecalSlot1_Emission_PulseProbability2)); \
+            float pulseOn_em1 = max(pulseOn1_em1, pulseOn2_em1); \
+            emStrFactor_em1 *= pulseOn_em1; \
         } \
-        float2 emUV_em1 = slotUV_em1; \
+        float2 emUV_em1 = slotUV_em1 * _DecalSlot1_Emission_Tex_ST.xy + _DecalSlot1_Emission_Tex_ST.zw; \
         float emScrollMask_em1 = 1.0; \
         if (_DecalSlot1_Emission_ScrollEnable > 0.5) { \
             emUV_em1 += float2(_DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY) * _Time.y; \
-            emScrollMask_em1 = _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_em1, dxSlot_em1, dySlot_em1).r; \
+            emScrollMask_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
+                ? _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_clamp,  slotUV_em1, dxSlot_em1, dySlot_em1).r \
+                : _DecalSlot1_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, emUV_em1,   dxSlot_em1, dySlot_em1).r; \
         } \
         float3 emTexCol_em1 = (_DecalSlot1_Emission_UseTex > 0.5) \
             ? _DecalSlot1_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em1, dxSlot_em1, dySlot_em1).rgb \
@@ -376,15 +389,24 @@ float DNKW_FresRim(float NdotV, float rimPower)
             emStrFactor_em2 *= lerp(_DecalSlot2_Emission_SinMin, _DecalSlot2_Emission_SinMax, 0.5 + 0.5 * sin(_Time.y * _DecalSlot2_Emission_SinSpeed)); \
         } \
         if (_DecalSlot2_Emission_PulseEnable > 0.5) { \
-            float pt_em2  = _Time.y * _DecalSlot2_Emission_PulseSpeed; \
-            float ph0_em2 = frac(sin(floor(pt_em2)       * 78.233) * 43758.5453); \
-            emStrFactor_em2 *= lerp(_DecalSlot2_Emission_PulseMin, 1.0, ph0_em2); \
+            float pulseDuration1_em2 = max(_DecalSlot2_Emission_PulseDuration1, 0.001); \
+            float pulseDuration2_em2 = max(_DecalSlot2_Emission_PulseDuration2, 0.001); \
+            float pulseIndex1_em2 = floor(_Time.y / pulseDuration1_em2); \
+            float pulseIndex2_em2 = floor(_Time.y / pulseDuration2_em2); \
+            float pulseRand1_em2 = frac(sin((pulseIndex1_em2 + 11.17) * 78.233) * 43758.5453); \
+            float pulseRand2_em2 = frac(sin((pulseIndex2_em2 + 47.29) * 37.719) * 24634.6345); \
+            float pulseOn1_em2 = step(pulseRand1_em2, saturate(_DecalSlot2_Emission_PulseProbability1)); \
+            float pulseOn2_em2 = step(pulseRand2_em2, saturate(_DecalSlot2_Emission_PulseProbability2)); \
+            float pulseOn_em2 = max(pulseOn1_em2, pulseOn2_em2); \
+            emStrFactor_em2 *= pulseOn_em2; \
         } \
-        float2 emUV_em2 = slotUV_em2; \
+        float2 emUV_em2 = slotUV_em2 * _DecalSlot2_Emission_Tex_ST.xy + _DecalSlot2_Emission_Tex_ST.zw; \
         float emScrollMask_em2 = 1.0; \
         if (_DecalSlot2_Emission_ScrollEnable > 0.5) { \
             emUV_em2 += float2(_DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY) * _Time.y; \
-            emScrollMask_em2 = _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_clamp, slotUV_em2, dxSlot_em2, dySlot_em2).r; \
+            emScrollMask_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
+                ? _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_clamp,  slotUV_em2, dxSlot_em2, dySlot_em2).r \
+                : _DecalSlot2_Emission_ScrollMask.SampleGrad(sampler_linear_repeat, emUV_em2,   dxSlot_em2, dySlot_em2).r; \
         } \
         float3 emTexCol_em2 = (_DecalSlot2_Emission_UseTex > 0.5) \
             ? _DecalSlot2_Emission_Tex.SampleGrad(sampler_linear_repeat, emUV_em2, dxSlot_em2, dySlot_em2).rgb \

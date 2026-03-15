@@ -42,11 +42,13 @@
                         _DecalSlot1_Emission_SinMin      ("Sin Min",                    Range(0,1))      = 0.0
                         _DecalSlot1_Emission_SinMax      ("Sin Max",                    Range(0,1))      = 1.0
                         _DecalSlot1_Emission_PulseEnable ("Random Pulse",               Float)           = 0
-                        _DecalSlot1_Emission_PulseSpeed  ("Pulse Speed",                Range(0.1,10))   = 1.0
-                        _DecalSlot1_Emission_PulseMin    ("Pulse Min",                  Range(0,1))      = 0.0
+                        _DecalSlot1_Emission_PulseProbability1 ("Pulse Probability 1",   Range(0,1))      = 0.3
+                        _DecalSlot1_Emission_PulseDuration1    ("Pulse Duration 1",      Range(0.01,5))   = 0.1
+                        _DecalSlot1_Emission_PulseProbability2 ("Pulse Probability 2",   Range(0,1))      = 0.1
+                        _DecalSlot1_Emission_PulseDuration2    ("Pulse Duration 2",      Range(0.01,5))   = 0.5
                         _DecalSlot1_Emission_ScrollEnable("UV Scroll",                  Float)           = 0
-                        _DecalSlot1_Emission_ScrollX     ("Scroll Speed X",             Range(-5,5))     = 0.0
-                        _DecalSlot1_Emission_ScrollY     ("Scroll Speed Y",             Range(-5,5))     = 0.5
+                        _DecalSlot1_Emission_ScrollX     ("Scroll Speed X",             Range(-3,3))     = 0.0
+                        _DecalSlot1_Emission_ScrollY     ("Scroll Speed Y",             Range(-3,3))     = 0.5
                         _DecalSlot1_Emission_ScrollMask  ("Scroll Mask",                2D)              = "white" {}
 
         //----------------------------------------------------------------------------------------------------------------------
@@ -92,9 +94,11 @@
                         _DecalSlot2_Emission_SinMin      ("Sin Min",                    Range(0,1))      = 0.0
                         _DecalSlot2_Emission_SinMax      ("Sin Max",                    Range(0,1))      = 1.0
                         _DecalSlot2_Emission_PulseEnable ("Random Pulse",               Float)           = 0
-                        _DecalSlot2_Emission_PulseSpeed  ("Pulse Speed",                Range(0.1,10))   = 1.0
-                        _DecalSlot2_Emission_PulseMin    ("Pulse Min",                  Range(0,1))      = 0.0
+                        _DecalSlot2_Emission_PulseProbability1 ("Pulse Probability 1",   Range(0,1))      = 0.3
+                        _DecalSlot2_Emission_PulseDuration1    ("Pulse Duration 1",      Range(0.01,5))   = 0.1
+                        _DecalSlot2_Emission_PulseProbability2 ("Pulse Probability 2",   Range(0,1))      = 0.1
+                        _DecalSlot2_Emission_PulseDuration2    ("Pulse Duration 2",      Range(0.01,5))   = 0.5
                         _DecalSlot2_Emission_ScrollEnable("UV Scroll",                  Float)           = 0
-                        _DecalSlot2_Emission_ScrollX     ("Scroll Speed X",             Range(-5,5))     = 0.0
-                        _DecalSlot2_Emission_ScrollY     ("Scroll Speed Y",             Range(-5,5))     = 0.5
+                        _DecalSlot2_Emission_ScrollX     ("Scroll Speed X",             Range(-3,3))     = 0.0
+                        _DecalSlot2_Emission_ScrollY     ("Scroll Speed Y",             Range(-3,3))     = 0.5
                         _DecalSlot2_Emission_ScrollMask  ("Scroll Mask",                2D)              = "white" {}
