@@ -262,6 +262,68 @@ float DNKW_FresRim(float NdotV, float rimPower)
 #endif
 
 //----------------------------------------------------------------------------------------------------------------------
+// Normal Map Logic — placed in BEFORE_NORMAL_2ND so it blends into lilToon's tangent-space
+// normalmap accumulator after the 1st normal pass. fd.N is then set from the final normalmap,
+// so shadows, reflections, and all subsequent lighting correctly use the decal normal.
+// NOTE: this hook only runs when LIL_FEATURE_NORMAL_1ST or LIL_FEATURE_NORMAL_2ND is enabled.
+// UV/mask computation is repeated here (instead of sharing with the main slot logic) because
+// these two hooks expand into different locations in the fragment shader.
+
+#define DNKW_DECAL_SLOT1_NORMAL_LOGIC \
+    if (_DecalSlot1_Enable > 0.5 && _DecalSlot1_NormalMap_Enable > 0.5) { \
+        float2 ddxUV_nm1 = ddx(fd.uv0); \
+        float2 ddyUV_nm1 = ddy(fd.uv0); \
+        float rad_nm1 = _DecalSlot1_Angle * 0.01745329252f; \
+        float sinA_nm1, cosA_nm1; \
+        sincos(rad_nm1, sinA_nm1, cosA_nm1); \
+        float2 slotUV_nm1 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot1_OffsetX, _DecalSlot1_OffsetY), float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), sinA_nm1, cosA_nm1); \
+        float inBounds_nm1 = step(0.0, slotUV_nm1.x) * step(slotUV_nm1.x, 1.0) * step(0.0, slotUV_nm1.y) * step(slotUV_nm1.y, 1.0); \
+        float2 dxR_nm1 = float2(ddxUV_nm1.x*cosA_nm1 - ddxUV_nm1.y*sinA_nm1, ddxUV_nm1.x*sinA_nm1 + ddxUV_nm1.y*cosA_nm1); \
+        float2 dyR_nm1 = float2(ddyUV_nm1.x*cosA_nm1 - ddyUV_nm1.y*sinA_nm1, ddyUV_nm1.x*sinA_nm1 + ddyUV_nm1.y*cosA_nm1); \
+        float2 safeScale_nm1 = max(float2(_DecalSlot1_ScaleX, _DecalSlot1_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_nm1 = dxR_nm1 / safeScale_nm1; \
+        float2 dySlot_nm1 = dyR_nm1 / safeScale_nm1; \
+        float sharedMask_nm1 = inBounds_nm1; \
+        if (_DecalSlot1_UseMask > 0.5) { \
+            sharedMask_nm1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_nm1, dxSlot_nm1, dySlot_nm1).r * inBounds_nm1; \
+        } \
+        if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_nm1 = 0.0; \
+        float2 nmUV_nm1 = slotUV_nm1 * _DecalSlot1_NormalMap_Tex_ST.xy + _DecalSlot1_NormalMap_Tex_ST.zw; \
+        float2 nmDx_nm1 = dxSlot_nm1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+        float2 nmDy_nm1 = dySlot_nm1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+        float4 nmTex_nm1 = _DecalSlot1_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_nm1, nmDx_nm1, nmDy_nm1); \
+        float3 nmTS_nm1 = lilUnpackNormalScale(nmTex_nm1, _DecalSlot1_NormalMap_Scale); \
+        normalmap = normalize(lerp(normalmap, nmTS_nm1, sharedMask_nm1)); \
+    }
+
+#define DNKW_DECAL_SLOT2_NORMAL_LOGIC \
+    if (_DecalSlot2_Enable > 0.5 && _DecalSlot2_NormalMap_Enable > 0.5) { \
+        float2 ddxUV_nm2 = ddx(fd.uv0); \
+        float2 ddyUV_nm2 = ddy(fd.uv0); \
+        float rad_nm2 = _DecalSlot2_Angle * 0.01745329252f; \
+        float sinA_nm2, cosA_nm2; \
+        sincos(rad_nm2, sinA_nm2, cosA_nm2); \
+        float2 slotUV_nm2 = DNKW_DecalMaskUV(fd.uv0, float2(_DecalSlot2_OffsetX, _DecalSlot2_OffsetY), float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), sinA_nm2, cosA_nm2); \
+        float inBounds_nm2 = step(0.0, slotUV_nm2.x) * step(slotUV_nm2.x, 1.0) * step(0.0, slotUV_nm2.y) * step(slotUV_nm2.y, 1.0); \
+        float2 dxR_nm2 = float2(ddxUV_nm2.x*cosA_nm2 - ddxUV_nm2.y*sinA_nm2, ddxUV_nm2.x*sinA_nm2 + ddxUV_nm2.y*cosA_nm2); \
+        float2 dyR_nm2 = float2(ddyUV_nm2.x*cosA_nm2 - ddyUV_nm2.y*sinA_nm2, ddyUV_nm2.x*sinA_nm2 + ddyUV_nm2.y*cosA_nm2); \
+        float2 safeScale_nm2 = max(float2(_DecalSlot2_ScaleX, _DecalSlot2_ScaleY), 0.0001) * 10.0; \
+        float2 dxSlot_nm2 = dxR_nm2 / safeScale_nm2; \
+        float2 dySlot_nm2 = dyR_nm2 / safeScale_nm2; \
+        float sharedMask_nm2 = inBounds_nm2; \
+        if (_DecalSlot2_UseMask > 0.5) { \
+            sharedMask_nm2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_nm2, dxSlot_nm2, dySlot_nm2).r * inBounds_nm2; \
+        } \
+        if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_nm2 = 0.0; \
+        float2 nmUV_nm2 = slotUV_nm2 * _DecalSlot2_NormalMap_Tex_ST.xy + _DecalSlot2_NormalMap_Tex_ST.zw; \
+        float2 nmDx_nm2 = dxSlot_nm2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+        float2 nmDy_nm2 = dySlot_nm2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+        float4 nmTex_nm2 = _DecalSlot2_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_nm2, nmDx_nm2, nmDy_nm2); \
+        float3 nmTS_nm2 = lilUnpackNormalScale(nmTex_nm2, _DecalSlot2_NormalMap_Scale); \
+        normalmap = normalize(lerp(normalmap, nmTS_nm2, sharedMask_nm2)); \
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
 // Decal Slot 1 Logic
 #define DNKW_DECAL_SLOT1_LOGIC \
     float2 ddxUV_s1 = ddx(fd.uv0); \
@@ -282,14 +344,6 @@ float DNKW_FresRim(float NdotV, float rimPower)
             sharedMask_s1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1).r * inBounds_s1; \
         } \
         if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s1 = 0.0; \
-        if (_DecalSlot1_NormalMap_Enable > 0.5) { \
-            float2 nmUV_s1 = slotUV_s1 * _DecalSlot1_NormalMap_Tex_ST.xy + _DecalSlot1_NormalMap_Tex_ST.zw; \
-            float2 nmDx_s1 = dxSlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
-            float2 nmDy_s1 = dySlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
-            float4 nmTex_s1 = _DecalSlot1_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s1, nmDx_s1, nmDy_s1); \
-            float3 nmWS_s1  = normalize(mul(lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale), fd.TBN)); \
-            fd.N = normalize(lerp(fd.N, nmWS_s1, sharedMask_s1)); \
-        } \
         float4 decalTex_s1   = _DecalSlot1_Tex.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1); \
         float3 decalColor_s1 = decalTex_s1.rgb * _DecalSlot1_Color.rgb; \
         float  decalW_s1     = decalTex_s1.a * saturate(_DecalSlot1_Alpha) * sharedMask_s1; \
@@ -330,14 +384,6 @@ float DNKW_FresRim(float NdotV, float rimPower)
             sharedMask_s2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2).r * inBounds_s2; \
         } \
         if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s2 = 0.0; \
-        if (_DecalSlot2_NormalMap_Enable > 0.5) { \
-            float2 nmUV_s2 = slotUV_s2 * _DecalSlot2_NormalMap_Tex_ST.xy + _DecalSlot2_NormalMap_Tex_ST.zw; \
-            float2 nmDx_s2 = dxSlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
-            float2 nmDy_s2 = dySlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
-            float4 nmTex_s2 = _DecalSlot2_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s2, nmDx_s2, nmDy_s2); \
-            float3 nmWS_s2  = normalize(mul(lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale), fd.TBN)); \
-            fd.N = normalize(lerp(fd.N, nmWS_s2, sharedMask_s2)); \
-        } \
         float4 decalTex_s2   = _DecalSlot2_Tex.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2); \
         float3 decalColor_s2 = decalTex_s2.rgb * _DecalSlot2_Color.rgb; \
         float  decalW_s2     = decalTex_s2.a * saturate(_DecalSlot2_Alpha) * sharedMask_s2; \
@@ -479,6 +525,14 @@ float DNKW_FresRim(float NdotV, float rimPower)
 // Entry point
 
 #if !defined(UNITY_PASS_SHADOWCASTER)
+// Blend decal normals into the tangent-space normalmap accumulator after lilToon's 1st normal pass.
+// fd.N is assigned from normalmap on the very next line, so shadows/reflections see the result.
+#define BEFORE_NORMAL_2ND \
+{ \
+    DNKW_DECAL_SLOT1_NORMAL_LOGIC \
+    DNKW_DECAL_SLOT2_NORMAL_LOGIC \
+}
+
 #define BEFORE_MATCAP \
 { \
     float3 _dnkw_wvd = -UNITY_MATRIX_V[2].xyz; \
@@ -495,6 +549,7 @@ float DNKW_FresRim(float NdotV, float rimPower)
     DNKW_DECAL_SLOT2_EMISSION_LOGIC \
 }
 #else
+#define BEFORE_NORMAL_2ND
 #define BEFORE_MATCAP
 #define BEFORE_EMISSION_1ST
 #endif
