@@ -50,13 +50,6 @@
                         _DecalSlot1_Emission_ScrollX     ("Scroll Speed X",             Range(-3,3))     = 0.0
                         _DecalSlot1_Emission_ScrollY     ("Scroll Speed Y",             Range(-3,3))     = 0.5
                         _DecalSlot1_Emission_ScrollMask  ("Scroll Mask",                2D)              = "white" {}
-                        _DecalSlot1_Emission_ALEnable    ("AudioLink Enable",           Float)           = 0
-                        _DecalSlot1_Emission_ALBass      ("AudioLink Bass",             Range(0,2))      = 1.0
-                        _DecalSlot1_Emission_ALLowMid    ("AudioLink Low-Mid",          Range(0,2))      = 0.0
-                        _DecalSlot1_Emission_ALHighMid   ("AudioLink High-Mid",         Range(0,2))      = 0.0
-                        _DecalSlot1_Emission_ALTreble    ("AudioLink Treble",           Range(0,2))      = 0.0
-                        _DecalSlot1_Emission_ALWaveEnable("AudioLink Wave Mode",        Float)           = 0
-                        _DecalSlot1_Emission_ALWaveAxis  ("AudioLink Wave Axis",        Float)           = 0
 
         //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 2
@@ -109,10 +102,3 @@
                         _DecalSlot2_Emission_ScrollX     ("Scroll Speed X",             Range(-3,3))     = 0.0
                         _DecalSlot2_Emission_ScrollY     ("Scroll Speed Y",             Range(-3,3))     = 0.5
                         _DecalSlot2_Emission_ScrollMask  ("Scroll Mask",                2D)              = "white" {}
-                        _DecalSlot2_Emission_ALEnable    ("AudioLink Enable",           Float)           = 0
-                        _DecalSlot2_Emission_ALBass      ("AudioLink Bass",             Range(0,2))      = 1.0
-                        _DecalSlot2_Emission_ALLowMid    ("AudioLink Low-Mid",          Range(0,2))      = 0.0
-                        _DecalSlot2_Emission_ALHighMid   ("AudioLink High-Mid",         Range(0,2))      = 0.0
-                        _DecalSlot2_Emission_ALTreble    ("AudioLink Treble",           Range(0,2))      = 0.0
-                        _DecalSlot2_Emission_ALWaveEnable("AudioLink Wave Mode",        Float)           = 0
-                        _DecalSlot2_Emission_ALWaveAxis  ("AudioLink Wave Axis",        Float)           = 0

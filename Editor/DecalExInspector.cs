@@ -57,14 +57,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_Emission_ScrollX;
         private MaterialProperty _DecalSlot1_Emission_ScrollY;
         private MaterialProperty _DecalSlot1_Emission_ScrollMask;
-        private MaterialProperty _DecalSlot1_Emission_ALEnable;
-        private MaterialProperty _DecalSlot1_Emission_ALBass;
-        private MaterialProperty _DecalSlot1_Emission_ALLowMid;
-        private MaterialProperty _DecalSlot1_Emission_ALHighMid;
-        private MaterialProperty _DecalSlot1_Emission_ALTreble;
-        private MaterialProperty _DecalSlot1_Emission_ALWaveEnable;
-        private MaterialProperty _DecalSlot1_Emission_ALWaveAxis;
-
         //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 2 properties
         private static bool isShowDecalSlot2;
@@ -116,14 +108,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_ScrollX;
         private MaterialProperty _DecalSlot2_Emission_ScrollY;
         private MaterialProperty _DecalSlot2_Emission_ScrollMask;
-        private MaterialProperty _DecalSlot2_Emission_ALEnable;
-        private MaterialProperty _DecalSlot2_Emission_ALBass;
-        private MaterialProperty _DecalSlot2_Emission_ALLowMid;
-        private MaterialProperty _DecalSlot2_Emission_ALHighMid;
-        private MaterialProperty _DecalSlot2_Emission_ALTreble;
-        private MaterialProperty _DecalSlot2_Emission_ALWaveEnable;
-        private MaterialProperty _DecalSlot2_Emission_ALWaveAxis;
-
         private const string shaderName = "dennoko_decalex";
 
         protected override void LoadCustomProperties(MaterialProperty[] props, Material material)
@@ -180,14 +164,6 @@ namespace lilToon
             _DecalSlot1_Emission_ScrollX     = FindProperty("_DecalSlot1_Emission_ScrollX", props);
             _DecalSlot1_Emission_ScrollY     = FindProperty("_DecalSlot1_Emission_ScrollY", props);
             _DecalSlot1_Emission_ScrollMask  = FindProperty("_DecalSlot1_Emission_ScrollMask", props);
-            _DecalSlot1_Emission_ALEnable    = FindProperty("_DecalSlot1_Emission_ALEnable", props);
-            _DecalSlot1_Emission_ALBass      = FindProperty("_DecalSlot1_Emission_ALBass", props);
-            _DecalSlot1_Emission_ALLowMid    = FindProperty("_DecalSlot1_Emission_ALLowMid", props);
-            _DecalSlot1_Emission_ALHighMid   = FindProperty("_DecalSlot1_Emission_ALHighMid", props);
-            _DecalSlot1_Emission_ALTreble    = FindProperty("_DecalSlot1_Emission_ALTreble", props);
-            _DecalSlot1_Emission_ALWaveEnable = FindProperty("_DecalSlot1_Emission_ALWaveEnable", props);
-            _DecalSlot1_Emission_ALWaveAxis  = FindProperty("_DecalSlot1_Emission_ALWaveAxis", props);
-
             _DecalSlot2_Enable               = FindProperty("_DecalSlot2_Enable", props);
             _DecalSlot2_DisableBackface       = FindProperty("_DecalSlot2_DisableBackface", props);
             _DecalSlot2_OffsetX              = FindProperty("_DecalSlot2_OffsetX", props);
@@ -236,13 +212,6 @@ namespace lilToon
             _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props);
             _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props);
             _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props);
-            _DecalSlot2_Emission_ALEnable    = FindProperty("_DecalSlot2_Emission_ALEnable", props);
-            _DecalSlot2_Emission_ALBass      = FindProperty("_DecalSlot2_Emission_ALBass", props);
-            _DecalSlot2_Emission_ALLowMid    = FindProperty("_DecalSlot2_Emission_ALLowMid", props);
-            _DecalSlot2_Emission_ALHighMid   = FindProperty("_DecalSlot2_Emission_ALHighMid", props);
-            _DecalSlot2_Emission_ALTreble    = FindProperty("_DecalSlot2_Emission_ALTreble", props);
-            _DecalSlot2_Emission_ALWaveEnable = FindProperty("_DecalSlot2_Emission_ALWaveEnable", props);
-            _DecalSlot2_Emission_ALWaveAxis  = FindProperty("_DecalSlot2_Emission_ALWaveAxis", props);
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -268,10 +237,7 @@ namespace lilToon
                 _DecalSlot1_Emission_PulseProbability1, _DecalSlot1_Emission_PulseDuration1,
                 _DecalSlot1_Emission_PulseProbability2, _DecalSlot1_Emission_PulseDuration2,
                 _DecalSlot1_Emission_ScrollEnable, _DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY,
-                _DecalSlot1_Emission_ScrollMask,
-                _DecalSlot1_Emission_ALEnable, _DecalSlot1_Emission_ALBass, _DecalSlot1_Emission_ALLowMid,
-                _DecalSlot1_Emission_ALHighMid, _DecalSlot1_Emission_ALTreble,
-                _DecalSlot1_Emission_ALWaveEnable, _DecalSlot1_Emission_ALWaveAxis);
+                _DecalSlot1_Emission_ScrollMask);
 
             DrawDecalSlot("Decal Slot 2", ref isShowDecalSlot2,
                 _DecalSlot2_Enable, _DecalSlot2_DisableBackface,
@@ -292,10 +258,7 @@ namespace lilToon
                 _DecalSlot2_Emission_PulseProbability1, _DecalSlot2_Emission_PulseDuration1,
                 _DecalSlot2_Emission_PulseProbability2, _DecalSlot2_Emission_PulseDuration2,
                 _DecalSlot2_Emission_ScrollEnable, _DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY,
-                _DecalSlot2_Emission_ScrollMask,
-                _DecalSlot2_Emission_ALEnable, _DecalSlot2_Emission_ALBass, _DecalSlot2_Emission_ALLowMid,
-                _DecalSlot2_Emission_ALHighMid, _DecalSlot2_Emission_ALTreble,
-                _DecalSlot2_Emission_ALWaveEnable, _DecalSlot2_Emission_ALWaveAxis);
+                _DecalSlot2_Emission_ScrollMask);
 
             EditorGUILayout.EndVertical();
         }
@@ -357,10 +320,7 @@ namespace lilToon
             MaterialProperty emPulseProbability1, MaterialProperty emPulseDuration1,
             MaterialProperty emPulseProbability2, MaterialProperty emPulseDuration2,
             MaterialProperty emScrollEnable, MaterialProperty emScrollX, MaterialProperty emScrollY,
-            MaterialProperty emScrollMask,
-            MaterialProperty emALEnable, MaterialProperty emALBass, MaterialProperty emALLowMid,
-            MaterialProperty emALHighMid, MaterialProperty emALTreble,
-            MaterialProperty emALWaveEnable, MaterialProperty emALWaveAxis)
+            MaterialProperty emScrollMask)
         {
             isShow = Foldout(title, title, isShow);
             if(!isShow) return;
@@ -506,26 +466,6 @@ namespace lilToon
                         EditorGUI.indentLevel--;
                     }
 
-                    // AudioLink
-                    EditorGUILayout.Space(2f);
-                    DrawToggleProp(emALEnable, new GUIContent(L("AudioLink", "AudioLink"), L("Control emission with AudioLink in AudioLink-compatible worlds. Falls back to full strength in non-AudioLink worlds.", "AudioLink対応ワールドでエミッションをAudioLinkで制御します。非対応ワールドでは全強度で通常動作します。")));
-                    if(emALEnable != null && emALEnable.floatValue > 0.5f)
-                    {
-                        EditorGUI.indentLevel++;
-                        m_MaterialEditor.ShaderProperty(emALBass,    new GUIContent(L("Bass",     "バス"),     L("Bass band weight (0=off, 1=normal, 2=double)",     "バス帯域の重み（0=無効、1=通常、2=倍）")));
-                        m_MaterialEditor.ShaderProperty(emALLowMid,  new GUIContent(L("Low-Mid",  "ローミッド"), L("Low-mid band weight",  "ローミッド帯域の重み")));
-                        m_MaterialEditor.ShaderProperty(emALHighMid, new GUIContent(L("High-Mid", "ハイミッド"), L("High-mid band weight", "ハイミッド帯域の重み")));
-                        m_MaterialEditor.ShaderProperty(emALTreble,  new GUIContent(L("Treble",   "トレブル"),  L("Treble band weight",   "トレブル帯域の重み")));
-                        EditorGUILayout.Space(2f);
-                        DrawToggleProp(emALWaveEnable, new GUIContent(L("Wave Mode", "波モード"), L("UV-based wave: emission sweeps from one side to the other with each beat.", "UV基準の波：ビートに合わせて発光エリアが一方から広がります。")));
-                        if(emALWaveEnable != null && emALWaveEnable.floatValue > 0.5f)
-                        {
-                            EditorGUI.indentLevel++;
-                            m_MaterialEditor.ShaderProperty(emALWaveAxis, new GUIContent(L("Wave Axis (0=U / 1=V)", "波方向（0=U / 1=V）"), L("UV axis along which the wave travels (0=horizontal U, 1=vertical V).", "波が進む方向（0=横U方向、1=縦V方向）。")));
-                            EditorGUI.indentLevel--;
-                        }
-                        EditorGUI.indentLevel--;
-                    }
                 }
 
                 EditorGUILayout.Space(4f);

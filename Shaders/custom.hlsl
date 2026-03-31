@@ -207,77 +207,9 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
 }
 #endif
 
-// AudioLink emission helper macros
-// Defined as separate macros because #if cannot appear inside a #define body.
-#if defined(LIL_FEATURE_AUDIOLINK) && !defined(UNITY_PASS_SHADOWCASTER)
-    #ifndef DNKW_SAMPLE_AUDIOLINK_BAND_DEFINED
-    #define DNKW_SAMPLE_AUDIOLINK_BAND_DEFINED
-    float DNKW_SampleAudioLinkBand(float2 uv)
-    {
-    #if defined(AUDIOLINK_STANDARD_INDEXING)
-        return tex2Dlod(_AudioTexture, float4(uv, 0.0, 0.0)).r;
-    #else
-        return _AudioTexture.SampleLevel(sampler_linear_clamp, uv, 0).r;
-    #endif
-    }
-    #endif
-
-    #define DNKW_AL_EMISSION_S1_LOGIC \
-        if (_DecalSlot1_Emission_ALEnable > 0.5 && lilCheckAudioLink()) { \
-            float alX_em1 = (_DecalSlot1_Emission_ALWaveEnable > 0.5) \
-                ? ((_DecalSlot1_Emission_ALWaveAxis < 0.5) ? slotUV_em1.x : slotUV_em1.y) \
-                : 0.0; \
-            float alBass_em1    = DNKW_SampleAudioLinkBand(float2(alX_em1, 0.0000)); \
-            float alLowMid_em1  = DNKW_SampleAudioLinkBand(float2(alX_em1, 0.0625)); \
-            float alHighMid_em1 = DNKW_SampleAudioLinkBand(float2(alX_em1, 0.1250)); \
-            float alTreble_em1  = DNKW_SampleAudioLinkBand(float2(alX_em1, 0.1875)); \
-            float alStr_em1 = saturate( \
-                alBass_em1    * _DecalSlot1_Emission_ALBass    + \
-                alLowMid_em1  * _DecalSlot1_Emission_ALLowMid  + \
-                alHighMid_em1 * _DecalSlot1_Emission_ALHighMid + \
-                alTreble_em1  * _DecalSlot1_Emission_ALTreble \
-            ); \
-            emStrFactor_em1 *= alStr_em1; \
-        }
-
-    #define DNKW_AL_EMISSION_S2_LOGIC \
-        if (_DecalSlot2_Emission_ALEnable > 0.5 && lilCheckAudioLink()) { \
-            float alX_em2 = (_DecalSlot2_Emission_ALWaveEnable > 0.5) \
-                ? ((_DecalSlot2_Emission_ALWaveAxis < 0.5) ? slotUV_em2.x : slotUV_em2.y) \
-                : 0.0; \
-            float alBass_em2    = DNKW_SampleAudioLinkBand(float2(alX_em2, 0.0000)); \
-            float alLowMid_em2  = DNKW_SampleAudioLinkBand(float2(alX_em2, 0.0625)); \
-            float alHighMid_em2 = DNKW_SampleAudioLinkBand(float2(alX_em2, 0.1250)); \
-            float alTreble_em2  = DNKW_SampleAudioLinkBand(float2(alX_em2, 0.1875)); \
-            float alStr_em2 = saturate( \
-                alBass_em2    * _DecalSlot2_Emission_ALBass    + \
-                alLowMid_em2  * _DecalSlot2_Emission_ALLowMid  + \
-                alHighMid_em2 * _DecalSlot2_Emission_ALHighMid + \
-                alTreble_em2  * _DecalSlot2_Emission_ALTreble \
-            ); \
-            emStrFactor_em2 *= alStr_em2; \
-        }
-#else
-    #define DNKW_AL_EMISSION_S1_LOGIC \
-        if (_DecalSlot1_Emission_ALEnable > 0.5) { \
-            float alStr_em1 = saturate(fd.audioLinkValue * ( \
-                _DecalSlot1_Emission_ALBass + \
-                _DecalSlot1_Emission_ALLowMid + \
-                _DecalSlot1_Emission_ALHighMid + \
-                _DecalSlot1_Emission_ALTreble)); \
-            emStrFactor_em1 *= alStr_em1; \
-        }
-
-    #define DNKW_AL_EMISSION_S2_LOGIC \
-        if (_DecalSlot2_Emission_ALEnable > 0.5) { \
-            float alStr_em2 = saturate(fd.audioLinkValue * ( \
-                _DecalSlot2_Emission_ALBass + \
-                _DecalSlot2_Emission_ALLowMid + \
-                _DecalSlot2_Emission_ALHighMid + \
-                _DecalSlot2_Emission_ALTreble)); \
-            emStrFactor_em2 *= alStr_em2; \
-        }
-#endif
+// AudioLink emission helper macros (no-op: AudioLink removed from this branch)
+#define DNKW_AL_EMISSION_S1_LOGIC
+#define DNKW_AL_EMISSION_S2_LOGIC
 
 // Note: the MatCap camera basis (_dnkw_wvd/vrt/vup) is computed once in BEFORE_MATCAP
 // rather than as a helper function, because HLSLINCLUDE is compiled before Unity's built-in
