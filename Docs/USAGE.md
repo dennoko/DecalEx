@@ -187,24 +187,6 @@ If an emission texture is assigned, both the texture and mask scroll at the same
 
 Sin Wave, Random Pulse, and UV Scroll can be enabled simultaneously and combined freely.
 
-#### AudioLink
-
-Controls emission strength using [AudioLink](https://github.com/llealloo/vrc-udon-audio-link) in compatible worlds.
-In worlds without AudioLink, emission runs at full strength as normal.
-
-| Parameter | Description |
-|---|---|
-| **AudioLink** | Enable AudioLink control |
-| **Bass** | Bass band weight (0 = off, 1 = normal, 2 = double) |
-| **Low-Mid** | Low-mid band weight |
-| **High-Mid** | High-mid band weight |
-| **Treble** | Treble band weight |
-| **Wave Mode** | UV-based wave: emission sweeps from one side to the other with each beat |
-| **Wave Axis (0=U / 1=V)** | UV axis along which the wave travels (0 = horizontal U, 1 = vertical V) |
-
-The final emission multiplier is `saturate(Bass×w + LowMid×w + HighMid×w + Treble×w)`.
-Set all band weights to 0 to silence emission completely; set any weight above 1 to boost that band.
-
 ---
 
 ## Rendering Modes
