@@ -33,8 +33,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_MatCap_EnableLighting;
         private MaterialProperty _DecalSlot1_MatCap_ShadowStrength;
         private MaterialProperty _DecalSlot1_MatCap_Blur;
-        private MaterialProperty _DecalSlot1_MatCap_RimPower;
-        private MaterialProperty _DecalSlot1_MatCap_EmissionAdd;
         private MaterialProperty _DecalSlot1_NormalMap_Enable;
         private MaterialProperty _DecalSlot1_NormalMap_Tex;
         private MaterialProperty _DecalSlot1_NormalMap_Scale;
@@ -85,8 +83,6 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_MatCap_EnableLighting;
         private MaterialProperty _DecalSlot2_MatCap_ShadowStrength;
         private MaterialProperty _DecalSlot2_MatCap_Blur;
-        private MaterialProperty _DecalSlot2_MatCap_RimPower;
-        private MaterialProperty _DecalSlot2_MatCap_EmissionAdd;
         private MaterialProperty _DecalSlot2_NormalMap_Enable;
         private MaterialProperty _DecalSlot2_NormalMap_Tex;
         private MaterialProperty _DecalSlot2_NormalMap_Scale;
@@ -110,7 +106,8 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_ScrollX;
         private MaterialProperty _DecalSlot2_Emission_ScrollY;
         private MaterialProperty _DecalSlot2_Emission_ScrollMask;
-        private const string shaderName = "dennoko_decalex";
+        private const string shaderNameDefault = "dennoko_decalex/default";
+        private const string shaderNameTransparent = "dennoko_decalex/transparent_cutout";
 
         protected override void LoadCustomProperties(MaterialProperty[] props, Material material)
         {
@@ -142,8 +139,6 @@ namespace lilToon
             _DecalSlot1_MatCap_EnableLighting = FindProperty("_DecalSlot1_MatCap_EnableLighting", props);
             _DecalSlot1_MatCap_ShadowStrength = FindProperty("_DecalSlot1_MatCap_ShadowStrength", props);
             _DecalSlot1_MatCap_Blur          = FindProperty("_DecalSlot1_MatCap_Blur", props);
-            _DecalSlot1_MatCap_RimPower      = FindProperty("_DecalSlot1_MatCap_RimPower", props);
-            _DecalSlot1_MatCap_EmissionAdd   = FindProperty("_DecalSlot1_MatCap_EmissionAdd", props);
             _DecalSlot1_NormalMap_Enable     = FindProperty("_DecalSlot1_NormalMap_Enable", props);
             _DecalSlot1_NormalMap_Tex        = FindProperty("_DecalSlot1_NormalMap_Tex", props);
             _DecalSlot1_NormalMap_Scale      = FindProperty("_DecalSlot1_NormalMap_Scale", props);
@@ -191,31 +186,29 @@ namespace lilToon
             _DecalSlot2_MatCap_EnableLighting = FindProperty("_DecalSlot2_MatCap_EnableLighting", props);
             _DecalSlot2_MatCap_ShadowStrength = FindProperty("_DecalSlot2_MatCap_ShadowStrength", props);
             _DecalSlot2_MatCap_Blur          = FindProperty("_DecalSlot2_MatCap_Blur", props);
-            _DecalSlot2_MatCap_RimPower      = FindProperty("_DecalSlot2_MatCap_RimPower", props);
-            _DecalSlot2_MatCap_EmissionAdd   = FindProperty("_DecalSlot2_MatCap_EmissionAdd", props);
             _DecalSlot2_NormalMap_Enable     = FindProperty("_DecalSlot2_NormalMap_Enable", props);
             _DecalSlot2_NormalMap_Tex        = FindProperty("_DecalSlot2_NormalMap_Tex", props);
             _DecalSlot2_NormalMap_Scale      = FindProperty("_DecalSlot2_NormalMap_Scale", props);
             _DecalSlot2_LilToon_NormalMap_Scale = FindProperty("_DecalSlot2_LilToon_NormalMap_Scale", props);
-            _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props);
-            _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
-            _DecalSlot2_Emission_UseTex      = FindProperty("_DecalSlot2_Emission_UseTex", props);
-            _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props);
-            _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props);
-            _DecalSlot2_Emission_Opacity     = FindProperty("_DecalSlot2_Emission_Opacity", props);
-            _DecalSlot2_Emission_SinEnable   = FindProperty("_DecalSlot2_Emission_SinEnable", props);
-            _DecalSlot2_Emission_SinSpeed    = FindProperty("_DecalSlot2_Emission_SinSpeed", props);
-            _DecalSlot2_Emission_SinMin      = FindProperty("_DecalSlot2_Emission_SinMin", props);
-            _DecalSlot2_Emission_SinMax      = FindProperty("_DecalSlot2_Emission_SinMax", props);
-            _DecalSlot2_Emission_PulseEnable = FindProperty("_DecalSlot2_Emission_PulseEnable", props);
-            _DecalSlot2_Emission_PulseProbability1 = FindProperty("_DecalSlot2_Emission_PulseProbability1", props);
-            _DecalSlot2_Emission_PulseDuration1    = FindProperty("_DecalSlot2_Emission_PulseDuration1", props);
-            _DecalSlot2_Emission_PulseProbability2 = FindProperty("_DecalSlot2_Emission_PulseProbability2", props);
-            _DecalSlot2_Emission_PulseDuration2    = FindProperty("_DecalSlot2_Emission_PulseDuration2", props);
-            _DecalSlot2_Emission_ScrollEnable = FindProperty("_DecalSlot2_Emission_ScrollEnable", props);
-            _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props);
-            _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props);
-            _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props);
+            _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props, false);
+            _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props, false);
+            _DecalSlot2_Emission_UseTex      = FindProperty("_DecalSlot2_Emission_UseTex", props, false);
+            _DecalSlot2_Emission_Color       = FindProperty("_DecalSlot2_Emission_Color", props, false);
+            _DecalSlot2_Emission_Strength    = FindProperty("_DecalSlot2_Emission_Strength", props, false);
+            _DecalSlot2_Emission_Opacity     = FindProperty("_DecalSlot2_Emission_Opacity", props, false);
+            _DecalSlot2_Emission_SinEnable   = FindProperty("_DecalSlot2_Emission_SinEnable", props, false);
+            _DecalSlot2_Emission_SinSpeed    = FindProperty("_DecalSlot2_Emission_SinSpeed", props, false);
+            _DecalSlot2_Emission_SinMin      = FindProperty("_DecalSlot2_Emission_SinMin", props, false);
+            _DecalSlot2_Emission_SinMax      = FindProperty("_DecalSlot2_Emission_SinMax", props, false);
+            _DecalSlot2_Emission_PulseEnable = FindProperty("_DecalSlot2_Emission_PulseEnable", props, false);
+            _DecalSlot2_Emission_PulseProbability1 = FindProperty("_DecalSlot2_Emission_PulseProbability1", props, false);
+            _DecalSlot2_Emission_PulseDuration1    = FindProperty("_DecalSlot2_Emission_PulseDuration1", props, false);
+            _DecalSlot2_Emission_PulseProbability2 = FindProperty("_DecalSlot2_Emission_PulseProbability2", props, false);
+            _DecalSlot2_Emission_PulseDuration2    = FindProperty("_DecalSlot2_Emission_PulseDuration2", props, false);
+            _DecalSlot2_Emission_ScrollEnable = FindProperty("_DecalSlot2_Emission_ScrollEnable", props, false);
+            _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props, false);
+            _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props, false);
+            _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props, false);
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -232,7 +225,6 @@ namespace lilToon
                 _DecalSlot1_MatCap_Alpha, _DecalSlot1_MatCap_MainColorPower, _DecalSlot1_MatCap_BumpScale,
                 _DecalSlot1_MatCap_UseReflection,
                 _DecalSlot1_MatCap_EnableLighting, _DecalSlot1_MatCap_ShadowStrength, _DecalSlot1_MatCap_Blur,
-                _DecalSlot1_MatCap_RimPower, _DecalSlot1_MatCap_EmissionAdd,
                 _DecalSlot1_Emission_Enable, _DecalSlot1_Emission_Tex, _DecalSlot1_Emission_UseTex, _DecalSlot1_Emission_Color,
                 _DecalSlot1_Emission_Strength, _DecalSlot1_Emission_Opacity,
                 _DecalSlot1_Emission_SinEnable, _DecalSlot1_Emission_SinSpeed,
@@ -253,7 +245,6 @@ namespace lilToon
                 _DecalSlot2_MatCap_Alpha, _DecalSlot2_MatCap_MainColorPower, _DecalSlot2_MatCap_BumpScale,
                 _DecalSlot2_MatCap_UseReflection,
                 _DecalSlot2_MatCap_EnableLighting, _DecalSlot2_MatCap_ShadowStrength, _DecalSlot2_MatCap_Blur,
-                _DecalSlot2_MatCap_RimPower, _DecalSlot2_MatCap_EmissionAdd,
                 _DecalSlot2_Emission_Enable, _DecalSlot2_Emission_Tex, _DecalSlot2_Emission_UseTex, _DecalSlot2_Emission_Color,
                 _DecalSlot2_Emission_Strength, _DecalSlot2_Emission_Opacity,
                 _DecalSlot2_Emission_SinEnable, _DecalSlot2_Emission_SinSpeed,
@@ -315,7 +306,6 @@ namespace lilToon
             MaterialProperty mcBlend, MaterialProperty mcAlpha, MaterialProperty mcMainColorPower,
             MaterialProperty mcBumpScale, MaterialProperty mcUseReflection,
             MaterialProperty mcEnableLighting, MaterialProperty mcShadowStrength, MaterialProperty mcBlur,
-            MaterialProperty mcRimPower, MaterialProperty mcEmissionAdd,
             MaterialProperty emEnable, MaterialProperty emTex, MaterialProperty emUseTex, MaterialProperty emColor,
             MaterialProperty emStrength, MaterialProperty emOpacity,
             MaterialProperty emSinEnable, MaterialProperty emSinSpeed,
@@ -335,8 +325,8 @@ namespace lilToon
                 && offsetX != null && offsetY != null && scaleX != null && scaleY != null && angle != null)
             {
                 string[] blendModes = IsJapanese
-                    ? new[] { "加算", "スクリーン", "乗算", "オーバーレイ", "ソフトライト", "置換", "減算", "比較（明）", "比較（暗）" }
-                    : new[] { "Add", "Screen", "Multiply", "Overlay", "Soft Light", "Replace", "Subtract", "Lighten", "Darken" };
+                    ? new[] { "加算", "スクリーン", "乗算", "ソフトライト", "置換" }
+                    : new[] { "Add", "Screen", "Multiply", "Soft Light", "Replace" };
 
                 EditorGUILayout.BeginVertical(boxInner);
 
@@ -358,7 +348,7 @@ namespace lilToon
                 m_MaterialEditor.ShaderProperty(alpha, new GUIContent(L("Opacity", "不透明度"), L("Decal opacity", "デカールの不透明度")));
                 EditorGUI.BeginChangeCheck();
                 int blendMode = (int)blend.floatValue;
-                if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 5;
+                if(blendMode < 0 || blendMode >= blendModes.Length) blendMode = 4;
                 blendMode = EditorGUILayout.Popup(new GUIContent(L("Blend Mode", "ブレンドモード"), L("Blend mode with base color", "合成モード")), blendMode, blendModes);
                 if(EditorGUI.EndChangeCheck()) blend.floatValue = blendMode;
 
@@ -414,8 +404,6 @@ namespace lilToon
                     EditorGUILayout.Space(3f);
                     m_MaterialEditor.ShaderProperty(mcEnableLighting, new GUIContent(L("Enable Lighting", "ライティング有効"), L("Lighting influence (0=off, 1=full)", "ライティングの影響度")));
                     m_MaterialEditor.ShaderProperty(mcShadowStrength, new GUIContent(L("Shadow Strength", "シャドウ強度"), L("MatCap attenuation in shadow areas", "影部分でのMatCap減衰強度")));
-                    m_MaterialEditor.ShaderProperty(mcRimPower, new GUIContent(L("Rim Power", "リムパワー"), L("Fresnel rim mask. Positive=edge, Negative=center, 0=off", "リムマスク（フレネル）。正=エッジ、負=中心、0=無効")));
-                    m_MaterialEditor.ShaderProperty(mcEmissionAdd, new GUIContent(L("Emission Addition", "エミッション加算"), L("Add MatCap color as emission", "MatCapの色をEmissionとして加算する強度")));
                 }
 
                 // --- Emission ---
@@ -485,20 +473,20 @@ namespace lilToon
 
         protected override void ReplaceToCustomShaders()
         {
-            lts    = Shader.Find(shaderName + "/lilToon");
-            ltsc   = Shader.Find("Hidden/" + shaderName + "/Cutout");
-            ltst   = Shader.Find("Hidden/" + shaderName + "/Transparent");
-            ltsot  = Shader.Find("Hidden/" + shaderName + "/OnePassTransparent");
-            ltstt  = Shader.Find("Hidden/" + shaderName + "/TwoPassTransparent");
+            lts    = Shader.Find(shaderNameDefault + "/lilToon");
+            ltsc   = Shader.Find("Hidden/" + shaderNameTransparent + "/Cutout");
+            ltst   = Shader.Find("Hidden/" + shaderNameTransparent + "/Transparent");
+            ltsot  = Shader.Find("Hidden/" + shaderNameTransparent + "/OnePassTransparent");
+            ltstt  = Shader.Find("Hidden/" + shaderNameTransparent + "/TwoPassTransparent");
 
-            ltso   = Shader.Find("Hidden/" + shaderName + "/OpaqueOutline");
-            ltsco  = Shader.Find("Hidden/" + shaderName + "/CutoutOutline");
-            ltsto  = Shader.Find("Hidden/" + shaderName + "/TransparentOutline");
-            ltsoto = Shader.Find("Hidden/" + shaderName + "/OnePassTransparentOutline");
-            ltstto = Shader.Find("Hidden/" + shaderName + "/TwoPassTransparentOutline");
+            ltso   = Shader.Find("Hidden/" + shaderNameDefault + "/OpaqueOutline");
+            ltsco  = Shader.Find("Hidden/" + shaderNameTransparent + "/CutoutOutline");
+            ltsto  = Shader.Find("Hidden/" + shaderNameTransparent + "/TransparentOutline");
+            ltsoto = Shader.Find("Hidden/" + shaderNameTransparent + "/OnePassTransparentOutline");
+            ltstto = Shader.Find("Hidden/" + shaderNameTransparent + "/TwoPassTransparentOutline");
 
-            ltsover  = Shader.Find(shaderName + "/[Optional] Overlay");
-            ltsoover = Shader.Find(shaderName + "/[Optional] OverlayOnePass");
+            ltsover  = Shader.Find(shaderNameDefault + "/[Optional] Overlay");
+            ltsoover = Shader.Find(shaderNameDefault + "/[Optional] OverlayOnePass");
         }
     }
 }

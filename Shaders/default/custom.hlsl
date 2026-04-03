@@ -27,8 +27,7 @@
     float  _DecalSlot1_MatCap_EnableLighting; \
     float  _DecalSlot1_MatCap_ShadowStrength; \
     float  _DecalSlot1_MatCap_Blur; \
-    float  _DecalSlot1_MatCap_RimPower; \
-    float  _DecalSlot1_MatCap_EmissionAdd; \
+\
     float4 _DecalSlot1_MatCap_Tex_ST; \
     float  _DecalSlot1_NormalMap_Enable; \
     float  _DecalSlot1_NormalMap_Scale; \
@@ -84,8 +83,7 @@
     float  _DecalSlot2_MatCap_EnableLighting; \
     float  _DecalSlot2_MatCap_ShadowStrength; \
     float  _DecalSlot2_MatCap_Blur; \
-    float  _DecalSlot2_MatCap_RimPower; \
-    float  _DecalSlot2_MatCap_EmissionAdd; \
+\
     float4 _DecalSlot2_MatCap_Tex_ST; \
     float  _DecalSlot2_NormalMap_Enable; \
     float  _DecalSlot2_NormalMap_Scale; \
@@ -194,18 +192,8 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
     if      (mode == 0) return base + overlay;
     else if (mode == 1) return 1.0 - (1.0 - base) * (1.0 - overlay);
     else if (mode == 2) return base * overlay;
-    else if (mode == 3) {
-        float3 r;
-        r.r = (base.r < 0.5) ? (2.0*base.r*overlay.r) : (1.0-2.0*(1.0-base.r)*(1.0-overlay.r));
-        r.g = (base.g < 0.5) ? (2.0*base.g*overlay.g) : (1.0-2.0*(1.0-base.g)*(1.0-overlay.g));
-        r.b = (base.b < 0.5) ? (2.0*base.b*overlay.b) : (1.0-2.0*(1.0-base.b)*(1.0-overlay.b));
-        return r;
-    }
-    else if (mode == 4) return (1.0-2.0*overlay)*base*base + 2.0*overlay*base;
-    else if (mode == 5) return overlay;
-    else if (mode == 6) return base - overlay;
-    else if (mode == 7) return max(base, overlay);
-    else                return min(base, overlay);
+    else if (mode == 3) return (1.0-2.0*overlay)*base*base + 2.0*overlay*base;
+    else                return overlay;
 }
 #endif
 
@@ -217,18 +205,6 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
 // rather than as a helper function, because HLSLINCLUDE is compiled before Unity's built-in
 // cbuffer declarations (UNITY_MATRIX_V is undefined at HLSLINCLUDE scope).
 // The basis is shared across both slot macros to avoid duplicate computation.
-
-//----------------------------------------------------------------------------------------------------------------------
-// Helper: Fresnel rim factor (shared across all slots)
-#ifndef DNKW_FRES_RIM_DEFINED
-#define DNKW_FRES_RIM_DEFINED
-float DNKW_FresRim(float NdotV, float rimPower)
-{
-    if (abs(rimPower) < 0.01) return 1.0;
-    if (rimPower > 0.0) return pow(1.0 - NdotV, rimPower);
-    return 1.0 - pow(1.0 - NdotV, -rimPower);
-}
-#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 // Normal Map Logic — placed in BEFORE_NORMAL_2ND so it blends into lilToon's tangent-space
@@ -336,10 +312,9 @@ float DNKW_FresRim(float NdotV, float rimPower)
             float2 uvmc_s1  = Nvs_s1.xy * 0.5 + 0.5; \
             float4 mcTex_s1 = LIL_SAMPLE_2D_LOD(_DecalSlot1_MatCap_Tex, sampler_linear_clamp, uvmc_s1, _DecalSlot1_MatCap_Blur * 8.0); \
             float3 mcCol_s1 = mcTex_s1.rgb * _DecalSlot1_MatCap_Color.rgb * lerp(1.0, fd.albedo, _DecalSlot1_MatCap_MainColorPower); \
-            float  mcMask_s1 = sharedMask_s1 * saturate(_DecalSlot1_MatCap_Alpha) * DNKW_FresRim(saturate(dot(fd.N, fd.V)), _DecalSlot1_MatCap_RimPower); \
+            float  mcMask_s1 = sharedMask_s1 * saturate(_DecalSlot1_MatCap_Alpha); \
             mcCol_s1 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot1_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot1_MatCap_EnableLighting); \
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s1, _DecalSlot1_MatCap_Blend), mcMask_s1); \
-            fd.emissionColor += mcCol_s1 * mcMask_s1 * _DecalSlot1_MatCap_EmissionAdd; \
         } \
     }
 
@@ -387,10 +362,9 @@ float DNKW_FresRim(float NdotV, float rimPower)
             float2 uvmc_s2  = Nvs_s2.xy * 0.5 + 0.5; \
             float4 mcTex_s2 = LIL_SAMPLE_2D_LOD(_DecalSlot2_MatCap_Tex, sampler_linear_clamp, uvmc_s2, _DecalSlot2_MatCap_Blur * 8.0); \
             float3 mcCol_s2 = mcTex_s2.rgb * _DecalSlot2_MatCap_Color.rgb * lerp(1.0, fd.albedo, _DecalSlot2_MatCap_MainColorPower); \
-            float  mcMask_s2 = sharedMask_s2 * saturate(_DecalSlot2_MatCap_Alpha) * DNKW_FresRim(saturate(dot(fd.N, fd.V)), _DecalSlot2_MatCap_RimPower); \
+            float  mcMask_s2 = sharedMask_s2 * saturate(_DecalSlot2_MatCap_Alpha); \
             mcCol_s2 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot2_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot2_MatCap_EnableLighting); \
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s2, _DecalSlot2_MatCap_Blend), mcMask_s2); \
-            fd.emissionColor += mcCol_s2 * mcMask_s2 * _DecalSlot2_MatCap_EmissionAdd; \
         } \
     }
 
@@ -455,7 +429,6 @@ float DNKW_FresRim(float NdotV, float rimPower)
 
 //----------------------------------------------------------------------------------------------------------------------
 // Decal Slot 2 Emission Logic
-#ifndef DNKW_DECAL_SLOT2_EMISSION_LOGIC
 #define DNKW_DECAL_SLOT2_EMISSION_LOGIC \
     float2 ddxUV_em2 = ddx(fd.uv0); \
     float2 ddyUV_em2 = ddy(fd.uv0); \
@@ -512,7 +485,6 @@ float DNKW_FresRim(float NdotV, float rimPower)
         float emAlpha_em2 = saturate(_DecalSlot2_Emission_Opacity) * saturate(emLum_em2); \
         fd.col.rgb += emCol_em2 * emAlpha_em2; \
     }
-#endif
 
 //----------------------------------------------------------------------------------------------------------------------
 // Entry point
