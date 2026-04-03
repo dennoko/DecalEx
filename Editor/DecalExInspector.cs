@@ -38,6 +38,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_NormalMap_Enable;
         private MaterialProperty _DecalSlot1_NormalMap_Tex;
         private MaterialProperty _DecalSlot1_NormalMap_Scale;
+        private MaterialProperty _DecalSlot1_LilToon_NormalMap_Scale;
         private MaterialProperty _DecalSlot1_Emission_Enable;
         private MaterialProperty _DecalSlot1_Emission_Tex;
         private MaterialProperty _DecalSlot1_Emission_UseTex;
@@ -89,6 +90,7 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_NormalMap_Enable;
         private MaterialProperty _DecalSlot2_NormalMap_Tex;
         private MaterialProperty _DecalSlot2_NormalMap_Scale;
+        private MaterialProperty _DecalSlot2_LilToon_NormalMap_Scale;
         private MaterialProperty _DecalSlot2_Emission_Enable;
         private MaterialProperty _DecalSlot2_Emission_Tex;
         private MaterialProperty _DecalSlot2_Emission_UseTex;
@@ -145,6 +147,7 @@ namespace lilToon
             _DecalSlot1_NormalMap_Enable     = FindProperty("_DecalSlot1_NormalMap_Enable", props);
             _DecalSlot1_NormalMap_Tex        = FindProperty("_DecalSlot1_NormalMap_Tex", props);
             _DecalSlot1_NormalMap_Scale      = FindProperty("_DecalSlot1_NormalMap_Scale", props);
+            _DecalSlot1_LilToon_NormalMap_Scale = FindProperty("_DecalSlot1_LilToon_NormalMap_Scale", props);
             _DecalSlot1_Emission_Enable      = FindProperty("_DecalSlot1_Emission_Enable", props);
             _DecalSlot1_Emission_Tex         = FindProperty("_DecalSlot1_Emission_Tex", props);
             _DecalSlot1_Emission_UseTex      = FindProperty("_DecalSlot1_Emission_UseTex", props);
@@ -193,6 +196,7 @@ namespace lilToon
             _DecalSlot2_NormalMap_Enable     = FindProperty("_DecalSlot2_NormalMap_Enable", props);
             _DecalSlot2_NormalMap_Tex        = FindProperty("_DecalSlot2_NormalMap_Tex", props);
             _DecalSlot2_NormalMap_Scale      = FindProperty("_DecalSlot2_NormalMap_Scale", props);
+            _DecalSlot2_LilToon_NormalMap_Scale = FindProperty("_DecalSlot2_LilToon_NormalMap_Scale", props);
             _DecalSlot2_Emission_Enable      = FindProperty("_DecalSlot2_Emission_Enable", props);
             _DecalSlot2_Emission_Tex         = FindProperty("_DecalSlot2_Emission_Tex", props);
             _DecalSlot2_Emission_UseTex      = FindProperty("_DecalSlot2_Emission_UseTex", props);
@@ -223,7 +227,7 @@ namespace lilToon
                 _DecalSlot1_OffsetX, _DecalSlot1_OffsetY, _DecalSlot1_ScaleX, _DecalSlot1_ScaleY, _DecalSlot1_Angle,
                 _DecalSlot1_Tex, _DecalSlot1_Color, _DecalSlot1_Blend, _DecalSlot1_Alpha,
                 _DecalSlot1_UseMask, _DecalSlot1_Mask,
-                _DecalSlot1_NormalMap_Enable, _DecalSlot1_NormalMap_Tex, _DecalSlot1_NormalMap_Scale,
+                _DecalSlot1_NormalMap_Enable, _DecalSlot1_NormalMap_Tex, _DecalSlot1_NormalMap_Scale, _DecalSlot1_LilToon_NormalMap_Scale,
                 _DecalSlot1_MatCap_Enable, _DecalSlot1_MatCap_Tex, _DecalSlot1_MatCap_Color, _DecalSlot1_MatCap_Blend,
                 _DecalSlot1_MatCap_Alpha, _DecalSlot1_MatCap_MainColorPower, _DecalSlot1_MatCap_BumpScale,
                 _DecalSlot1_MatCap_UseReflection,
@@ -244,7 +248,7 @@ namespace lilToon
                 _DecalSlot2_OffsetX, _DecalSlot2_OffsetY, _DecalSlot2_ScaleX, _DecalSlot2_ScaleY, _DecalSlot2_Angle,
                 _DecalSlot2_Tex, _DecalSlot2_Color, _DecalSlot2_Blend, _DecalSlot2_Alpha,
                 _DecalSlot2_UseMask, _DecalSlot2_Mask,
-                _DecalSlot2_NormalMap_Enable, _DecalSlot2_NormalMap_Tex, _DecalSlot2_NormalMap_Scale,
+                _DecalSlot2_NormalMap_Enable, _DecalSlot2_NormalMap_Tex, _DecalSlot2_NormalMap_Scale, _DecalSlot2_LilToon_NormalMap_Scale,
                 _DecalSlot2_MatCap_Enable, _DecalSlot2_MatCap_Tex, _DecalSlot2_MatCap_Color, _DecalSlot2_MatCap_Blend,
                 _DecalSlot2_MatCap_Alpha, _DecalSlot2_MatCap_MainColorPower, _DecalSlot2_MatCap_BumpScale,
                 _DecalSlot2_MatCap_UseReflection,
@@ -306,7 +310,7 @@ namespace lilToon
             MaterialProperty scaleX, MaterialProperty scaleY, MaterialProperty angle,
             MaterialProperty tex, MaterialProperty color, MaterialProperty blend, MaterialProperty alpha,
             MaterialProperty useMask, MaterialProperty mask,
-            MaterialProperty nmEnable, MaterialProperty nmTex, MaterialProperty nmScale,
+            MaterialProperty nmEnable, MaterialProperty nmTex, MaterialProperty nmScale, MaterialProperty nmLilToonScale,
             MaterialProperty mcEnable, MaterialProperty mcTex, MaterialProperty mcColor,
             MaterialProperty mcBlend, MaterialProperty mcAlpha, MaterialProperty mcMainColorPower,
             MaterialProperty mcBumpScale, MaterialProperty mcUseReflection,
@@ -365,7 +369,9 @@ namespace lilToon
 
                 // --- Normal Map ---
                 DrawSubHeader(L("Normal Map  \u2014  Uses shared position & mask", "ノーマルマップ  \u2014  位置・マスク共有"));
-                if(nmEnable != null) DrawToggleProp(nmEnable, new GUIContent(L("Enable Normal Map", "ノーマルマップ有効"), L("Enable a normal map applied only within the decal area", "デカール範囲内のみに適用するノーマルマップを有効にします")));
+                if(nmLilToonScale != null)
+                    m_MaterialEditor.ShaderProperty(nmLilToonScale, new GUIContent(L("lilToon Normal Strength (in decal area)", "lilToon ノーマル強度（デカール範囲内）"), L("Scale lilToon's own normal map only within this decal's masked area. 1=unchanged, 0=flat.", "このデカールのマスク範囲内でのみlilToonのノーマルマップをスケールします。1=そのまま、0=フラット")));
+                if(nmEnable != null) DrawToggleProp(nmEnable, new GUIContent(L("Enable Decal Normal Map", "デカール ノーマルマップ有効"), L("Enable a normal map applied only within the decal area", "デカール範囲内のみに適用するノーマルマップを有効にします")));
                 if(nmEnable != null && nmEnable.floatValue > 0.5f && nmTex != null)
                 {
                     EditorGUILayout.Space(2f);
@@ -384,7 +390,7 @@ namespace lilToon
                         }
                     }
                     m_MaterialEditor.TextureScaleOffsetProperty(nmTex);
-                    m_MaterialEditor.ShaderProperty(nmScale, new GUIContent(L("Strength", "強度"), L("Normal map strength (0=flat, 1=normal, 3=enhanced)", "ノーマルマップの強度（0=フラット、1=通常、3=強調）")));
+                    m_MaterialEditor.ShaderProperty(nmScale, new GUIContent(L("Decal Normal Strength", "デカール ノーマル強度"), L("Decal normal map strength (0=flat, 1=normal, 3=enhanced)", "デカールノーマルマップの強度（0=フラット、1=通常、3=強調）")));
                 }
 
                 // --- MatCap ---

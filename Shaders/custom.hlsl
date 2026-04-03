@@ -32,6 +32,7 @@
     float4 _DecalSlot1_MatCap_Tex_ST; \
     float  _DecalSlot1_NormalMap_Enable; \
     float  _DecalSlot1_NormalMap_Scale; \
+    float  _DecalSlot1_LilToon_NormalMap_Scale; \
     float4 _DecalSlot1_NormalMap_Tex_ST; \
     float  _DecalSlot1_Emission_Enable; \
     float4 _DecalSlot1_Emission_Color; \
@@ -88,6 +89,7 @@
     float4 _DecalSlot2_MatCap_Tex_ST; \
     float  _DecalSlot2_NormalMap_Enable; \
     float  _DecalSlot2_NormalMap_Scale; \
+    float  _DecalSlot2_LilToon_NormalMap_Scale; \
     float4 _DecalSlot2_NormalMap_Tex_ST; \
     float  _DecalSlot2_Emission_Enable; \
     float4 _DecalSlot2_Emission_Color; \
@@ -311,6 +313,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
             sharedMask_s1 = _DecalSlot1_Mask.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1).r * inBounds_s1; \
         } \
         if (_DecalSlot1_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s1 = 0.0; \
+        float3 scaledN_s1 = normalize(lerp(fd.origN, fd.N, _DecalSlot1_LilToon_NormalMap_Scale)); \
+        fd.N = normalize(lerp(fd.N, scaledN_s1, sharedMask_s1)); \
+        if (_DecalSlot1_NormalMap_Enable > 0.5) { \
+            float2 nmUV_s1  = slotUV_s1 * _DecalSlot1_NormalMap_Tex_ST.xy + _DecalSlot1_NormalMap_Tex_ST.zw; \
+            float2 nmDx_s1  = dxSlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+            float2 nmDy_s1  = dySlot_s1 * _DecalSlot1_NormalMap_Tex_ST.xy; \
+            float4 nmTex_s1 = _DecalSlot1_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s1, nmDx_s1, nmDy_s1); \
+            float3 decalNM_ts_s1 = lilUnpackNormalScale(nmTex_s1, _DecalSlot1_NormalMap_Scale); \
+            float3 decalN_ws_s1  = normalize(mul(decalNM_ts_s1, fd.TBN)); \
+            fd.N = normalize(lerp(fd.N, decalN_ws_s1, sharedMask_s1)); \
+        } \
         float4 decalTex_s1   = _DecalSlot1_Tex.SampleGrad(sampler_linear_clamp, slotUV_s1, dxSlot_s1, dySlot_s1); \
         float3 decalColor_s1 = decalTex_s1.rgb * _DecalSlot1_Color.rgb; \
         float  decalW_s1     = decalTex_s1.a * saturate(_DecalSlot1_Alpha) * sharedMask_s1; \
@@ -351,6 +364,17 @@ float DNKW_FresRim(float NdotV, float rimPower)
             sharedMask_s2 = _DecalSlot2_Mask.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2).r * inBounds_s2; \
         } \
         if (_DecalSlot2_DisableBackface > 0.5 && fd.facing < 0) sharedMask_s2 = 0.0; \
+        float3 scaledN_s2 = normalize(lerp(fd.origN, fd.N, _DecalSlot2_LilToon_NormalMap_Scale)); \
+        fd.N = normalize(lerp(fd.N, scaledN_s2, sharedMask_s2)); \
+        if (_DecalSlot2_NormalMap_Enable > 0.5) { \
+            float2 nmUV_s2  = slotUV_s2 * _DecalSlot2_NormalMap_Tex_ST.xy + _DecalSlot2_NormalMap_Tex_ST.zw; \
+            float2 nmDx_s2  = dxSlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+            float2 nmDy_s2  = dySlot_s2 * _DecalSlot2_NormalMap_Tex_ST.xy; \
+            float4 nmTex_s2 = _DecalSlot2_NormalMap_Tex.SampleGrad(sampler_linear_repeat, nmUV_s2, nmDx_s2, nmDy_s2); \
+            float3 decalNM_ts_s2 = lilUnpackNormalScale(nmTex_s2, _DecalSlot2_NormalMap_Scale); \
+            float3 decalN_ws_s2  = normalize(mul(decalNM_ts_s2, fd.TBN)); \
+            fd.N = normalize(lerp(fd.N, decalN_ws_s2, sharedMask_s2)); \
+        } \
         float4 decalTex_s2   = _DecalSlot2_Tex.SampleGrad(sampler_linear_clamp, slotUV_s2, dxSlot_s2, dySlot_s2); \
         float3 decalColor_s2 = decalTex_s2.rgb * _DecalSlot2_Color.rgb; \
         float  decalW_s2     = decalTex_s2.a * saturate(_DecalSlot2_Alpha) * sharedMask_s2; \
