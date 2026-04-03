@@ -59,6 +59,8 @@
     float  _DecalSlot1_Emission_ALTreble; \
     float  _DecalSlot1_Emission_ALWaveEnable; \
     float  _DecalSlot1_Emission_ALWaveAxis; \
+    float  _DecalSlot1_AlphaOverride_Enable; \
+    float  _DecalSlot1_AlphaOverride_Value; \
     /* Decal Slot 2 */ \
     float  _DecalSlot2_Enable; \
     float  _DecalSlot2_DisableBackface; \
@@ -88,7 +90,9 @@
     float  _DecalSlot2_NormalMap_Enable; \
     float  _DecalSlot2_NormalMap_Scale; \
     float  _DecalSlot2_LilToon_NormalMap_Scale; \
-    float4 _DecalSlot2_NormalMap_Tex_ST;
+    float4 _DecalSlot2_NormalMap_Tex_ST; \
+    float  _DecalSlot2_AlphaOverride_Enable; \
+    float  _DecalSlot2_AlphaOverride_Value;
 
 // Custom textures
 #define LIL_CUSTOM_TEXTURES \
@@ -288,6 +292,9 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
             mcCol_s1 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot1_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot1_MatCap_EnableLighting); \
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s1, _DecalSlot1_MatCap_Blend), mcMask_s1); \
         } \
+        if (_DecalSlot1_AlphaOverride_Enable > 0.5) { \
+            fd.col.a = lerp(fd.col.a, _DecalSlot1_AlphaOverride_Value, sharedMask_s1); \
+        } \
     }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -337,6 +344,9 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
             float  mcMask_s2 = sharedMask_s2 * saturate(_DecalSlot2_MatCap_Alpha); \
             mcCol_s2 *= lerp(1.0, fd.attenuation * fd.shadowmix, _DecalSlot2_MatCap_ShadowStrength) * lerp(float3(1,1,1), fd.lightColor, _DecalSlot2_MatCap_EnableLighting); \
             fd.col.rgb = lerp(fd.col.rgb, DNKW_BlendColors(fd.col.rgb, mcCol_s2, _DecalSlot2_MatCap_Blend), mcMask_s2); \
+        } \
+        if (_DecalSlot2_AlphaOverride_Enable > 0.5) { \
+            fd.col.a = lerp(fd.col.a, _DecalSlot2_AlphaOverride_Value, sharedMask_s2); \
         } \
     }
 

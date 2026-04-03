@@ -56,6 +56,8 @@ namespace lilToon
         private MaterialProperty _DecalSlot1_Emission_ScrollX;
         private MaterialProperty _DecalSlot1_Emission_ScrollY;
         private MaterialProperty _DecalSlot1_Emission_ScrollMask;
+        private MaterialProperty _DecalSlot1_AlphaOverride_Enable;
+        private MaterialProperty _DecalSlot1_AlphaOverride_Value;
         //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 2 properties
         private static bool isShowDecalSlot2;
@@ -106,6 +108,8 @@ namespace lilToon
         private MaterialProperty _DecalSlot2_Emission_ScrollX;
         private MaterialProperty _DecalSlot2_Emission_ScrollY;
         private MaterialProperty _DecalSlot2_Emission_ScrollMask;
+        private MaterialProperty _DecalSlot2_AlphaOverride_Enable;
+        private MaterialProperty _DecalSlot2_AlphaOverride_Value;
         private const string shaderNameDefault = "dennoko_decalex/default";
         private const string shaderNameTransparent = "dennoko_decalex/transparent_cutout";
 
@@ -162,6 +166,8 @@ namespace lilToon
             _DecalSlot1_Emission_ScrollX     = FindProperty("_DecalSlot1_Emission_ScrollX", props);
             _DecalSlot1_Emission_ScrollY     = FindProperty("_DecalSlot1_Emission_ScrollY", props);
             _DecalSlot1_Emission_ScrollMask  = FindProperty("_DecalSlot1_Emission_ScrollMask", props);
+            _DecalSlot1_AlphaOverride_Enable = FindProperty("_DecalSlot1_AlphaOverride_Enable", props, false);
+            _DecalSlot1_AlphaOverride_Value  = FindProperty("_DecalSlot1_AlphaOverride_Value", props, false);
             _DecalSlot2_Enable               = FindProperty("_DecalSlot2_Enable", props);
             _DecalSlot2_DisableBackface       = FindProperty("_DecalSlot2_DisableBackface", props);
             _DecalSlot2_OffsetX              = FindProperty("_DecalSlot2_OffsetX", props);
@@ -209,6 +215,8 @@ namespace lilToon
             _DecalSlot2_Emission_ScrollX     = FindProperty("_DecalSlot2_Emission_ScrollX", props, false);
             _DecalSlot2_Emission_ScrollY     = FindProperty("_DecalSlot2_Emission_ScrollY", props, false);
             _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props, false);
+            _DecalSlot2_AlphaOverride_Enable = FindProperty("_DecalSlot2_AlphaOverride_Enable", props, false);
+            _DecalSlot2_AlphaOverride_Value  = FindProperty("_DecalSlot2_AlphaOverride_Value", props, false);
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -233,7 +241,8 @@ namespace lilToon
                 _DecalSlot1_Emission_PulseProbability1, _DecalSlot1_Emission_PulseDuration1,
                 _DecalSlot1_Emission_PulseProbability2, _DecalSlot1_Emission_PulseDuration2,
                 _DecalSlot1_Emission_ScrollEnable, _DecalSlot1_Emission_ScrollX, _DecalSlot1_Emission_ScrollY,
-                _DecalSlot1_Emission_ScrollMask);
+                _DecalSlot1_Emission_ScrollMask,
+                _DecalSlot1_AlphaOverride_Enable, _DecalSlot1_AlphaOverride_Value);
 
             DrawDecalSlot("Decal Slot 2", ref isShowDecalSlot2,
                 _DecalSlot2_Enable, _DecalSlot2_DisableBackface,
@@ -253,7 +262,8 @@ namespace lilToon
                 _DecalSlot2_Emission_PulseProbability1, _DecalSlot2_Emission_PulseDuration1,
                 _DecalSlot2_Emission_PulseProbability2, _DecalSlot2_Emission_PulseDuration2,
                 _DecalSlot2_Emission_ScrollEnable, _DecalSlot2_Emission_ScrollX, _DecalSlot2_Emission_ScrollY,
-                _DecalSlot2_Emission_ScrollMask);
+                _DecalSlot2_Emission_ScrollMask,
+                _DecalSlot2_AlphaOverride_Enable, _DecalSlot2_AlphaOverride_Value);
 
             EditorGUILayout.EndVertical();
         }
@@ -314,7 +324,8 @@ namespace lilToon
             MaterialProperty emPulseProbability1, MaterialProperty emPulseDuration1,
             MaterialProperty emPulseProbability2, MaterialProperty emPulseDuration2,
             MaterialProperty emScrollEnable, MaterialProperty emScrollX, MaterialProperty emScrollY,
-            MaterialProperty emScrollMask)
+            MaterialProperty emScrollMask,
+            MaterialProperty alphaOverrideEnable, MaterialProperty alphaOverrideValue)
         {
             isShow = Foldout(title, title, isShow);
             if(!isShow) return;
@@ -460,6 +471,17 @@ namespace lilToon
                         EditorGUI.indentLevel--;
                     }
 
+                }
+
+                // --- Alpha Override (transparent/cutout only) ---
+                if (alphaOverrideEnable != null)
+                {
+                    DrawSubHeader(L("Alpha Override  \u2014  Cutout / Transparent only", "アルファオーバーライド  \u2014  カットアウト / 半透明専用"));
+                    DrawToggleProp(alphaOverrideEnable, new GUIContent(L("Enable Alpha Override", "アルファオーバーライド有効"), L("Override alpha value within the masked decal area", "マスクされたデカール範囲内のアルファ値を上書きします")));
+                    if (alphaOverrideEnable.floatValue > 0.5f && alphaOverrideValue != null)
+                    {
+                        m_MaterialEditor.ShaderProperty(alphaOverrideValue, new GUIContent(L("Alpha Value", "アルファ値"), L("Fixed alpha value for the decal area (0=transparent, 1=opaque)", "デカール範囲の固定アルファ値（0=透明、1=不透明）")));
+                    }
                 }
 
                 EditorGUILayout.Space(4f);

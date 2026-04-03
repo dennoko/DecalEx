@@ -49,6 +49,8 @@
                         _DecalSlot1_Emission_ScrollX     ("Scroll Speed X",             Range(-3,3))     = 0.0
                         _DecalSlot1_Emission_ScrollY     ("Scroll Speed Y",             Range(-3,3))     = 0.5
                         _DecalSlot1_Emission_ScrollMask  ("Scroll Mask",                2D)              = "white" {}
+                        _DecalSlot1_AlphaOverride_Enable ("Alpha Override",              Float)           = 0
+                        _DecalSlot1_AlphaOverride_Value  ("Alpha Override Value",        Range(0,1))      = 1.0
 
         //----------------------------------------------------------------------------------------------------------------------
         // Decal Slot 2
@@ -81,3 +83,5 @@
                         _DecalSlot2_MatCap_EnableLighting("MatCap Enable Lighting",      Range(0,1))      = 1.0
                         _DecalSlot2_MatCap_ShadowStrength("MatCap Shadow Strength",      Range(0,1))      = 0.0
                         _DecalSlot2_MatCap_Blur          ("MatCap Blur",                 Range(0,1))      = 0.0
+                        _DecalSlot2_AlphaOverride_Enable ("Alpha Override",              Float)           = 0
+                        _DecalSlot2_AlphaOverride_Value  ("Alpha Override Value",        Range(0,1))      = 1.0

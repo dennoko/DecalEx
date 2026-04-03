@@ -73,12 +73,8 @@ Position, scale, and rotation are shared by all sub-features (texture, mask, nor
 | Add | Addition — result becomes brighter |
 | Screen | Screen — natural brightness increase |
 | Multiply | Multiply — result becomes darker |
-| Overlay | Overlay — contrast enhancement |
 | Soft Light | Soft Light — gentle brightening/darkening |
 | Replace | Replace — overwrites with decal color |
-| Subtract | Subtract — result becomes darker |
-| Lighten | Lighten — takes the brighter of the two |
-| Darken | Darken — takes the darker of the two |
 
 ---
 
@@ -118,21 +114,11 @@ Outside the mask all sub-features (texture, normal map, MatCap, emission) are su
 | **Use Reflection** | Reflection mode — MatCap appearance changes with camera angle (specular-like) |
 | **Enable Lighting** | Lighting influence (0 = off, 1 = full) |
 | **Shadow Strength** | MatCap attenuation in shadow areas (0 = no effect, 1 = fully hidden in shadow) |
-| **Rim Power** | Fresnel rim mask (positive = edges, negative = center, 0 = off) |
-| **Emission Addition** | Adds MatCap color as emission |
 
 #### Use Reflection
 
 - **OFF (default):** Fixed MatCap driven by the surface normal, independent of camera position
 - **ON (reflection):** MatCap appearance varies with camera angle (mirror-like reflection)
-
-#### Rim Power
-
-| Value | Effect |
-|---|---|
-| 0 | Rim mask disabled — MatCap applied uniformly |
-| Positive | Stronger toward edges; higher value = narrower edge ring |
-| Negative | Stronger toward the center; larger absolute value = more center-focused |
 
 ---
 
@@ -198,3 +184,18 @@ Select from **Rendering Mode** at the top of the material.
 | **Opaque** | Fully opaque |
 | **Cutout** | Alpha test (hard cutout) |
 | **Transparent** | Semi-transparent |
+
+> **Note:** In Cutout / Transparent modes, **Decal Slot 2 Emission** is not available due to shader instruction count limits. Use Opaque mode if you need Slot 2 emission.
+
+---
+
+## Alpha Override (Cutout / Transparent only)
+
+Available only in Cutout / Transparent modes. Overrides the alpha value within the masked decal area to a fixed value.
+
+| Parameter | Description |
+|---|---|
+| **Enable Alpha Override** | ON/OFF |
+| **Alpha Value** | Fixed alpha value for the decal area (0 = transparent, 1 = opaque) |
+
+The override interpolates between the original alpha and the set value based on the mask intensity. This parameter is not shown in Opaque mode.
