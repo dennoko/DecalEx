@@ -495,7 +495,6 @@ float3 DNKW_BlendColors(float3 base, float3 overlay, int mode)
 #define BEFORE_EMISSION_1ST \
 { \
     DNKW_DECAL_SLOT1_EMISSION_LOGIC \
-    DNKW_DECAL_SLOT2_EMISSION_LOGIC \
 }
 #else
 #define BEFORE_NORMAL_2ND

@@ -189,6 +189,12 @@ Select from **Rendering Mode** at the top of the material.
 
 ---
 
+## Important Notes
+
+- After avatar upload or other operations, materials using this shader may appear transparent in the Unity scene. Select the affected material, expand **Decal Slot 2** in the Inspector, and press the **lilToon Refresh Shader** button located below Decal Slot 2. If the button is not visible or you cannot select the material, run `Assets > lilToon > Refresh Shader` from the Unity top menu as a fallback.
+- Regarding alpha override and decal color: setting a decal color to black does not guarantee the final output will remain pure black—later shader processing, blending, and lighting can alter the result. Dark colors in particular may become less visible; verify appearance in your target build.
+
+
 ## Alpha Override (Cutout / Transparent only)
 
 Available only in Cutout / Transparent modes. Overrides the alpha value within the masked decal area to a fixed value.

@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -217,6 +219,45 @@ namespace lilToon
             _DecalSlot2_Emission_ScrollMask  = FindProperty("_DecalSlot2_Emission_ScrollMask", props, false);
             _DecalSlot2_AlphaOverride_Enable = FindProperty("_DecalSlot2_AlphaOverride_Enable", props, false);
             _DecalSlot2_AlphaOverride_Value  = FindProperty("_DecalSlot2_AlphaOverride_Value", props, false);
+
+            bool isTransparentFamily = material.shader != null && material.shader.name.Contains(shaderNameTransparent);
+            if(isTransparentFamily)
+            {
+                // Keep Slot2 emission disabled on transparent/cutout variants.
+                if(material.HasProperty("_DecalSlot2_Emission_Enable")) material.SetFloat("_DecalSlot2_Emission_Enable", 0f);
+                if(material.HasProperty("_DecalSlot2_Emission_UseTex")) material.SetFloat("_DecalSlot2_Emission_UseTex", 0f);
+                if(material.HasProperty("_DecalSlot2_Emission_SinEnable")) material.SetFloat("_DecalSlot2_Emission_SinEnable", 0f);
+                if(material.HasProperty("_DecalSlot2_Emission_PulseEnable")) material.SetFloat("_DecalSlot2_Emission_PulseEnable", 0f);
+                if(material.HasProperty("_DecalSlot2_Emission_ScrollEnable")) material.SetFloat("_DecalSlot2_Emission_ScrollEnable", 0f);
+
+                _DecalSlot2_Emission_Enable = null;
+                _DecalSlot2_Emission_Tex = null;
+                _DecalSlot2_Emission_UseTex = null;
+                _DecalSlot2_Emission_Color = null;
+                _DecalSlot2_Emission_Strength = null;
+                _DecalSlot2_Emission_Opacity = null;
+                _DecalSlot2_Emission_SinEnable = null;
+                _DecalSlot2_Emission_SinSpeed = null;
+                _DecalSlot2_Emission_SinMin = null;
+                _DecalSlot2_Emission_SinMax = null;
+                _DecalSlot2_Emission_PulseEnable = null;
+                _DecalSlot2_Emission_PulseProbability1 = null;
+                _DecalSlot2_Emission_PulseDuration1 = null;
+                _DecalSlot2_Emission_PulseProbability2 = null;
+                _DecalSlot2_Emission_PulseDuration2 = null;
+                _DecalSlot2_Emission_ScrollEnable = null;
+                _DecalSlot2_Emission_ScrollX = null;
+                _DecalSlot2_Emission_ScrollY = null;
+                _DecalSlot2_Emission_ScrollMask = null;
+            }
+            else
+            {
+                // Alpha override is transparent/cutout only.
+                _DecalSlot1_AlphaOverride_Enable = null;
+                _DecalSlot1_AlphaOverride_Value = null;
+                _DecalSlot2_AlphaOverride_Enable = null;
+                _DecalSlot2_AlphaOverride_Value = null;
+            }
         }
 
         protected override void DrawCustomProperties(Material material)
@@ -265,7 +306,147 @@ namespace lilToon
                 _DecalSlot2_Emission_ScrollMask,
                 _DecalSlot2_AlphaOverride_Enable, _DecalSlot2_AlphaOverride_Value);
 
+            DrawRefreshShaderShortcut();
+
             EditorGUILayout.EndVertical();
+        }
+
+        private void DrawRefreshShaderShortcut()
+        {
+            EditorGUILayout.HelpBox(
+                L(
+                    "If materials become transparent, use the lilToon Refresh Shader button below. If needed, this tries to auto-select a renderer using the current material.",
+                    "マテリアルが透明になった場合は、下の lilToon Refresh Shader ボタンを押してください。必要に応じて、現在のマテリアルを使っているレンダラーを自動選択して実行します。"
+                ),
+                MessageType.Info
+            );
+
+            if(GUILayout.Button(L("Run lilToon Refresh Shader", "lilToon Refresh Shader を実行")))
+            {
+                bool hasRendererSelection = Selection.activeGameObject != null &&
+                    (Selection.activeGameObject.GetComponent<Renderer>() != null ||
+                     Selection.activeGameObject.GetComponentInChildren<Renderer>() != null);
+
+                Material currentMaterial = m_MaterialEditor != null ? m_MaterialEditor.target as Material : null;
+                if(!hasRendererSelection)
+                {
+                    hasRendererSelection = TrySelectRendererUsingMaterial(currentMaterial);
+                }
+
+                bool executed = TryExecuteLilToonRefreshShader();
+                if(!executed)
+                {
+                    EditorUtility.DisplayDialog(
+                        L("DecalEx", "DecalEx"),
+                        L(
+                            "Could not execute lilToon Refresh Shader. Please ensure lilToon is installed and select the target mesh (Renderer) in the scene before running again.",
+                            "lilToon Refresh Shader を実行できませんでした。lilToon が導入されていることを確認し、シーンで対象メッシュ（Renderer）を選択して再実行してください。"
+                        ),
+                        "OK"
+                    );
+                }
+                else if(!hasRendererSelection)
+                {
+                    Debug.LogWarning(
+                        L(
+                            "DecalEx: Refresh Shader executed. For best results, select the target mesh object in the scene and run again if needed.",
+                            "DecalEx: Refresh Shader を実行しました。必要に応じて、シーンで対象メッシュを選択した状態でもう一度実行してください。"
+                        )
+                    );
+                }
+            }
+        }
+
+        private static bool TrySelectRendererUsingMaterial(Material material)
+        {
+            if(material == null) return false;
+
+            Renderer[] renderers = Resources.FindObjectsOfTypeAll<Renderer>();
+            foreach(Renderer renderer in renderers)
+            {
+                if(renderer == null || renderer.gameObject == null) continue;
+                if(EditorUtility.IsPersistent(renderer)) continue;
+                if(!renderer.gameObject.scene.IsValid()) continue;
+
+                Material[] sharedMaterials = renderer.sharedMaterials;
+                if(sharedMaterials == null) continue;
+
+                for(int i = 0; i < sharedMaterials.Length; i++)
+                {
+                    if(sharedMaterials[i] == material)
+                    {
+                        Selection.activeGameObject = renderer.gameObject;
+                        EditorGUIUtility.PingObject(renderer.gameObject);
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool TryExecuteLilToonRefreshShader()
+        {
+            string[] knownMenuPaths =
+            {
+                "Assets/lilToon/Refresh Shader",
+                "Assets/lilToon/Refresh Shaders",
+                "Tools/lilToon/Refresh Shader",
+                "Tools/lilToon/Refresh Shaders",
+                "Assets/lilToon/Refresh",
+                "Tools/lilToon/Refresh"
+            };
+
+            for(int i = 0; i < knownMenuPaths.Length; i++)
+            {
+                if(EditorApplication.ExecuteMenuItem(knownMenuPaths[i])) return true;
+            }
+
+            string[] rootMenus = { "Assets", "Tools" };
+            for(int i = 0; i < rootMenus.Length; i++)
+            {
+                string[] submenus = GetSubmenusSafe(rootMenus[i]);
+                if(submenus == null) continue;
+
+                for(int j = 0; j < submenus.Length; j++)
+                {
+                    string path = submenus[j];
+                    if(string.IsNullOrEmpty(path)) continue;
+
+                    if(path.IndexOf("liltoon", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                       path.IndexOf("refresh", StringComparison.OrdinalIgnoreCase) >= 0 &&
+                       path.IndexOf("shader", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        if(EditorApplication.ExecuteMenuItem(path)) return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static string[] GetSubmenusSafe(string menuPath)
+        {
+            try
+            {
+                Type unsupportedType = typeof(EditorApplication).Assembly.GetType("UnityEditor.Unsupported");
+                if(unsupportedType == null) return null;
+
+                MethodInfo getSubmenus = unsupportedType.GetMethod(
+                    "GetSubmenus",
+                    BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic,
+                    null,
+                    new[] { typeof(string) },
+                    null
+                );
+
+                if(getSubmenus == null) return null;
+                return getSubmenus.Invoke(null, new object[] { menuPath }) as string[];
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         //----------------------------------------------------------------------------------------------------------------------
