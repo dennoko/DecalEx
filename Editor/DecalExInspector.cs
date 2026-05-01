@@ -223,13 +223,10 @@ namespace lilToon
             bool isTransparentFamily = material.shader != null && material.shader.name.Contains(shaderNameTransparent);
             if(isTransparentFamily)
             {
-                // Keep Slot2 emission disabled on transparent/cutout variants.
-                if(material.HasProperty("_DecalSlot2_Emission_Enable")) material.SetFloat("_DecalSlot2_Emission_Enable", 0f);
-                if(material.HasProperty("_DecalSlot2_Emission_UseTex")) material.SetFloat("_DecalSlot2_Emission_UseTex", 0f);
-                if(material.HasProperty("_DecalSlot2_Emission_SinEnable")) material.SetFloat("_DecalSlot2_Emission_SinEnable", 0f);
-                if(material.HasProperty("_DecalSlot2_Emission_PulseEnable")) material.SetFloat("_DecalSlot2_Emission_PulseEnable", 0f);
-                if(material.HasProperty("_DecalSlot2_Emission_ScrollEnable")) material.SetFloat("_DecalSlot2_Emission_ScrollEnable", 0f);
-
+                // Slot2 emission is not compiled into the transparent/cutout shader variant
+                // (stripped via the DNKW_DECAL_SLOT2_EMISSION_LOGIC guard in custom_insert.hlsl).
+                // Hide the controls by nullifying the references without modifying the stored values,
+                // so that user-set values are never silently overwritten by the inspector.
                 _DecalSlot2_Emission_Enable = null;
                 _DecalSlot2_Emission_Tex = null;
                 _DecalSlot2_Emission_UseTex = null;
@@ -607,7 +604,9 @@ namespace lilToon
                     m_MaterialEditor.TexturePropertySingleLine(new GUIContent(L("Texture", "テクスチャ"), L("Emission texture (black=off)", "エミッションテクスチャ（黒=無効）")), emTex, emColor);
                     if(emUseTex != null)
                     {
-                        emUseTex.floatValue = emTex.textureValue != null ? 1f : 0f;
+                        float expectedUseTex = emTex.textureValue != null ? 1f : 0f;
+                        if(emUseTex.floatValue != expectedUseTex)
+                            emUseTex.floatValue = expectedUseTex;
                     }
                     m_MaterialEditor.ShaderProperty(emStrength, new GUIContent(L("Strength", "強度"), L("Emission strength", "エミッション強度")));
                     m_MaterialEditor.ShaderProperty(emOpacity, new GUIContent(L("Opacity", "不透明度"), L("How strongly emissive color overlays onto the lit result. 0 keeps original look when dark", "発光色をライティング結果へ重ねる強さ。0で暗い時に元の見た目を維持")));
